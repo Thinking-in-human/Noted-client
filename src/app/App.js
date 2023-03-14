@@ -1,13 +1,22 @@
 import React from "react";
+import styled, { createGlobalStyle } from "styled-components";
 
-function App() {
+import Header from "../components/Header";
+import OpenPdf from "../components/OpenPdf";
+import Error from "../components/Error";
+
+export default function App() {
   return (
-    <div>
-      <header>
-        <p>hello world!</p>
-      </header>
-    </div>
+    <>
+      <GlobalStyle />
+      <Header />
+      {/* <OpenPdf /> */}
+      <Error />
+    </>
   );
 }
-
-export default App;
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin :0;
+  }
+`;
