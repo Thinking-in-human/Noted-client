@@ -60,7 +60,6 @@ const DbFileWrapper = styled.div`
   background-color: skyblue;
   /* display: flex;
   justify-content: space-around; */
-
   padding: 20px;
 `;
 

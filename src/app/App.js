@@ -4,6 +4,7 @@ import styled, { createGlobalStyle } from "styled-components";
 import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";
 import Error from "../components/Error";
+import Editor from "../components/Editor";
 
 export default function App() {
   return (
@@ -11,7 +12,8 @@ export default function App() {
       <GlobalStyle />
       <Header />
       {/* <OpenPdf /> */}
-      <Error />
+      {/* <Error /> */}
+      <Editor />
     </>
   );
 }

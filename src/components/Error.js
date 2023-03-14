@@ -1,13 +1,11 @@
 import React from "react";
 import styled from "styled-components";
 
-import userPic from "../assets/userPic.jpg";
-
 export default function Error() {
   return (
     <Wrapper>
       <ErrorCode>404</ErrorCode>
-      <ErrorMessage>404</ErrorMessage>
+      <ErrorMessage>Not Found</ErrorMessage>
     </Wrapper>
   );
 }
@@ -15,11 +13,10 @@ export default function Error() {
 const Wrapper = styled.div`
   height: 100vh;
   padding: 10px;
-  font-size: 25px;
-  font-weight: bold;
+  font-size: 80px;
   display: flex;
   flex-direction: column;
-  background-color: purple;
+  background-color: skyblue;
   justify-content: center;
   align-items: center;
   margin: auto;
@@ -27,13 +24,20 @@ const Wrapper = styled.div`
 
 const ErrorCode = styled.div`
   width: 700px;
-  height: 100px;
-  border-bottom: 3px double black;
+  height: 80px;
+  border-bottom: 5px double black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: pink;
 `;
 const ErrorMessage = styled.div`
+  margin: 30px;
   width: 700px;
-  height: 100px;
-  border-bottom: 3px double black;
-  background-color: white;
+  height: 350px;
+  border: 1px solid black;
+  background-color: #f9f5f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
