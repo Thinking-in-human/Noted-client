@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";
 import Error from "../components/Error";
 import Editor from "../components/Editor";
+import Loading from "../components/Loading";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       {/* <OpenPdf /> */}
       {/* <Error /> */}
       <Editor />
+      {/* <Loading /> */}
     </>
   );
 }
