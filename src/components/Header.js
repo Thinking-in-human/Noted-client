@@ -18,15 +18,15 @@ export default function Header() {
 }
 
 const Wrapper = styled.div`
-  height: 40px;
-  padding: 10px 15px;
-  font-size: 25px;
-  font-weight: bold;
   display: flex;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  background-color: #fcfaf7;
   justify-content: space-between;
   align-items: center;
+  height: 40px;
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: #fcfaf7;
+  font-size: 25px;
+  font-weight: bold;
 `;
 
 const Logo = styled.div`
@@ -34,9 +34,9 @@ const Logo = styled.div`
 `;
 
 const NavWrapper = styled.div`
-  width: 300px;
   display: flex;
   justify-content: space-between;
+  width: 300px;
 `;
 
 const NavButton = styled.button`
@@ -44,6 +44,7 @@ const NavButton = styled.button`
   background: none;
   font-size: 10px;
   cursor: pointer;
+
   &:active {
     color: #ffc0cb;
   }

@@ -96,7 +96,7 @@ const FileList = styled.div`
   margin: 0 50px 0 50px;
 `;
 
-const FileIcon = styled.img`
+const FileIcon = styled.svg`
   width: 35px;
   height: 35px;
   margin: 5px;

@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 export default function Sidebar() {
   const array = [1, 2, 3, 4, 5];
+
   return (
     <Wrapper>
       {array.map((element) => {

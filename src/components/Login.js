@@ -44,7 +44,7 @@ const SecondLineTitle = styled.div`
   font-size: 400%;
 `;
 
-const MainImage = styled.img`
+const MainImage = styled.svg`
   position: absolute;
   left: 5%;
   display: flex;
