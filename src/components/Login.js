@@ -59,10 +59,10 @@ const LoginButton = styled.div`
   padding: 3px 20px;
   border: 1px solid black;
   background: none;
-
+  font-size: 200%;
   cursor: pointer;
+
   &:active {
     color: #ffc0cb;
   }
-  font-size: 200%;
 `;
