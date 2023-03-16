@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+
 import documentIcon from "../assets/documentIcon.svg";
 
 export default function OpenPdf() {
@@ -24,7 +25,7 @@ export default function OpenPdf() {
         <FileGroup>
           <FileList>
             <FileIcon src={documentIcon} alt="userProfile" />
-            <FileTitle>asdgkjsdhflkgjshldkjfhglskdjfh</FileTitle>
+            <FileTitle>Example File Name</FileTitle>
           </FileList>
           <FileDate>2023.03.14</FileDate>
         </FileGroup>
@@ -34,36 +35,48 @@ export default function OpenPdf() {
 }
 
 const Wrapper = styled.div`
-  margin: auto;
-  height: 100vh;
-  font-size: 15px;
   display: flex;
   flex-direction: column;
-  background-color: red;
   justify-content: center;
   align-items: center;
+  height: 90vh;
+  margin: auto;
+  font-size: 15px;
 `;
 
 const LocalFileWrapper = styled.div`
+  justify-content: space-between;
   width: 700px;
   height: 230px;
-  border: 1px solid black;
-  background-color: #f9f5f2;
   padding: 20px;
-  justify-content: space-between;
+  border: 1px solid black;
+  border-bottom-style: none;
+  background-color: #f9f5f2;
+`;
+
+const Title = styled.div`
+  font-size: 17px;
+  font-weight: bold;
+  margin: 5px;
+`;
+
+const File = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 116px;
+  height: 168px;
+  margin: 20px;
+  border: 1px dotted black;
+  background-color: white;
 `;
 
 const DbFileWrapper = styled.div`
   width: 700px;
   height: 230px;
-  border: 1px solid black;
-  background-color: skyblue;
-  /* display: flex;
-  justify-content: space-around; */
   padding: 20px;
+  border: 1px solid black;
 `;
-
-const Title = styled.div``;
 
 const TitleGroup = styled.div`
   display: flex;
@@ -76,37 +89,29 @@ const FileGroup = styled.div`
 `;
 
 const FileList = styled.div`
-  width: 100%;
-  margin: 0 50px 0 50px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  background-color: green;
+  width: 100%;
+  margin: 0 50px 0 50px;
 `;
 
 const FileIcon = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 35px;
+  height: 35px;
+  margin: 5px;
 `;
 
-const FileTitle = styled.div``;
+const FileTitle = styled.div`
+  font-size: 15px;
+`;
 
 const FileDate = styled.div`
-  margin: 0 50px 0 50px;
-  background-color: white;
-  align-items: center;
   display: flex;
   justify-content: center;
-  text-align: center;
+  align-items: center;
   width: 100%;
-`;
-
-const File = styled.div`
-  width: 116px;
-  height: 168px;
-  border: 1px dotted black;
-  background-color: yellow;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin: 0 50px 0 50px;
+  font-size: 15px;
+  text-align: center;
 `;

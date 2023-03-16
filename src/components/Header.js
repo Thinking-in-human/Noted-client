@@ -19,18 +19,22 @@ export default function Header() {
 
 const Wrapper = styled.div`
   height: 40px;
-  padding: 10px;
+  padding: 10px 15px;
   font-size: 25px;
   font-weight: bold;
   display: flex;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   background-color: #fcfaf7;
   justify-content: space-between;
   align-items: center;
 `;
 
-const Logo = styled.div``;
+const Logo = styled.div`
+  font-size: 30px;
+`;
 
 const NavWrapper = styled.div`
+  width: 300px;
   display: flex;
   justify-content: space-between;
 `;

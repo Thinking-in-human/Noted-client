@@ -11,33 +11,34 @@ export default function Error() {
 }
 
 const Wrapper = styled.div`
-  height: 100vh;
-  padding: 10px;
-  font-size: 80px;
   display: flex;
   flex-direction: column;
-  background-color: skyblue;
   justify-content: center;
   align-items: center;
+  height: 85vh;
+  padding: 10px;
   margin: auto;
+  font-size: 80px;
 `;
 
 const ErrorCode = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 700px;
   height: 80px;
+  padding: 10px;
+  margin: 10px;
   border-bottom: 5px double black;
+`;
+
+const ErrorMessage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: pink;
-`;
-const ErrorMessage = styled.div`
-  margin: 30px;
   width: 700px;
   height: 350px;
+  margin: 30px;
   border: 1px solid black;
   background-color: #f9f5f2;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 `;

@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import Sidebar from "./Sidebar";
-import Document from "./Document";
+
 import LoadingImg from "../assets/LoadingImg.svg";
 
 export default function Loading() {
@@ -14,14 +13,12 @@ export default function Loading() {
 }
 
 const Wrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
   display: flex;
-  background-color: skyblue;
   flex-direction: column;
-
   justify-content: center;
   align-items: center;
+  width: 100vw;
+  height: 90vh;
 `;
 
 const LoadingImage = styled.img`

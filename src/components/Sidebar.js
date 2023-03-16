@@ -2,91 +2,43 @@ import React from "react";
 import styled from "styled-components";
 
 export default function Sidebar() {
+  const array = [1, 2, 3, 4, 5];
   return (
     <Wrapper>
-      <PageGroup>
-        <PageNumber>1</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
-      <PageGroup>
-        <PageNumber>2</PageNumber>
-        <File>+</File>
-      </PageGroup>
+      {array.map((element) => {
+        return (
+          <PageGroup key={element}>
+            <PageNumber> {element} </PageNumber>
+            <File>+</File>
+          </PageGroup>
+        );
+      })}
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
-  width: 200px;
-  /* height: 100vh; */
-  background-color: red;
+  width: 250px;
+  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  background-color: #f9f5f2;
 `;
 
 const File = styled.div`
-  width: 116px;
-  height: 168px;
-  border: 1px dotted black;
-  background-color: yellow;
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 116px;
+  height: 168px;
+  border: 1px dotted black;
+  background-color: white;
 `;
 
 const PageNumber = styled.div``;
 
 const PageGroup = styled.div`
   display: flex;
-  margin: 10px;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  background-color: blue;
+  margin: 30px;
 `;
