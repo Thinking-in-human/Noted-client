@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 
-export default function PostIt() {
+export default function PostItStatusTool() {
   const fontSizeArr = [];
 
   for (let i = 1; i <= 100; i += 1) {

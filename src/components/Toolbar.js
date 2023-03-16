@@ -4,7 +4,7 @@ import styled from "styled-components";
 import PenStatusTool from "./PenStatusTool";
 import EraserStatusTool from "./EraserStatusTool";
 import HightLightStatusTool from "./HightLightStatusTool";
-import PostIt from "./PostIt";
+import PostItStatusTool from "./PostItStatusTool";
 import {
   pen1Icon,
   pen2Icon,
@@ -27,7 +27,7 @@ export default function Toolbar() {
   } else if (mode === "hightlight") {
     editorTool = <HightLightStatusTool />;
   } else if (mode === "postIt") {
-    editorTool = <PostIt />;
+    editorTool = <PostItStatusTool />;
   }
 
   return (
