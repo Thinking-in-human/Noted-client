@@ -9,7 +9,7 @@ export default function Sidebar() {
       {array.map((element) => {
         return (
           <PageGroup key={element}>
-            <PageNumber> {element} </PageNumber>
+            <div> {element} </div>
             <File>+</File>
           </PageGroup>
         );
@@ -33,8 +33,6 @@ const File = styled.div`
   border: 1px dotted black;
   background-color: white;
 `;
-
-const PageNumber = styled.div``;
 
 const PageGroup = styled.div`
   display: flex;
