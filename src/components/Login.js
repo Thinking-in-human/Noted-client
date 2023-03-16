@@ -1,16 +1,22 @@
 import React from "react";
 import styled from "styled-components";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
+import { firebaseAuth } from "../app/firebaseAuth";
 import MainImg from "../assets/MainImg.svg";
 
 export default function Login() {
+  const signInWithGoogle = () => {
+    const googleProvider = new GoogleAuthProvider();
+    signInWithPopup(firebaseAuth, googleProvider);
+  };
   return (
     <Wrapper>
       <BackgoundColorPage />
       <MainImage src={MainImg} alt="userProfile" />
       <FirstLineTitle>Find your creativity by</FirstLineTitle>
       <SecondLineTitle>pdf editor, Noted</SecondLineTitle>
-      <LoginButton>Login →</LoginButton>
+      <LoginButton onClick={signInWithGoogle}>Login →</LoginButton>
     </Wrapper>
   );
 }
@@ -44,7 +50,7 @@ const SecondLineTitle = styled.div`
   font-size: 400%;
 `;
 
-const MainImage = styled.svg`
+const MainImage = styled.img`
   position: absolute;
   left: 5%;
   display: flex;

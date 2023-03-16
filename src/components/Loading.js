@@ -21,4 +21,4 @@ const Wrapper = styled.div`
   height: 90vh;
 `;
 
-const LoadingImage = styled.svg``;
+const LoadingImage = styled.img``;

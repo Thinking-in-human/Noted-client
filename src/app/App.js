@@ -12,12 +12,12 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      {/* <Login /> */}
-      <Header />
+      <Login />
+      {/* <Header /> */}
       {/* <OpenPdf /> */}
       {/* <Error /> */}
       {/* <Editor /> */}
-      <Loading />
+      {/* <Loading /> */}
     </>
   );
 }
