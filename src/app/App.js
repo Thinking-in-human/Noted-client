@@ -1,5 +1,4 @@
 import React from "react";
-import Toolbar from "../components/Toolbar";
 
 function App() {
   return (
@@ -7,7 +6,6 @@ function App() {
       <header>
         <p>hello world!</p>
       </header>
-      <Toolbar />
     </div>
   );
 }
