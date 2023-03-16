@@ -26,7 +26,7 @@ export default function Toolbar() {
     editorTool = <EraserStatusTool />;
   } else if (mode === "hightlight") {
     editorTool = <HightLightStatusTool />;
-  } else if (mode === "postit") {
+  } else if (mode === "postIt") {
     editorTool = <PostIt />;
   }
 
