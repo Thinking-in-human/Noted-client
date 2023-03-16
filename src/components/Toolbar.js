@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import pen2Icon from "../assets/icon/pen2.png";
-import eraser1Icon from "../assets/icon/eraser1.png";
-import marker1Icon from "../assets/icon/marker1.png";
-import post1Icon from "../assets/icon/post1.png";
-import pen1Icon from "../assets/icon/pen1.png";
-import eraser2Icon from "../assets/icon/eraser2.png";
-import marker2Icon from "../assets/icon/marker2.png";
-import post2Icon from "../assets/icon/post2.png";
+
 import PenStatusTool from "./PenStatusTool";
 import EraserStatusTool from "./EraserStatusTool";
 import HightLightStatusTool from "./HightLightStatusTool";
 import PostIt from "./PostIt";
+import {
+  pen1Icon,
+  pen2Icon,
+  eraser1Icon,
+  eraser2Icon,
+  marker1Icon,
+  marker2Icon,
+  post1Icon,
+  post2Icon,
+} from "../assets/editorIcon";
 
 export default function Toolbar() {
-  const [mode, setMode] = useState("postit");
+  const [mode, setMode] = useState("pen");
   let editorTool = null;
 
   if (mode === "pen") {
@@ -30,10 +33,10 @@ export default function Toolbar() {
   return (
     <EditorTool>
       <EditorToolField>
-        <Icon type="image" src={pen2Icon} alt="penIcon" />
-        <Icon type="image" src={eraser1Icon} alt="eraserIcon" />
-        <Icon type="image" src={marker1Icon} alt="markerIcon" />
-        <Icon type="image" src={post1Icon} alt="posetItIcon" />
+        <Icon src={pen2Icon} alt="penIcon" />
+        <Icon src={eraser1Icon} alt="eraserIcon" />
+        <Icon src={marker1Icon} alt="markerIcon" />
+        <Icon src={post1Icon} alt="posetItIcon" />
       </EditorToolField>
       {editorTool}
     </EditorTool>
@@ -49,16 +52,17 @@ const EditorTool = styled.div`
 
 const EditorToolField = styled.div`
   display: flex;
-  width: 50%;
-  border: 1px solid black;
   align-items: center;
   justify-content: center;
+  width: 50%;
+  border: 1px solid black;
 `;
 
-const Icon = styled.input`
+const Icon = styled.img`
   width: 25px;
   height: 25px;
   margin: 0 10px;
+  padding: 1px;
   border-radius: 10%;
 
   &:hover {

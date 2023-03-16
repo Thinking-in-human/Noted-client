@@ -1,11 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBold,
-  faItalic,
-  faUnderline,
-} from "@fortawesome/free-solid-svg-icons";
+
+import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 
 export default function PostIt() {
   const fontSizeArr = [];
@@ -30,57 +26,62 @@ export default function PostIt() {
           return <option>{size}</option>;
         })}
       </select>
-      <Icon>
-        <FontAwesomeIcon icon={faBold} className="bold" />
-      </Icon>
-      <Icon>
-        <FontAwesomeIcon icon={faItalic} className="italic" />
-      </Icon>
-      <Icon>
-        <FontAwesomeIcon icon={faUnderline} className="underline" />
-      </Icon>
-      <Color>
-        <input type="color" value="#000000" />
-        <input type="color" value="#ff0000" />
-        <input type="color" value="#0000FF" />
-        <input type="color" value="#808080" />
-      </Color>
+      <FormatIcon>
+        <Icon src={boldIcon} alt="boldIcon" />
+        <Icon src={italicIcon} alt="italicIcon" />
+        <Icon src={underlineIcon} alt="underlineIcon" />
+      </FormatIcon>
+      <FormatColor>
+        <Color type="color" value="#000000" />
+        <Color type="color" value="#ff0000" />
+        <Color type="color" value="#0000FF" />
+        <Color type="color" value="#808080" />
+      </FormatColor>
     </ToolStatusField>
   );
 }
 
 const ToolStatusField = styled.div`
   display: flex;
-  width: 50%;
-  border: 1px solid black;
   align-items: center;
   justify-content: space-around;
+  width: 50%;
+  border: 1px solid black;
 `;
 
-const Icon = styled.span`
-  width: 25px;
-  height: 25px;
-  text-align: center;
+const FormatIcon = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const Icon = styled.img`
+  width: 15px;
+  height: 15px;
+  padding: 6px;
+  border-radius: 10%;
 
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
 `;
 
-const Color = styled.div`
-  input[type="color"] {
-    width: 30px;
-    height: 30px;
-    border: none;
-    border-radius: 50%;
-    background-color: transparent;
-    cursor: pointer;
+const FormatColor = styled.div`
+  display: flex;
+  align-items: center;
+`;
 
-    &::-webkit-color-swatch {
-      border-radius: 50%;
-    }
-    &:hover {
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-    }
+const Color = styled.input`
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+
+  &::-webkit-color-swatch {
+    border-radius: 50%;
+  }
+  &:hover {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
 `;
