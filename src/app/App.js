@@ -1,13 +1,34 @@
 import React from "react";
+import { createGlobalStyle } from "styled-components";
 
-function App() {
+import Login from "../components/Login";
+import Header from "../components/Header";
+import OpenPdf from "../components/OpenPdf";
+import Editor from "../components/Editor";
+import Loading from "../components/Loading";
+import Error from "../components/Error";
+
+export default function App() {
   return (
-    <div>
-      <header>
-        <p>hello world!</p>
-      </header>
-    </div>
+    <>
+      <GlobalStyle />
+      {/* <Login /> */}
+      <Header />
+      {/* <OpenPdf /> */}
+      {/* <Error /> */}
+      {/* <Editor /> */}
+      <Loading />
+    </>
   );
 }
 
-export default App;
+const GlobalStyle = createGlobalStyle`
+@font-face {
+  font-family: "DMSerifText-Regular";
+  src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
+}
+  body {
+    font-family: "DMSerifText-Regular";
+    margin: 0;
+  }
+`;
