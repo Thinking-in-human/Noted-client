@@ -35,10 +35,7 @@ const useEditorStore = create((set) => ({
   },
   currentPostIt: null,
   madePostIts: {},
-  error: {
-    status: "",
-    message: "",
-  },
+  error: null,
 }));
 
 export default useEditorStore;
