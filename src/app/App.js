@@ -7,14 +7,22 @@ import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
+import useEditorStore from "../store/editorStore";
 
 export default function App() {
+  const { loginUser } = useEditorStore();
+
   return (
     <>
       <GlobalStyle />
-      <Login />
-      {/* <Header /> */}
-      {/* <OpenPdf /> */}
+      {loginUser.avatarImgURL === "" ? (
+        <Login />
+      ) : (
+        <>
+          <Header />
+          <OpenPdf />
+        </>
+      )}
       {/* <Error /> */}
       {/* <Editor /> */}
       {/* <Loading /> */}

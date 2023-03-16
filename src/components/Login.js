@@ -5,38 +5,32 @@ import axios from "axios";
 
 import { firebaseAuth } from "../app/firebaseAuth";
 import MainImg from "../assets/MainImg.svg";
+import useEditorStore from "../store/editorStore";
 
 export default function Login() {
+  const { loginUser } = useEditorStore();
   const googleProvider = new GoogleAuthProvider();
+
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
-      // const credential = GoogleAuthProvider.credentialFromResult(result);
-      // const token = credential.accessToken;
       const { user } = result;
-
-      console.log("result", result);
-      // console.log("credential", credential);
-      // console.log("token", token);
-      console.log("user", user);
-
       const customedUserObject = {
         email: user.email,
         avatarImgURL: user.photoURL,
       };
 
-      await axios("http://localhost:4000/auth/sign-in", {
+      const response = await axios("http://localhost:4000/auth/sign-in", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         responseType: "json",
         data: customedUserObject,
       });
-    } catch (error) {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // const email = error.customData.email;
-      // const credential = GoogleAuthProvider.credentialFromError(error);
 
+      if (response) {
+        loginUser.avatarImgURL = customedUserObject.avatarImgURL;
+      }
+    } catch (error) {
       console.log(error);
     }
   };
