@@ -15,7 +15,7 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      {loginUser.avatarImgURL === "" ? (
+      {!loginUser.avatarImgURL ? (
         <Login />
       ) : (
         <>
