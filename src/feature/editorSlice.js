@@ -1,10 +1,6 @@
-import { create } from "zustand";
+import { createSlice } from "@reduxjs/toolkit";
 
-const useEditorStore = create((set) => ({
-  loginUser: {
-    avatarImgURL: "",
-    documents: [],
-  },
+const initialState = {
   selectedPdf: {
     _id: "",
   },
@@ -35,7 +31,12 @@ const useEditorStore = create((set) => ({
   },
   currentPostIt: null,
   madePostIts: {},
-  error: null,
-}));
+};
 
-export default useEditorStore;
+export const editorSlice = createSlice({
+  name: "editor",
+  initialState,
+  reducers: {},
+});
+
+export default editorSlice.reducer;

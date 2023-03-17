@@ -1,25 +1,29 @@
 import React from "react";
 import { createGlobalStyle } from "styled-components";
+import { useSelector } from "react-redux";
 
 import Login from "../components/Login";
 import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
 import Loading from "../components/Loading";
-import useEditorStore from "../store/editorStore";
 import FallbackUI from "../components/FallbackUI";
+import { selectEditingUserImgUrl } from "../feature/userSlice";
 
 export default function App() {
-  const { loginUser } = useEditorStore();
-
+  const loginUserImgUrl = useSelector(selectEditingUserImgUrl);
   return (
     <>
       <GlobalStyle />
-      <>
-        <Header />
-        <OpenPdf />
-      </>
-      {/* <FallbackUI /> */}
+      {!loginUserImgUrl ? (
+        <Login />
+      ) : (
+        <>
+          <Header />
+          <OpenPdf />
+        </>
+      )}
+      {/* <Error /> */}
       {/* <Editor /> */}
       {/* <Loading /> */}
     </>
