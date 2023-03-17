@@ -12,6 +12,7 @@ import { selectEditingUserImgUrl } from "../feature/userSlice";
 
 export default function App() {
   const loginUserImgUrl = useSelector(selectEditingUserImgUrl);
+
   return (
     <>
       <GlobalStyle />
@@ -23,9 +24,9 @@ export default function App() {
           <OpenPdf />
         </>
       )}
-      {/* <Error /> */}
-      {/* <Editor /> */}
-      {/* <Loading /> */}
+      <Error />
+      <Editor />
+      <Loading />
     </>
   );
 }
