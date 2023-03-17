@@ -2,19 +2,21 @@ import React from "react";
 import styled from "styled-components";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
 import { firebaseAuth } from "../app/firebaseAuth";
 import MainImg from "../assets/MainImg.svg";
-import useEditorStore from "../store/editorStore";
+import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Login() {
-  const { loginUser } = useEditorStore();
+  const dispatch = useDispatch();
   const googleProvider = new GoogleAuthProvider();
 
   const signInWithGoogle = async () => {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
       const { user } = result;
+
       const customedUserObject = {
         email: user.email,
         avatarImgURL: user.photoURL,
@@ -28,10 +30,10 @@ export default function Login() {
       });
 
       if (response) {
-        loginUser.avatarImgURL = customedUserObject.avatarImgURL;
+        dispatch(changeEditingUser(user.photoURL));
       }
     } catch (error) {
-      console.error(error);
+      dispatch(setErrorInfo(error));
     }
   };
 
