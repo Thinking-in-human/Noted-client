@@ -6,7 +6,7 @@ import LoadingImg from "../assets/LoadingImg.svg";
 export default function Loading() {
   return (
     <Wrapper>
-      <LoadingImage src={LoadingImg} alt="userProfile" />
+      <img src={LoadingImg} alt="userProfile" />
       Loading...
     </Wrapper>
   );
@@ -20,5 +20,3 @@ const Wrapper = styled.div`
   width: 100vw;
   height: 90vh;
 `;
-
-const LoadingImage = styled.svg``;

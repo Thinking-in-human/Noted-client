@@ -1,16 +1,47 @@
 import React from "react";
 import styled from "styled-components";
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import axios from "axios";
 
+import { firebaseAuth } from "../app/firebaseAuth";
 import MainImg from "../assets/MainImg.svg";
+import useEditorStore from "../store/editorStore";
 
 export default function Login() {
+  const { loginUser } = useEditorStore();
+  const googleProvider = new GoogleAuthProvider();
+
+  const signInWithGoogle = async () => {
+    try {
+      const result = await signInWithPopup(firebaseAuth, googleProvider);
+      const { user } = result;
+      const customedUserObject = {
+        email: user.email,
+        avatarImgURL: user.photoURL,
+      };
+
+      const response = await axios("http://localhost:4000/auth/sign-in", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        responseType: "json",
+        data: customedUserObject,
+      });
+
+      if (response) {
+        loginUser.avatarImgURL = customedUserObject.avatarImgURL;
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <Wrapper>
       <BackgoundColorPage />
       <MainImage src={MainImg} alt="userProfile" />
       <FirstLineTitle>Find your creativity by</FirstLineTitle>
       <SecondLineTitle>pdf editor, Noted</SecondLineTitle>
-      <LoginButton>Login →</LoginButton>
+      <LoginButton onClick={signInWithGoogle}>Login →</LoginButton>
     </Wrapper>
   );
 }
@@ -44,7 +75,7 @@ const SecondLineTitle = styled.div`
   font-size: 400%;
 `;
 
-const MainImage = styled.svg`
+const MainImage = styled.img`
   position: absolute;
   left: 5%;
   display: flex;
