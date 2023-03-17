@@ -1,12 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 
-import LoadingImg from "../assets/LoadingImg.svg";
+import tableImage from "../assets/tableImage.png";
 
 export default function Loading() {
   return (
     <Wrapper>
-      <img src={LoadingImg} alt="userProfile" />
+      <img src={tableImage} alt="Loading Page" />
       Loading...
     </Wrapper>
   );

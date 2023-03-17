@@ -6,8 +6,8 @@ import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
 import Loading from "../components/Loading";
-import Error from "../components/Error";
 import useEditorStore from "../store/editorStore";
+import FallbackUI from "../components/FallbackUI";
 
 export default function App() {
   const { loginUser } = useEditorStore();
@@ -15,15 +15,11 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      {!loginUser.avatarImgURL ? (
-        <Login />
-      ) : (
-        <>
-          <Header />
-          <OpenPdf />
-        </>
-      )}
-      {/* <Error /> */}
+      <>
+        <Header />
+        <OpenPdf />
+      </>
+      {/* <FallbackUI /> */}
       {/* <Editor /> */}
       {/* <Loading /> */}
     </>
@@ -31,10 +27,10 @@ export default function App() {
 }
 
 const GlobalStyle = createGlobalStyle`
-@font-face {
-  font-family: "DMSerifText-Regular";
-  src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
-}
+  @font-face {
+    font-family: "DMSerifText-Regular";
+    src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
+  }
   body {
     font-family: "DMSerifText-Regular";
     margin: 0;

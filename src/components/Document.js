@@ -4,7 +4,7 @@ import styled from "styled-components";
 export default function Document() {
   return (
     <Background>
-      <DocumentPage type="text"></DocumentPage>
+      <DocumentPage type="text" />
     </Background>
   );
 }

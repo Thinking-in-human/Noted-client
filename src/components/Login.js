@@ -4,7 +4,7 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 
 import { firebaseAuth } from "../app/firebaseAuth";
-import MainImg from "../assets/MainImg.svg";
+import pdfImage from "../assets/pdfImage.png";
 import useEditorStore from "../store/editorStore";
 
 export default function Login() {
@@ -38,7 +38,7 @@ export default function Login() {
   return (
     <Wrapper>
       <BackgoundColorPage />
-      <MainImage src={MainImg} alt="userProfile" />
+      <MainImage src={pdfImage} alt="Main Page" />
       <FirstLineTitle>Find your creativity by</FirstLineTitle>
       <SecondLineTitle>pdf editor, Noted</SecondLineTitle>
       <LoginButton onClick={signInWithGoogle}>Login →</LoginButton>

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import userPic from "../assets/userPic.jpg";
+import userMockImage from "../assets/userMockImage.png";
 
 export default function Header() {
   return (
@@ -11,7 +11,10 @@ export default function Header() {
         <NavButton>SAVE</NavButton>
         <NavButton>OPEN PDF</NavButton>
         <NavButton>LOGOUT →</NavButton>
-        <UserProfile src={userPic} alt="userProfile"></UserProfile>
+        <UserProfile
+          src={userMockImage}
+          alt="Login User's Google Profile"
+        ></UserProfile>
       </NavWrapper>
     </Wrapper>
   );

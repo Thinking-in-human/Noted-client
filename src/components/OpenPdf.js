@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 
-import documentIcon from "../assets/documentIcon.svg";
+import documentIcon from "../assets/document_icon.svg";
 
 export default function OpenPdf() {
+  const pdfInput = useRef();
+  const handleClickPdfUpload = () => {
+    pdfInput.current.click();
+  };
   return (
     <Wrapper>
       <LocalFileWrapper>
         <Title>START WITH NEW DOCUMENT</Title>
-        <File>+</File>
+        <PdfInput type="file" accept=".pdf" ref={pdfInput} />
+        <UploadButton onClick={handleClickPdfUpload}>+</UploadButton>
       </LocalFileWrapper>
       <DbFileWrapper>
         <TitleGroup>
@@ -17,14 +22,14 @@ export default function OpenPdf() {
         </TitleGroup>
         <FileGroup>
           <FileList>
-            <FileIcon src={documentIcon} alt="userProfile" />
+            <FileIcon src={documentIcon} alt="File icon" />
             <FileTitle>Testing</FileTitle>
           </FileList>
           <FileDate>2023.03.14</FileDate>
         </FileGroup>
         <FileGroup>
           <FileList>
-            <FileIcon src={documentIcon} alt="userProfile" />
+            <FileIcon src={documentIcon} alt="File icon" />
             <FileTitle>Example File Name</FileTitle>
           </FileList>
           <FileDate>2023.03.14</FileDate>
@@ -33,6 +38,9 @@ export default function OpenPdf() {
     </Wrapper>
   );
 }
+const PdfInput = styled.input`
+  display: none;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -60,7 +68,7 @@ const Title = styled.div`
   margin: 5px;
 `;
 
-const File = styled.div`
+const UploadButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -69,6 +77,7 @@ const File = styled.div`
   margin: 20px;
   border: 1px dotted black;
   background-color: white;
+  font-size: 20px;
 `;
 
 const DbFileWrapper = styled.div`
