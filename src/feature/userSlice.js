@@ -25,6 +25,7 @@ export const userSlice = createSlice({
 export const { changeEditingUser, setUserDocuments, setErrorInfo } =
   userSlice.actions;
 
+export const loginUserId = (state) => state.user.loginUserId;
 export const selectEditingUserImgUrl = (state) => state.user.loginUserImgUrl;
 export const selectDocuments = (state) => state.user.userDocuments;
 export const selectError = (state) => state.user.errorInfo;

@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 
 import documentIcon from "../assets/documentIcon.svg";
+import {
+  loginUserId,
+  setUserDocuments,
+  setErrorInfo,
+} from "../feature/userSlice";
 
 export default function OpenPdf() {
+  const userId = useSelector(loginUserId);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getAllDocumentsOfUser = async () => {
+      try {
+        const response = await axios(
+          `http://localhost:4000/users/${userId}/documents`,
+          {
+            method: "GET",
+            withCredentials: true,
+            responseType: "json",
+          },
+        );
+
+        if (response) {
+          dispatch(setUserDocuments(response));
+        }
+      } catch (error) {
+        dispatch(setErrorInfo(error));
+      }
+    };
+
+    getAllDocumentsOfUser();
+  }, [dispatch, userId]);
+
   return (
     <Wrapper>
       <LocalFileWrapper>
