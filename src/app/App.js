@@ -1,6 +1,7 @@
 import React from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
+import { Route, Routes, Navigate } from "react-router-dom";
 
 import Login from "../components/Login";
 import Header from "../components/Header";
@@ -23,7 +24,13 @@ export default function App() {
           <OpenPdf />
         </>
       )}
-      {/* <Error /> */}
+
+      <Routes>
+        {/* <Route path="/friends" element={<FriendList />} />
+        <Route path="/chats" element={<ChattingList />} />
+        <Route path="/" element={<Navigate replace to="/friends" />} /> */}
+      </Routes>
+      {/* <FallbackUI /> */}
       {/* <Editor /> */}
       {/* <Loading /> */}
     </>

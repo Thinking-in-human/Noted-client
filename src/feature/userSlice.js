@@ -2,7 +2,14 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   loginUserImgUrl: null,
-  userDocuments: [],
+  userDocuments: [
+    {
+      _id: "641342b3983628e60d765d95",
+      title: "sample",
+      lastModifiedDate: "2023-03-16T16:24:19.930Z",
+      storageUrl: "documents/sample.pdf",
+    },
+  ],
   errorInfo: null,
 };
 

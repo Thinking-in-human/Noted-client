@@ -1,13 +1,16 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-
+import { useSelector } from "react-redux";
 import documentIcon from "../assets/document_icon.svg";
 
 export default function OpenPdf() {
+  const userDocuments = useSelector((state) => state.user.userDocuments);
+  console.log(userDocuments);
   const pdfInput = useRef();
   const handleClickPdfUpload = () => {
     pdfInput.current.click();
   };
+
   return (
     <Wrapper>
       <LocalFileWrapper>
@@ -20,20 +23,20 @@ export default function OpenPdf() {
           <Title>MY DOCUMENT</Title>
           <Title>LAST MODIFIED DATE</Title>
         </TitleGroup>
-        <FileGroup>
-          <FileList>
-            <FileIcon src={documentIcon} alt="File icon" />
-            <FileTitle>Testing</FileTitle>
-          </FileList>
-          <FileDate>2023.03.14</FileDate>
-        </FileGroup>
-        <FileGroup>
-          <FileList>
-            <FileIcon src={documentIcon} alt="File icon" />
-            <FileTitle>Example File Name</FileTitle>
-          </FileList>
-          <FileDate>2023.03.14</FileDate>
-        </FileGroup>
+        {userDocuments.map((userDocument) => {
+          console.log(userDocument);
+          const { title, lastModifiedDate, storageUrl } = userDocument;
+
+          return (
+            <FileGroup key={storageUrl}>
+              <FileList>
+                <FileIcon src={documentIcon} alt="File icon" />
+                <FileTitle>{title}</FileTitle>
+              </FileList>
+              <FileDate>{lastModifiedDate.split("T", 1)}</FileDate>
+            </FileGroup>
+          );
+        })}
       </DbFileWrapper>
     </Wrapper>
   );

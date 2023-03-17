@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-
-import userMockImage from "../assets/userMockImage.png";
+import { useSelector } from "react-redux";
 
 export default function Header() {
+  const loginUserImgUrl = useSelector((state) => state.user.loginUserImgUrl);
+
   return (
     <Wrapper>
       <Logo>Noted</Logo>
@@ -12,7 +13,7 @@ export default function Header() {
         <NavButton>OPEN PDF</NavButton>
         <NavButton>LOGOUT →</NavButton>
         <UserProfile
-          src={userMockImage}
+          src={loginUserImgUrl}
           alt="Login User's Google Profile"
         ></UserProfile>
       </NavWrapper>
