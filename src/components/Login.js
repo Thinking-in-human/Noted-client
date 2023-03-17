@@ -31,7 +31,7 @@ export default function Login() {
         loginUser.avatarImgURL = customedUserObject.avatarImgURL;
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
