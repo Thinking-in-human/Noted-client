@@ -5,13 +5,13 @@ import { useSelector, useDispatch } from "react-redux";
 
 import documentIcon from "../assets/documentIcon.svg";
 import {
-  loginUserId,
+  selectUserId,
   setUserDocuments,
   setErrorInfo,
 } from "../feature/userSlice";
 
 export default function OpenPdf() {
-  const userId = useSelector(loginUserId);
+  const userId = useSelector(selectUserId);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,10 +27,10 @@ export default function OpenPdf() {
         );
 
         if (response) {
-          dispatch(setUserDocuments(response));
+          dispatch(setUserDocuments(response.data));
         }
       } catch (error) {
-        dispatch(setErrorInfo(error));
+        dispatch(setErrorInfo(error.response.data));
       }
     };
 

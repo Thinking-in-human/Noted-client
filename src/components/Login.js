@@ -4,8 +4,8 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 
-import { firebaseAuth } from "../app/firebaseAuth";
 import MainImg from "../assets/MainImg.svg";
+import { firebaseAuth } from "../app/firebaseAuth";
 import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Login() {
@@ -16,7 +16,6 @@ export default function Login() {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
       const { user } = result;
-
       const customedUserObject = {
         email: user.email,
         avatarImgURL: user.photoURL,
@@ -30,10 +29,15 @@ export default function Login() {
       });
 
       if (response) {
-        dispatch(changeEditingUser(user.photoURL));
+        dispatch(
+          changeEditingUser({
+            userImgUrl: user.photoURL,
+            userId: response.data.userId,
+          }),
+        );
       }
     } catch (error) {
-      dispatch(setErrorInfo(error));
+      dispatch(setErrorInfo(error.response.data));
     }
   };
 

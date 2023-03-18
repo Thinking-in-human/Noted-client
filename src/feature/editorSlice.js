@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   selectedPdf: {
     _id: "",
+    pdf: "",
   },
   currentEditorTool: null,
   pencil: {

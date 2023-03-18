@@ -12,7 +12,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     changeEditingUser: (state, action) => {
-      state.loginUserImgUrl = action.payload;
+      const { userId, userImgUrl } = action.payload;
+
+      state.loginUserImgUrl = userImgUrl;
+      state.loginUserId = userId;
     },
     setUserDocuments: (state, action) => {
       state.userDocuments = action.payload;
@@ -26,8 +29,8 @@ export const userSlice = createSlice({
 export const { changeEditingUser, setUserDocuments, setErrorInfo } =
   userSlice.actions;
 
-export const loginUserId = (state) => state.user.loginUserId;
-export const selectEditingUserImgUrl = (state) => state.user.loginUserImgUrl;
+export const selectUserId = (state) => state.user.loginUserId;
+export const selectUserImgUrl = (state) => state.user.loginUserImgUrl;
 export const selectDocuments = (state) => state.user.userDocuments;
 export const selectError = (state) => state.user.errorInfo;
 

@@ -8,15 +8,15 @@ import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
-import { selectEditingUserImgUrl } from "../feature/userSlice";
+import { selectUserId } from "../feature/userSlice";
 
 export default function App() {
-  const loginUserImgUrl = useSelector(selectEditingUserImgUrl);
+  const loginUserId = useSelector(selectUserId);
 
   return (
     <>
       <GlobalStyle />
-      {!loginUserImgUrl ? (
+      {!loginUserId ? (
         <Login />
       ) : (
         <>
@@ -24,9 +24,6 @@ export default function App() {
           <OpenPdf />
         </>
       )}
-      <Error />
-      <Editor />
-      <Loading />
     </>
   );
 }
