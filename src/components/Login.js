@@ -2,13 +2,14 @@ import React from "react";
 import styled from "styled-components";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 
-import { firebaseAuth } from "../app/firebaseAuth";
 import MainImg from "../assets/MainImg.svg";
-import useEditorStore from "../store/editorStore";
+import { firebaseAuth } from "../app/firebaseAuth";
+import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Login() {
-  const { loginUser } = useEditorStore();
+  const dispatch = useDispatch();
   const googleProvider = new GoogleAuthProvider();
 
   const signInWithGoogle = async () => {
@@ -28,10 +29,15 @@ export default function Login() {
       });
 
       if (response) {
-        loginUser.avatarImgURL = customedUserObject.avatarImgURL;
+        dispatch(
+          changeEditingUser({
+            userImgUrl: user.photoURL,
+            userId: response.data.userId,
+          }),
+        );
       }
     } catch (error) {
-      console.error(error);
+      dispatch(setErrorInfo(error.response.data));
     }
   };
 

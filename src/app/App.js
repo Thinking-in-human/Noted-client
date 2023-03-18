@@ -1,5 +1,6 @@
 import React from "react";
 import { createGlobalStyle } from "styled-components";
+import { useSelector } from "react-redux";
 
 import Login from "../components/Login";
 import Header from "../components/Header";
@@ -7,15 +8,15 @@ import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
 import Loading from "../components/Loading";
 import Error from "../components/Error";
-import useEditorStore from "../store/editorStore";
+import { selectUserId } from "../feature/userSlice";
 
 export default function App() {
-  const { loginUser } = useEditorStore();
+  const loginUserId = useSelector(selectUserId);
 
   return (
     <>
       <GlobalStyle />
-      {!loginUser.avatarImgURL ? (
+      {!loginUserId ? (
         <Login />
       ) : (
         <>
@@ -23,9 +24,6 @@ export default function App() {
           <OpenPdf />
         </>
       )}
-      {/* <Error /> */}
-      {/* <Editor /> */}
-      {/* <Loading /> */}
     </>
   );
 }
