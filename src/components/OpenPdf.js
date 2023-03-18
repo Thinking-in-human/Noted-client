@@ -1,40 +1,76 @@
-import React, { useRef } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import pdfjs from "pdfjs-dist";
 import documentIcon from "../assets/document_icon.svg";
+import { selectDocuments } from "../feature/userSlice";
 
 export default function OpenPdf() {
-  const userDocuments = useSelector((state) => state.user.userDocuments);
-  console.log(userDocuments);
+  const navigate = useNavigate();
+  const [pdfUrl, setPdfUrl] = useState("");
+  // +버튼을 눌러서 PDF를 file list로 불러옴..
+  const userDocuments = useSelector(selectDocuments);
+
   const pdfInput = useRef();
   const handleClickPdfUpload = () => {
     pdfInput.current.click();
+  };
+
+  const handleChangeFile = async (event) => {
+    const file = event.target.files[0];
+
+    // 1. await create doc (title, file) to server
+    const data = new FormData();
+    data.append("file", file);
+    fetch(`/documents`, {
+      method: "POST",
+      body: data,
+    });
+
+    // 2. routing to editor page
+    // navigate(`/documents/${file.name}`);
   };
 
   return (
     <Wrapper>
       <LocalFileWrapper>
         <Title>START WITH NEW DOCUMENT</Title>
-        <PdfInput type="file" accept=".pdf" ref={pdfInput} />
+        <PdfInput
+          type="file"
+          accept=".pdf"
+          ref={pdfInput}
+          onChange={handleChangeFile}
+        />
         <UploadButton onClick={handleClickPdfUpload}>+</UploadButton>
       </LocalFileWrapper>
+      {pdfUrl && (
+        <object data={pdfUrl} type="application/pdf" width="100%" height="500">
+          {/* <p>
+            Your web browser have a PDF plugin. Instead you can{" "}
+            <a href={pdfUrl}>click here to download the PDF file.</a>
+          </p> */}
+        </object>
+      )}
       <DbFileWrapper>
         <TitleGroup>
           <Title>MY DOCUMENT</Title>
           <Title>LAST MODIFIED DATE</Title>
         </TitleGroup>
-        {userDocuments.map((userDocument) => {
-          console.log(userDocument);
-          const { title, lastModifiedDate, storageUrl } = userDocument;
+        {userDocuments.map((document) => {
+          // console.log(userDocument);
+          const { title, lastModifiedDate, storageUrl } = document;
 
           return (
-            <FileGroup key={storageUrl}>
-              <FileList>
-                <FileIcon src={documentIcon} alt="File icon" />
-                <FileTitle>{title}</FileTitle>
-              </FileList>
-              <FileDate>{lastModifiedDate.split("T", 1)}</FileDate>
-            </FileGroup>
+            <Link key={storageUrl} to={`/documents/${title}`}>
+              <FileGroup>
+                <FileHeader>
+                  <FileIcon src={documentIcon} alt="File icon" />
+                  <FileTitle>{title}</FileTitle>
+                </FileHeader>
+                <FileDate>{lastModifiedDate.split("T", 1)}</FileDate>
+              </FileGroup>
+            </Link>
           );
         })}
       </DbFileWrapper>
@@ -100,7 +136,7 @@ const FileGroup = styled.div`
   justify-content: space-around;
 `;
 
-const FileList = styled.div`
+const FileHeader = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;

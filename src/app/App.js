@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
-import { Route, Routes, Navigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import Login from "../components/Login";
 import Header from "../components/Header";
@@ -13,22 +13,24 @@ import { selectEditingUserImgUrl } from "../feature/userSlice";
 
 export default function App() {
   const loginUserImgUrl = useSelector(selectEditingUserImgUrl);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    // if (!loginUserImgUrl) {
+    //   navigate("/login");
+    // }
+  }, [navigate, loginUserImgUrl]);
+
   return (
     <>
       <GlobalStyle />
-      {!loginUserImgUrl ? (
-        <Login />
-      ) : (
-        <>
-          <Header />
-          <OpenPdf />
-        </>
-      )}
 
+      {pathname !== "/login" && <Header />}
       <Routes>
-        {/* <Route path="/friends" element={<FriendList />} />
-        <Route path="/chats" element={<ChattingList />} />
-        <Route path="/" element={<Navigate replace to="/friends" />} /> */}
+        <Route path="/" element={<OpenPdf />}></Route>
+        <Route path="/documents/:title" element={<Editor />}></Route>
+        <Route path="/login" element={<Login />}></Route>
       </Routes>
       {/* <FallbackUI /> */}
       {/* <Editor /> */}
