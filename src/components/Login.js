@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 import pdfImage from "../assets/pdfImage.png";
 import { firebaseAuth } from "../app/firebaseAuth";
 import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Login() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const googleProvider = new GoogleAuthProvider();
 
@@ -38,6 +40,8 @@ export default function Login() {
           }),
         );
       }
+
+      navigate("/");
     } catch (error) {
       dispatch(setErrorInfo(error.response.data));
     }

@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import pdfjs from "pdfjs-dist";
 import axios from "axios";
+
 import documentIcon from "../assets/document_icon.svg";
 import {
   selectUserId,
@@ -13,8 +13,7 @@ import {
 } from "../feature/userSlice";
 
 export default function OpenPdf() {
-  // const userId = useSelector(selectUserId);
-  const userId = "6411a6c3cb484f4eb7ec3ee5";
+  const userId = useSelector(selectUserId);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -28,7 +27,6 @@ export default function OpenPdf() {
             responseType: "json",
           },
         );
-        console.log(response);
         if (response) {
           dispatch(setUserDocuments(response.data.documents));
         }
@@ -42,8 +40,6 @@ export default function OpenPdf() {
 
   const navigate = useNavigate();
   const userDocuments = useSelector(selectDocuments);
-  console.log("userDocuments", userDocuments);
-
   const pdfInput = useRef();
 
   const handleClickPdfUpload = () => {
@@ -52,22 +48,8 @@ export default function OpenPdf() {
 
   const handleChangeFile = async (event) => {
     const file = event.target.files[0];
-
-    // 1. await create doc (title, file) to server
     const data = new FormData();
-    data.append("file", file); // <input name="file" value=file>
-    // const response = await fetch(`users/${userId}/documents`, {
-    //   method: "POST",
-    //   body: data,
-    // });
-
-    // const response = await axios(
-    //   `http://localhost:4000/users/${userId}/documents`,
-    //   {
-    //     method: "POST",
-    //     body: file,
-    //   },
-    // );
+    data.append("file", file);
 
     const response = await axios.post(`/users/${userId}/documents`, data, {
       headers: {
@@ -76,7 +58,6 @@ export default function OpenPdf() {
     });
     const documentId = response.data.documents;
 
-    // 2. routing to editor page
     navigate(`/documents/${documentId}`);
   };
 

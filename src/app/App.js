@@ -7,19 +7,16 @@ import Login from "../components/Login";
 import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
-import Loading from "../components/Loading";
-import FallbackUI from "../components/FallbackUI";
 import { selectUserId } from "../feature/userSlice";
 
 export default function App() {
   const loginUserId = useSelector(selectUserId);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  console.log(loginUserId);
   useEffect(() => {
-    // if (!loginUserId) {
-    //   navigate("/login");
-    // }
+    if (!loginUserId) {
+      navigate("/login");
+    }
   }, [navigate, loginUserId]);
 
   return (

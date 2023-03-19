@@ -1,14 +1,18 @@
-import React, { useState } from "react";
-
+import React from "react";
 import styled from "styled-components";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import userPicture from "../assets/userMockImage.png";
-import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
+import {
+  changeEditingUser,
+  setErrorInfo,
+  selectUserImgUrl,
+} from "../feature/userSlice";
 
 export default function Header() {
+  const userImage = useSelector(selectUserImgUrl);
+
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
@@ -41,7 +45,7 @@ export default function Header() {
         <NavButton>save</NavButton>
         <NavButton>open pdf</NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
-        <UserProfile src={userPicture} alt="userProfile"></UserProfile>
+        <UserProfile src={userImage} alt="userProfile"></UserProfile>
       </NavWrapper>
     </Wrapper>
   );

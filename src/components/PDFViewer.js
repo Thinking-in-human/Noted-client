@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from "react";
 import * as pdfjs from "pdfjs-dist";
 
+import Loading from "./Loading";
+
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 function PDFViewer({ url }) {
   const [pdfDocument, setPdfDocument] = useState(null);
-  console.log("PDF_viewer");
 
   useEffect(() => {
-    console.log("start");
     const loadingTask = pdfjs.getDocument(url);
     loadingTask.promise.then((pdf) => {
       setPdfDocument(pdf);
     });
-    console.log("end");
   }, [url]);
 
   if (!pdfDocument) {
-    return <div>Loading PDF...</div>;
+    return <Loading />;
   }
 
   const { numPages } = pdfDocument;
