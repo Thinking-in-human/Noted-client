@@ -1,18 +1,51 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import pdfjs from "pdfjs-dist";
+import axios from "axios";
 import documentIcon from "../assets/document_icon.svg";
-import { selectDocuments } from "../feature/userSlice";
+import {
+  selectUserId,
+  setUserDocuments,
+  selectDocuments,
+  setErrorInfo,
+} from "../feature/userSlice";
 
 export default function OpenPdf() {
+  // const userId = useSelector(selectUserId);
+  const userId = "6411a6c3cb484f4eb7ec3ee5";
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getAllDocumentsOfUser = async () => {
+      try {
+        const response = await axios(
+          `http://localhost:4000/users/${userId}/documents`,
+          {
+            method: "GET",
+            withCredentials: true,
+            responseType: "json",
+          },
+        );
+        console.log(response);
+        if (response) {
+          dispatch(setUserDocuments(response.data.documents));
+        }
+      } catch (error) {
+        dispatch(setErrorInfo(error.response.data));
+      }
+    };
+
+    getAllDocumentsOfUser();
+  }, []);
+
   const navigate = useNavigate();
-  const [pdfUrl, setPdfUrl] = useState("");
-  // +버튼을 눌러서 PDF를 file list로 불러옴..
   const userDocuments = useSelector(selectDocuments);
+  console.log("userDocuments", userDocuments);
 
   const pdfInput = useRef();
+
   const handleClickPdfUpload = () => {
     pdfInput.current.click();
   };
@@ -22,20 +55,35 @@ export default function OpenPdf() {
 
     // 1. await create doc (title, file) to server
     const data = new FormData();
-    data.append("file", file);
-    fetch(`/documents`, {
-      method: "POST",
-      body: data,
+    data.append("file", file); // <input name="file" value=file>
+    // const response = await fetch(`users/${userId}/documents`, {
+    //   method: "POST",
+    //   body: data,
+    // });
+
+    // const response = await axios(
+    //   `http://localhost:4000/users/${userId}/documents`,
+    //   {
+    //     method: "POST",
+    //     body: file,
+    //   },
+    // );
+
+    const response = await axios.post(`/users/${userId}/documents`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
+    const documentId = response.data.documents;
 
     // 2. routing to editor page
-    // navigate(`/documents/${file.name}`);
+    navigate(`/documents/${documentId}`);
   };
 
   return (
     <Wrapper>
       <LocalFileWrapper>
-        <Title>START WITH NEW DOCUMENT</Title>
+        <Title>start with new document</Title>
         <PdfInput
           type="file"
           accept=".pdf"
@@ -44,25 +92,16 @@ export default function OpenPdf() {
         />
         <UploadButton onClick={handleClickPdfUpload}>+</UploadButton>
       </LocalFileWrapper>
-      {pdfUrl && (
-        <object data={pdfUrl} type="application/pdf" width="100%" height="500">
-          {/* <p>
-            Your web browser have a PDF plugin. Instead you can{" "}
-            <a href={pdfUrl}>click here to download the PDF file.</a>
-          </p> */}
-        </object>
-      )}
       <DbFileWrapper>
         <TitleGroup>
-          <Title>MY DOCUMENT</Title>
-          <Title>LAST MODIFIED DATE</Title>
+          <Title>my document</Title>
+          <Title>last modified date</Title>
         </TitleGroup>
         {userDocuments.map((document) => {
-          // console.log(userDocument);
-          const { title, lastModifiedDate, storageUrl } = document;
+          const { _id: documentId, title, lastModifiedDate } = document;
 
           return (
-            <Link key={storageUrl} to={`/documents/${title}`}>
+            <Link key={documentId} to={`/documents/${documentId}`}>
               <FileGroup>
                 <FileHeader>
                   <FileIcon src={documentIcon} alt="File icon" />
@@ -102,6 +141,7 @@ const LocalFileWrapper = styled.div`
 `;
 
 const Title = styled.div`
+  text-transform: uppercase;
   font-size: 17px;
   font-weight: bold;
   margin: 5px;

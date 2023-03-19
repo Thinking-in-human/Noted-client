@@ -2,13 +2,16 @@ import React, { useState } from "react";
 
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function Header() {
   const loginUserImgUrl = useSelector((state) => state.user.loginUserImgUrl);
 
   return (
     <Wrapper>
-      <Logo>Noted</Logo>
+      <Logo>
+        <Link to="/">Noted</Link>
+      </Logo>
       <NavWrapper>
         <NavButton>SAVE</NavButton>
         <NavButton>OPEN PDF</NavButton>

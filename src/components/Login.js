@@ -33,7 +33,7 @@ export default function Login() {
         dispatch(changeEditingUser(user.photoURL));
       }
     } catch (error) {
-      dispatch(setErrorInfo(error));
+      dispatch(setErrorInfo(error.response.data));
     }
   };
 

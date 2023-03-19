@@ -9,32 +9,28 @@ import OpenPdf from "../components/OpenPdf";
 import Editor from "../components/Editor";
 import Loading from "../components/Loading";
 import FallbackUI from "../components/FallbackUI";
-import { selectEditingUserImgUrl } from "../feature/userSlice";
+import { selectUserId } from "../feature/userSlice";
 
 export default function App() {
-  const loginUserImgUrl = useSelector(selectEditingUserImgUrl);
+  const loginUserId = useSelector(selectUserId);
   const navigate = useNavigate();
   const { pathname } = useLocation();
-
+  console.log(loginUserId);
   useEffect(() => {
-    // if (!loginUserImgUrl) {
-    //   navigate("/login");
-    // }
-  }, [navigate, loginUserImgUrl]);
+    if (!loginUserId) {
+      navigate("/login");
+    }
+  }, [navigate, loginUserId]);
 
   return (
     <>
       <GlobalStyle />
-
       {pathname !== "/login" && <Header />}
       <Routes>
-        <Route path="/" element={<OpenPdf />}></Route>
-        <Route path="/documents/:title" element={<Editor />}></Route>
-        <Route path="/login" element={<Login />}></Route>
+        <Route path="/" element={<OpenPdf />} />
+        <Route path="/documents/:documentId" element={<Editor />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
-      {/* <FallbackUI /> */}
-      {/* <Editor /> */}
-      {/* <Loading /> */}
     </>
   );
 }

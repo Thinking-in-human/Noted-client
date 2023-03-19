@@ -1,15 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  loginUserId: null,
   loginUserImgUrl: null,
-  userDocuments: [
-    {
-      _id: "641342b3983628e60d765d95",
-      title: "sample",
-      lastModifiedDate: "2023-03-16T16:24:19.930Z",
-      storageUrl: "documents/sample.pdf",
-    },
-  ],
+  userDocuments: [],
   errorInfo: null,
 };
 
@@ -18,7 +12,10 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     changeEditingUser: (state, action) => {
-      state.loginUserImgUrl = action.payload;
+      const { userId, userImgUrl } = action.payload;
+
+      state.loginUserImgUrl = userImgUrl;
+      state.loginUserId = userId;
     },
     setUserDocuments: (state, action) => {
       state.userDocuments = action.payload;
@@ -32,7 +29,8 @@ export const userSlice = createSlice({
 export const { changeEditingUser, setUserDocuments, setErrorInfo } =
   userSlice.actions;
 
-export const selectEditingUserImgUrl = (state) => state.user.loginUserImgUrl;
+export const selectUserId = (state) => state.user.loginUserId;
+export const selectUserImgUrl = (state) => state.user.loginUserImgUrl;
 export const selectDocuments = (state) => state.user.userDocuments;
 export const selectError = (state) => state.user.errorInfo;
 
