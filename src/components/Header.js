@@ -1,17 +1,43 @@
 import React from "react";
 import styled from "styled-components";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 
-import userPic from "../assets/userPic.jpg";
+import userPicture from "../assets/userPic.jpg";
+import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Header() {
+  const dispatch = useDispatch();
+
+  const requestLogout = async () => {
+    try {
+      const response = await axios("http://localhost:4000/auth/sign-out", {
+        method: "POST",
+        responseType: "json",
+        withCredentials: true,
+      });
+
+      if (response) {
+        dispatch(
+          changeEditingUser({
+            userId: null,
+            userImgUrl: null,
+          }),
+        );
+      }
+    } catch (error) {
+      dispatch(setErrorInfo(error.response.data));
+    }
+  };
+
   return (
     <Wrapper>
       <Logo>Noted</Logo>
       <NavWrapper>
-        <NavButton>SAVE</NavButton>
-        <NavButton>OPEN PDF</NavButton>
-        <NavButton>LOGOUT →</NavButton>
-        <UserProfile src={userPic} alt="userProfile"></UserProfile>
+        <NavButton>save</NavButton>
+        <NavButton>open pdf</NavButton>
+        <NavButton onClick={requestLogout}>logout →</NavButton>
+        <UserProfile src={userPicture} alt="userProfile"></UserProfile>
       </NavWrapper>
     </Wrapper>
   );
@@ -43,6 +69,7 @@ const NavButton = styled.button`
   border: none;
   background: none;
   font-size: 10px;
+  text-transform: uppercase;
   cursor: pointer;
 
   &:active {
