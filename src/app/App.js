@@ -17,9 +17,9 @@ export default function App() {
   const { pathname } = useLocation();
   console.log(loginUserId);
   useEffect(() => {
-    if (!loginUserId) {
-      navigate("/login");
-    }
+    // if (!loginUserId) {
+    //   navigate("/login");
+    // }
   }, [navigate, loginUserId]);
 
   return (

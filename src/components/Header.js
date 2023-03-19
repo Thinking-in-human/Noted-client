@@ -1,11 +1,36 @@
 import React, { useState } from "react";
 
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
+import userPicture from "../assets/userMockImage.png";
+import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
+
 export default function Header() {
-  const loginUserImgUrl = useSelector((state) => state.user.loginUserImgUrl);
+  const dispatch = useDispatch();
+
+  const requestLogout = async () => {
+    try {
+      const response = await axios("http://localhost:4000/auth/sign-out", {
+        method: "POST",
+        responseType: "json",
+        withCredentials: true,
+      });
+
+      if (response) {
+        dispatch(
+          changeEditingUser({
+            userId: null,
+            userImgUrl: null,
+          }),
+        );
+      }
+    } catch (error) {
+      dispatch(setErrorInfo(error.response.data));
+    }
+  };
 
   return (
     <Wrapper>
@@ -13,13 +38,10 @@ export default function Header() {
         <Link to="/">Noted</Link>
       </Logo>
       <NavWrapper>
-        <NavButton>SAVE</NavButton>
-        <NavButton>OPEN PDF</NavButton>
-        <NavButton>LOGOUT →</NavButton>
-        <UserProfile
-          src={loginUserImgUrl}
-          alt="Login User's Google Profile"
-        ></UserProfile>
+        <NavButton>save</NavButton>
+        <NavButton>open pdf</NavButton>
+        <NavButton onClick={requestLogout}>logout →</NavButton>
+        <UserProfile src={userPicture} alt="userProfile"></UserProfile>
       </NavWrapper>
     </Wrapper>
   );
@@ -51,6 +73,7 @@ const NavButton = styled.button`
   border: none;
   background: none;
   font-size: 10px;
+  text-transform: uppercase;
   cursor: pointer;
 
   &:active {

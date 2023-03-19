@@ -4,8 +4,8 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 
-import { firebaseAuth } from "../app/firebaseAuth";
 import pdfImage from "../assets/pdfImage.png";
+import { firebaseAuth } from "../app/firebaseAuth";
 import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Login() {
@@ -27,10 +27,16 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         responseType: "json",
         data: customedUserObject,
+        withCredentials: true,
       });
 
       if (response) {
-        dispatch(changeEditingUser(user.photoURL));
+        dispatch(
+          changeEditingUser({
+            userImgUrl: user.photoURL,
+            userId: response.data.userId,
+          }),
+        );
       }
     } catch (error) {
       dispatch(setErrorInfo(error.response.data));
