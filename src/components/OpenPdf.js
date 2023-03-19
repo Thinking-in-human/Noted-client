@@ -97,6 +97,7 @@ export default function OpenPdf() {
     </Wrapper>
   );
 }
+
 const PdfInput = styled.input`
   display: none;
 `;

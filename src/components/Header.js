@@ -12,7 +12,6 @@ import {
 
 export default function Header() {
   const userImage = useSelector(selectUserImgUrl);
-
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
@@ -43,7 +42,9 @@ export default function Header() {
       </Logo>
       <NavWrapper>
         <NavButton>save</NavButton>
-        <NavButton>open pdf</NavButton>
+        <NavButton>
+          <Link to="/">open pdf</Link>
+        </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         <UserProfile src={userImage} alt="userProfile"></UserProfile>
       </NavWrapper>

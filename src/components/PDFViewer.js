@@ -4,7 +4,8 @@ import * as pdfjs from "pdfjs-dist";
 import Loading from "./Loading";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
-function PDFViewer({ url }) {
+
+export default function PDFViewer({ url }) {
   const [pdfDocument, setPdfDocument] = useState(null);
 
   useEffect(() => {
@@ -43,5 +44,3 @@ function PDFViewer({ url }) {
 
   return <div>{pages}</div>;
 }
-
-export default PDFViewer;

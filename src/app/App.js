@@ -13,6 +13,7 @@ export default function App() {
   const loginUserId = useSelector(selectUserId);
   const navigate = useNavigate();
   const { pathname } = useLocation();
+
   useEffect(() => {
     if (!loginUserId) {
       navigate("/login");

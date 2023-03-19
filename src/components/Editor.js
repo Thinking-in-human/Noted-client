@@ -1,18 +1,20 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import Sidebar from "./Sidebar";
 import PDFViewer from "./PDFViewer";
+import { selectUserId } from "../feature/userSlice";
 
 export default function Editor() {
+  const loginUserId = useSelector(selectUserId);
   const { documentId } = useParams();
-  const userId = "6411a6c3cb484f4eb7ec3ee5";
-  console.log("editor_page");
+
   return (
     <Wrapper>
       <Sidebar />
-      <PDFViewer url={`/users/${userId}/documents/${documentId}`} />
+      <PDFViewer url={`/users/${loginUserId}/documents/${documentId}`} />
     </Wrapper>
   );
 }
