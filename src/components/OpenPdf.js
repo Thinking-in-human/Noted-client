@@ -1,12 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import documentIcon from "../assets/documentIcon.svg";
 import {
   selectUserId,
   setUserDocuments,
+  selectDocuments,
   setErrorInfo,
 } from "../feature/userSlice";
 
@@ -25,9 +27,8 @@ export default function OpenPdf() {
             responseType: "json",
           },
         );
-
         if (response) {
-          dispatch(setUserDocuments(response.data));
+          dispatch(setUserDocuments(response.data.documents));
         }
       } catch (error) {
         dispatch(setErrorInfo(error.response.data));
@@ -35,37 +36,72 @@ export default function OpenPdf() {
     };
 
     getAllDocumentsOfUser();
-  }, [dispatch, userId]);
+  }, []);
+
+  const navigate = useNavigate();
+  const userDocuments = useSelector(selectDocuments);
+  const pdfInput = useRef(null);
+
+  const handleClickPdfUpload = () => {
+    pdfInput.current.click();
+  };
+
+  const handleChangeFile = async (event) => {
+    const file = event.target.files[0];
+    const data = new FormData();
+    data.append("file", file);
+
+    const response = await axios.post(`/users/${userId}/documents/new`, data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      withCredentials: true,
+    });
+    const documentId = response.data.documents;
+
+    navigate(`/documents/${documentId}`);
+  };
 
   return (
     <Wrapper>
       <LocalFileWrapper>
-        <Title>START WITH NEW DOCUMENT</Title>
-        <File>+</File>
+        <Title>start with new document</Title>
+        <PdfInput
+          type="file"
+          accept=".pdf"
+          ref={pdfInput}
+          onChange={handleChangeFile}
+        />
+        <UploadButton onClick={handleClickPdfUpload}>+</UploadButton>
       </LocalFileWrapper>
       <DbFileWrapper>
         <TitleGroup>
-          <Title>MY DOCUMENT</Title>
-          <Title>LAST MODIFIED DATE</Title>
+          <Title>my document</Title>
+          <Title>last modified date</Title>
         </TitleGroup>
-        <FileGroup>
-          <FileList>
-            <FileIcon src={documentIcon} alt="userProfile" />
-            <FileTitle>Testing</FileTitle>
-          </FileList>
-          <FileDate>2023.03.14</FileDate>
-        </FileGroup>
-        <FileGroup>
-          <FileList>
-            <FileIcon src={documentIcon} alt="userProfile" />
-            <FileTitle>Example File Name</FileTitle>
-          </FileList>
-          <FileDate>2023.03.14</FileDate>
-        </FileGroup>
+        {userDocuments.map((document) => {
+          const { _id: documentId, title, lastModifiedDate } = document;
+
+          return (
+            <Link key={documentId} to={`/documents/${documentId}`}>
+              <FileGroup>
+                <FileHeader>
+                  <FileIcon src={documentIcon} alt="File icon" />
+                  <FileTitle>{title}</FileTitle>
+                </FileHeader>
+                <FileDate>{lastModifiedDate.split("T", 1)}</FileDate>
+              </FileGroup>
+            </Link>
+          );
+        })}
       </DbFileWrapper>
     </Wrapper>
   );
 }
+
+const PdfInput = styled.input`
+  display: none;
+`;
 
 const Wrapper = styled.div`
   display: flex;
@@ -88,12 +124,13 @@ const LocalFileWrapper = styled.div`
 `;
 
 const Title = styled.div`
+  text-transform: uppercase;
   font-size: 17px;
   font-weight: bold;
   margin: 5px;
 `;
 
-const File = styled.div`
+const UploadButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -102,6 +139,7 @@ const File = styled.div`
   margin: 20px;
   border: 1px dotted black;
   background-color: white;
+  font-size: 20px;
 `;
 
 const DbFileWrapper = styled.div`
@@ -121,7 +159,7 @@ const FileGroup = styled.div`
   justify-content: space-around;
 `;
 
-const FileList = styled.div`
+const FileHeader = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: center;

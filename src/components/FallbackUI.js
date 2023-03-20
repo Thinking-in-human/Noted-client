@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-export default function Error() {
+export default function FallbackUI() {
   return (
     <Wrapper>
       <ErrorCode>404</ErrorCode>

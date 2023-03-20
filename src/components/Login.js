@@ -3,12 +3,14 @@ import styled from "styled-components";
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
-import MainImg from "../assets/MainImg.svg";
+import pdfImage from "../assets/pdfImage.png";
 import { firebaseAuth } from "../app/firebaseAuth";
 import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
 
 export default function Login() {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const googleProvider = new GoogleAuthProvider();
 
@@ -16,6 +18,7 @@ export default function Login() {
     try {
       const result = await signInWithPopup(firebaseAuth, googleProvider);
       const { user } = result;
+
       const customedUserObject = {
         email: user.email,
         avatarImgURL: user.photoURL,
@@ -37,6 +40,8 @@ export default function Login() {
           }),
         );
       }
+
+      navigate("/");
     } catch (error) {
       dispatch(setErrorInfo(error.response.data));
     }
@@ -45,7 +50,7 @@ export default function Login() {
   return (
     <Wrapper>
       <BackgoundColorPage />
-      <MainImage src={MainImg} alt="userProfile" />
+      <MainImage src={pdfImage} alt="Main Page" />
       <FirstLineTitle>Find your creativity by</FirstLineTitle>
       <SecondLineTitle>pdf editor, Noted</SecondLineTitle>
       <LoginButton onClick={signInWithGoogle}>Login →</LoginButton>
