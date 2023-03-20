@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import documentIcon from "../assets/document_icon.svg";
+import documentIcon from "../assets/documentIcon.svg";
 import {
   selectUserId,
   setUserDocuments,
@@ -55,6 +55,7 @@ export default function OpenPdf() {
       headers: {
         "Content-Type": "multipart/form-data",
       },
+      withCredentials: true,
     });
     const documentId = response.data.documents;
 

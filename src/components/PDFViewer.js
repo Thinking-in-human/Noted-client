@@ -1,18 +1,27 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
 
 import Loading from "./Loading";
+import { setErrorInfo } from "../feature/userSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
 export default function PDFViewer({ url }) {
   const [pdfDocument, setPdfDocument] = useState(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const loadingTask = pdfjs.getDocument(url);
-    loadingTask.promise.then((pdf) => {
-      setPdfDocument(pdf);
-    });
+    const loadPdf = async () => {
+      try {
+        const pdf = await pdfjs.getDocument(url).promise;
+        setPdfDocument(pdf);
+      } catch (error) {
+        dispatch(setErrorInfo(error.response.data));
+      }
+    };
+
+    loadPdf();
   }, [url]);
 
   if (!pdfDocument) {
@@ -21,6 +30,7 @@ export default function PDFViewer({ url }) {
 
   const { numPages } = pdfDocument;
   const pages = [];
+
   for (let i = 1; i <= numPages; i++) {
     pages.push(
       <canvas
