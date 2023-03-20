@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  selectedPdf: {
-    _id: "",
-    pdf: "",
-  },
+  selectedPdfId: null,
   currentEditorTool: null,
   pencil: {
     color: "black",
@@ -37,7 +34,15 @@ const initialState = {
 export const editorSlice = createSlice({
   name: "editor",
   initialState,
-  reducers: {},
+  reducers: {
+    setSelectedDocument: (state, action) => {
+      state.selectedPdfId = action.payload;
+    },
+  },
 });
+
+export const { setSelectedDocument } = editorSlice.actions;
+
+export const selectDocument = (state) => state.editor.selectedPdfId;
 
 export default editorSlice.reducer;

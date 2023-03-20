@@ -40,7 +40,7 @@ export default function OpenPdf() {
 
   const navigate = useNavigate();
   const userDocuments = useSelector(selectDocuments);
-  const pdfInput = useRef();
+  const pdfInput = useRef(null);
 
   const handleClickPdfUpload = () => {
     pdfInput.current.click();
@@ -51,7 +51,7 @@ export default function OpenPdf() {
     const data = new FormData();
     data.append("file", file);
 
-    const response = await axios.post(`/users/${userId}/documents`, data, {
+    const response = await axios.post(`/users/${userId}/documents/new`, data, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
