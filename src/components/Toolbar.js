@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 
 import PenStatusTool from "./PenStatusTool";
 import EraserStatusTool from "./EraserStatusTool";
@@ -15,30 +16,44 @@ import {
   post1Icon,
   post2Icon,
 } from "../assets/editorIcon";
+import { selectCurrentEditorTool, setEditorTool } from "../feature/editorSlice";
 
 export default function Toolbar() {
-  const [mode, setMode] = useState("pen");
-  let editorTool = null;
+  const dispatch = useDispatch();
+  const editorTool = useSelector(selectCurrentEditorTool);
 
-  if (mode === "pen") {
-    editorTool = <PenStatusTool />;
-  } else if (mode === "eraser") {
-    editorTool = <EraserStatusTool />;
-  } else if (mode === "hightlight") {
-    editorTool = <HightLightStatusTool />;
-  } else if (mode === "postIt") {
-    editorTool = <PostItStatusTool />;
-  }
+  const changeEditorTool = (input) => {
+    dispatch(setEditorTool(input));
+  };
 
   return (
     <EditorTool>
       <EditorToolField>
-        <Icon src={pen2Icon} alt="penIcon" />
-        <Icon src={eraser1Icon} alt="eraserIcon" />
-        <Icon src={marker1Icon} alt="markerIcon" />
-        <Icon src={post1Icon} alt="posetItIcon" />
+        <Icon
+          onClick={() => changeEditorTool("pencil")}
+          src={pen2Icon}
+          alt="penIcon"
+        />
+        <Icon
+          onClick={() => changeEditorTool("eraser")}
+          src={eraser1Icon}
+          alt="eraserIcon"
+        />
+        <Icon
+          onClick={() => changeEditorTool("highLightPen")}
+          src={marker1Icon}
+          alt="markerIcon"
+        />
+        <Icon
+          onClick={() => changeEditorTool("postIt")}
+          src={post1Icon}
+          alt="postItIcon"
+        />
       </EditorToolField>
-      {editorTool}
+      {editorTool === "pencil" && <PenStatusTool />}
+      {editorTool === "eraser" && <EraserStatusTool />}
+      {editorTool === "highLightPen" && <HightLightStatusTool />}
+      {editorTool === "postIt" && <PostItStatusTool />}
     </EditorTool>
   );
 }

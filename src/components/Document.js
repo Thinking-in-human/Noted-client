@@ -1,7 +1,13 @@
 import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+
+import { selectPencilColor, selectPencilWidth } from "../feature/editorSlice";
 
 export default function Document() {
+  const pencilColor = useSelector(selectPencilColor);
+  const pencilWidth = useSelector(selectPencilWidth);
+
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -27,11 +33,13 @@ export default function Document() {
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.globalAlpha = 0.03;
 
-    function handleMouseMove(event) {
-      const context = canvas.getContext("2d");
-      const x = event.offsetX;
-      const y = event.offsetY;
+    function handleMouseMove(e) {
+      const x = e.offsetX;
+      const y = e.offsetY;
+
       context.lineTo(x, y);
       context.stroke();
     }
@@ -42,15 +50,12 @@ export default function Document() {
     }
 
     function handleMouseDown(event) {
-      console.log(event, "클릭시");
-      const context = canvas.getContext("2d");
-      context.strokeStyle = "green";
-      context.lineWidth = 2;
+      context.strokeStyle = pencilColor;
+      context.lineWidth = pencilWidth;
       context.beginPath();
 
       const x = event.offsetX;
       const y = event.offsetY;
-      console.log(x, y, "x, y 좌표");
 
       context.moveTo(x, y);
       canvas.addEventListener("mousemove", handleMouseMove);
@@ -62,7 +67,7 @@ export default function Document() {
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, []);
+  }, [pencilColor, pencilWidth]);
 
   return (
     <Background>
@@ -79,11 +84,11 @@ const Background = styled.div`
 `;
 
 const DocumentPage = styled.canvas`
-  width: 700;
-  min-height: 900;
-  padding: 2cm;
+  width: 700px;
+  height: 900px;
+  /* padding: 2cm;
   margin: 4rem;
   border: 1px #d3d3d3 solid;
-  /* box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); */
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); */
   background-color: white;
 `;

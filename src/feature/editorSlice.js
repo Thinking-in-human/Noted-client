@@ -5,11 +5,12 @@ const initialState = {
     _id: "",
     pdf: "",
   },
-  currentEditorTool: null,
+  currentEditorTool: "pencil",
   pencil: {
     color: "black",
+    width: "2px",
   },
-  highlightPen: {
+  highLightPen: {
     color: "yellow",
     opacity: "0.4",
   },
@@ -37,7 +38,25 @@ const initialState = {
 export const editorSlice = createSlice({
   name: "editor",
   initialState,
-  reducers: {},
+  reducers: {
+    setEditorTool: (state, action) => {
+      state.currentEditorTool = action.payload;
+    },
+    setPencilWidth: (state, action) => {
+      state.pencil.width = action.payload;
+    },
+    setPencilColor: (state, action) => {
+      state.pencil.color = action.payload;
+    },
+  },
 });
+
+export const { setEditorTool, setPencilWidth, setPencilColor } =
+  editorSlice.actions;
+
+export const selectCurrentEditorTool = (state) =>
+  state.editor.currentEditorTool;
+export const selectPencilWidth = (state) => state.editor.pencil.width;
+export const selectPencilColor = (state) => state.editor.pencil.color;
 
 export default editorSlice.reducer;
