@@ -15,8 +15,18 @@ export default function Document() {
     setPoints((prev) => [...prev, { xPoint: x, yPoint: y }]);
   };
 
+  const resetPoints = () => {
+    setPoints([]);
+  };
+
   const pushDrawQueue = (newPoints) => {
     setDrawQueue((prev) => [...prev, newPoints]);
+  };
+
+  const popDrawQueue = () => {
+    setDrawQueue((prev) =>
+      prev.filter((point, index) => index < prev.length - 1),
+    );
   };
 
   console.log(points, "points");
@@ -75,9 +85,9 @@ export default function Document() {
     const handleMouseDown = (e) => {
       const x = e.offsetX;
       const y = e.offsetY;
-      changePoints("", "");
 
       context.beginPath();
+      resetPoints();
       changePoints(x, y);
       context.moveTo(x, y);
       canvas.addEventListener("mousemove", handleMouseMove);
@@ -91,8 +101,33 @@ export default function Document() {
     };
   }, [pencilColor, points, pencilWidth]);
 
+  function drawPaths() {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+
+    context.clearRect(0, 0, 700, 900);
+    drawQueue.forEach((path) => {
+      context.beginPath();
+      context.moveTo(path[0]?.xPoint, path[0]?.yPoint);
+      for (let i = 1; i < path.length; i += 1) {
+        context.lineTo(path[i].xPoint, path[i].yPoint);
+      }
+      context.strokeStyle = pencilColor;
+      context.lineWidth = pencilWidth;
+      context.stroke();
+    });
+  }
+
+  function Undo() {
+    popDrawQueue();
+    drawPaths();
+  }
+
   return (
     <Background>
+      <button type="button" onClick={Undo}>
+        undo
+      </button>
       <DocumentPage ref={canvasRef} />
     </Background>
   );
