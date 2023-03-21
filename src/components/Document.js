@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
@@ -7,8 +7,20 @@ import { selectPencilColor, selectPencilWidth } from "../feature/editorSlice";
 export default function Document() {
   const pencilColor = useSelector(selectPencilColor);
   const pencilWidth = useSelector(selectPencilWidth);
-
   const canvasRef = useRef(null);
+  const [points, setPoints] = useState([]);
+  const [drawQueue, setDrawQueue] = useState([]);
+
+  const changePoints = (x, y) => {
+    setPoints((prev) => [...prev, { xPoint: x, yPoint: y }]);
+  };
+
+  const pushDrawQueue = (newPoints) => {
+    setDrawQueue((prev) => [...prev, newPoints]);
+  };
+
+  console.log(points, "points");
+  console.log(drawQueue, "drawQueue");
 
   useEffect(() => {
     const renderPdf = async () => {
@@ -31,43 +43,53 @@ export default function Document() {
     renderPdf();
   }, []);
 
+  // function rememberPath(canvas, evt) {
+  //   return {
+  //     x: Math.round(evt.clientX - ClientRect.left),
+  //     y: Math.round(evt.clientY - ClientRect.top),
+  //   };
+  // }
+
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    context.globalAlpha = 0.03;
+    context.globalAlpha = 1;
+    context.strokeStyle = pencilColor;
+    context.lineWidth = pencilWidth;
 
-    function handleMouseMove(e) {
+    const handleMouseMove = (e) => {
       const x = e.offsetX;
       const y = e.offsetY;
+      changePoints(x, y);
 
       context.lineTo(x, y);
       context.stroke();
-    }
+    };
 
-    function handleMouseUp() {
+    const handleMouseUp = () => {
+      pushDrawQueue(points);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
-    }
+    };
 
-    function handleMouseDown(event) {
-      context.strokeStyle = pencilColor;
-      context.lineWidth = pencilWidth;
+    const handleMouseDown = (e) => {
+      const x = e.offsetX;
+      const y = e.offsetY;
+      changePoints("", "");
+
       context.beginPath();
-
-      const x = event.offsetX;
-      const y = event.offsetY;
-
+      changePoints(x, y);
       context.moveTo(x, y);
       canvas.addEventListener("mousemove", handleMouseMove);
       canvas.addEventListener("mouseup", handleMouseUp);
-    }
+    };
 
     canvas.addEventListener("mousedown", handleMouseDown);
 
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [pencilColor, pencilWidth]);
+  }, [pencilColor, points, pencilWidth]);
 
   return (
     <Background>
