@@ -4,68 +4,77 @@ import styled from "styled-components";
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 
 export default function PostItStatusTool() {
-  const [content, setContent] = useState("Edit me!");
-
+  const [content, setContent] = useState(null);
+  const [color, setColor] = useState("");
   const divRef = useRef(null);
+
   const handleInput = () => {
     setContent(divRef.current.innerText);
-    console.log(content);
   };
-  const handleSelectText = (event) => {
-    const selection22 = document.getSelection();
 
-    const cloned = document.getElementById("cloned");
-    const astext = document.getElementById("astext");
-    console.log(cloned, astext);
-    // cloned.innerHTML = astext.innerHTML = "";
+  const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
 
-    // Clone DOM nodes from ranges (we support multiselect here)
-    for (let i = 0; i < selection22.rangeCount; i++) {
-      cloned.append(selection22.getRangeAt(i).cloneContents());
-    }
-
-    // Get as text
-    astext.innerHTML += selection22;
-
-    const selection = document.getSelection();
-    const range = selection.getRangeAt(0);
-    const alltext = range.startContainer;
-    const from = range.startOffset;
-    const to = range.endOffset;
-    const selectedText = range.toString();
-    console.log("selection", selection);
-    console.log("range", range);
-    console.log("alltext", alltext);
-    console.log("from", from);
-    console.log("to", to);
-    console.log("selectedText", selectedText);
-  };
-  const [color, setColor] = useState("");
-  const fontSizeArr = [];
-
-  for (let i = 1; i <= 100; i += 1) {
-    fontSizeArr.push(i);
-  }
   const handleClickBold = () => {
     const selection = document.getSelection();
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
-      const selectedText = range.toString(); // selection한 값
-      const boldElement = document.createElement("strong"); // strong이라는 엘리먼트 추가함.
-      boldElement.textContent = selectedText; // strong 엘리먼트에 select한 값 넣음.
-      range.deleteContents(); // 원래 선택한 값 지우고
-      range.insertNode(boldElement); // 새로 볼드한 값 넣음.
+      const selectedText = range.toString();
+      const boldElement = document.createElement("strong");
+      boldElement.textContent = selectedText;
+      range.deleteContents();
+      range.insertNode(boldElement);
     }
-
-    // 볼드한 글자에 다시 볼드를 적용하면 해제되도록..
   };
+
+  const handleClickItalic = () => {
+    const selection = document.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+      const italicElement = document.createElement("em");
+      italicElement.textContent = selectedText;
+      range.deleteContents();
+      range.insertNode(italicElement);
+    }
+  };
+
+  const handleClickUnderLine = () => {
+    const selection = document.getSelection();
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+      const underLineElement = document.createElement("u");
+      underLineElement.textContent = selectedText;
+      range.deleteContents();
+      range.insertNode(underLineElement);
+    }
+  };
+
   return (
     <>
       <ToolStatusField>
+        <select>
+          <option>Arial</option>
+          <option>Verdana</option>
+          <option>Times New Roman</option>
+          <option>Garamond</option>
+          <option>Georgia</option>
+          <option>Courier New</option>
+          <option>cursive</option>
+        </select>
+        <select>
+          {fontSizeArray.map((size) => {
+            return <option key={size}>{size}</option>;
+          })}
+        </select>
         <FormatIcon>
           <Icon src={boldIcon} alt="boldIcon" onClick={handleClickBold} />
-          <Icon src={italicIcon} alt="italicIcon" />
-          <Icon src={underlineIcon} alt="underlineIcon" />
+          <Icon src={italicIcon} alt="italicIcon" onClick={handleClickItalic} />
+          <Icon
+            src={underlineIcon}
+            alt="underlineIcon"
+            onClick={handleClickUnderLine}
+          />
         </FormatIcon>
         <FormatColor>
           <Color
@@ -98,16 +107,14 @@ export default function PostItStatusTool() {
             height: "400px",
             width: "400px",
             borderRadius: "5px",
+            position: "absolute",
+            backgroundColor: "#ffff33",
           }}
           contentEditable
           ref={divRef}
           onInput={handleInput}
-          // onSelect={handleSelectText}
         />
       </Wrapper>
-      Cloned: <span id="cloned"></span>
-      <br />
-      As text: <span id="astext"></span>
     </>
   );
 }
@@ -158,14 +165,5 @@ const Color = styled.input`
 `;
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
   width: 100vw;
-`;
-
-const TextBox = styled.div`
-  border: 1px solid;
-  height: 500px;
-  width: 500px;
-  border-radius: 5px;
 `;

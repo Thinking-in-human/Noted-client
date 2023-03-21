@@ -47,7 +47,6 @@ const EditorTool = styled.div`
   display: flex;
   width: 100%;
   height: 35px;
-  /* border: 1px solid black; */
 `;
 
 const EditorToolField = styled.div`
