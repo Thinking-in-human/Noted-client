@@ -31,7 +31,7 @@ export default function OpenPdf() {
           dispatch(setUserDocuments(response.data.documents));
         }
       } catch (error) {
-        dispatch(setErrorInfo(error.response.data));
+        dispatch(setErrorInfo(error.response?.data));
       }
     };
 
@@ -51,12 +51,16 @@ export default function OpenPdf() {
     const data = new FormData();
     data.append("file", file);
 
-    const response = await axios.post(`/users/${userId}/documents/new`, data, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+    const response = await axios.post(
+      `http://localhost:4000/users/${userId}/documents/new`,
+      data,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
       },
-      withCredentials: true,
-    });
+    );
     const documentId = response.data.documents;
 
     navigate(`/documents/${documentId}`);

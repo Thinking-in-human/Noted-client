@@ -18,7 +18,9 @@ export default function Editor() {
   return (
     <Wrapper>
       <Toolbar />
-      <PDFViewer url={`/users/${loginUserId}/documents/${documentId}`} />
+      <PDFViewer
+        url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
+      />
     </Wrapper>
   );
 }
