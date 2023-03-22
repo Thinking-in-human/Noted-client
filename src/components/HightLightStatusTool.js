@@ -1,18 +1,55 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
 import { width1Icon, width2Icon, width3Icon } from "../assets/editorIcon";
+import {
+  setHighLightWidth,
+  setHighLightColor,
+  selectHighlightWidth,
+} from "../feature/editorSlice";
 
 export default function HightLightStatusTool() {
+  const dispatch = useDispatch();
+  const highLightWidth = useSelector(selectHighlightWidth);
+
+  const changeWidth = (width) => {
+    dispatch(setHighLightWidth(width));
+  };
+  const changeColor = (color) => {
+    dispatch(setHighLightColor(color));
+  };
+
   return (
     <ToolStatusField>
       <FormatIcon>
-        <WidthIcon type="image" src={width1Icon} alt="widthThinIcon" />
-        <WidthIcon type="image" src={width2Icon} alt="widthBasicIcon" />
-        <WidthIcon type="image" src={width3Icon} alt="widthThickIcon" />
+        <WidthIcon
+          onClick={() => changeWidth(8)}
+          type="image"
+          src={width1Icon}
+          alt="widthThinIcon"
+        />
+        <WidthIcon
+          onClick={() => changeWidth(14)}
+          type="image"
+          src={width2Icon}
+          alt="widthBasicIcon"
+        />
+        <WidthIcon
+          onClick={() => changeWidth(20)}
+          type="image"
+          src={width3Icon}
+          alt="widthThickIcon"
+        />
       </FormatIcon>
-      <input type="range" min="0.1" max="2.0" />
-      <Color type="color" value="#F9F54B" />
+      <input
+        onChange={(e) => changeWidth(e.target.value)}
+        defaultValue={highLightWidth}
+        type="range"
+        min="8"
+        max="40"
+      />
+      <Color onChange={(e) => changeColor(e.target.value)} type="color" />
     </ToolStatusField>
   );
 }

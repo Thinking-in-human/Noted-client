@@ -1,12 +1,17 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { width1Icon, width2Icon, width3Icon } from "../assets/editorIcon";
-import { setPencilWidth, setPencilColor } from "../feature/editorSlice";
+import {
+  setPencilWidth,
+  setPencilColor,
+  selectPencilWidth,
+} from "../feature/editorSlice";
 
 export default function PenStatusTool() {
-  const dispatch = useDispatch(setPencilWidth);
+  const dispatch = useDispatch();
+  const pencilWidth = useSelector(selectPencilWidth);
 
   const changeWidth = (width) => {
     dispatch(setPencilWidth(width));
@@ -25,13 +30,13 @@ export default function PenStatusTool() {
           alt="widthThinIcon"
         />
         <WidthIcon
-          onClick={() => changeWidth(4)}
+          onClick={() => changeWidth(5)}
           type="image"
           src={width2Icon}
           alt="widthBasicIcon"
         />
         <WidthIcon
-          onClick={() => changeWidth(6)}
+          onClick={() => changeWidth(8)}
           type="image"
           src={width3Icon}
           alt="widthThickIcon"
@@ -40,6 +45,7 @@ export default function PenStatusTool() {
       <input
         onMouseUp={(e) => changeWidth(e.target.value)}
         type="range"
+        defaultValue={pencilWidth}
         min="2"
         max="40"
       />

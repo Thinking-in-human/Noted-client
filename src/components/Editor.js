@@ -8,7 +8,6 @@ import Toolbar from "./Toolbar";
 export default function Editor() {
   return (
     <Wrapper>
-      <Sidebar />
       <DocumentWrapper>
         <Toolbar />
         <Document />
@@ -18,9 +17,11 @@ export default function Editor() {
 }
 
 const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
+  /* display: flex; */
+  /* justify-content: center; */
   width: 100vw;
 `;
 
-const DocumentWrapper = styled.div``;
+const DocumentWrapper = styled.div`
+  width: 100%;
+`;

@@ -1,12 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
-import { selectPencilColor, selectPencilWidth } from "../feature/editorSlice";
+import {
+  selectGlobalColor,
+  selectGlobalWidth,
+  selectGlobalOpacity,
+} from "../feature/editorSlice";
 
 export default function Document() {
-  const pencilColor = useSelector(selectPencilColor);
-  const pencilWidth = useSelector(selectPencilWidth);
+  const globalColor = useSelector(selectGlobalColor);
+  const globalWidth = useSelector(selectGlobalWidth);
+  const globalOpacity = useSelector(selectGlobalOpacity);
+  const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
   const [drawQueue, setDrawQueue] = useState([]);
@@ -53,15 +59,16 @@ export default function Document() {
       const y = e.offsetY;
       context.lineJoin = "round";
       context.lineCap = "round";
-      context.globalAlpha = 1;
-      context.strokeStyle = pencilColor;
-      context.lineWidth = pencilWidth;
+      context.globalAlpha = globalOpacity;
+      context.strokeStyle = globalColor;
+      context.lineWidth = globalWidth;
 
       linePoints.push({
         xPoint: x,
         yPoint: y,
-        color: pencilColor,
-        width: pencilWidth,
+        color: globalColor,
+        width: globalWidth,
+        opacity: globalOpacity,
       });
 
       context.lineTo(x, y);
@@ -70,6 +77,7 @@ export default function Document() {
 
     const handleMouseUp = () => {
       pushDrawQueue(linePoints);
+      console.log(linePoints, "라인 포인트");
 
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
@@ -83,8 +91,9 @@ export default function Document() {
       linePoints.push({
         xPoint: x,
         yPoint: y,
-        color: pencilColor,
-        width: pencilWidth,
+        color: globalColor,
+        width: globalWidth,
+        opacity: globalOpacity,
       });
 
       context.beginPath();
@@ -99,7 +108,7 @@ export default function Document() {
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [drawQueue, pencilColor, pencilWidth]);
+  }, [drawQueue, globalWidth, globalOpacity, globalColor]);
 
   const drawUndoPath = () => {
     const canvas = canvasRef.current;
@@ -114,6 +123,7 @@ export default function Document() {
         for (let i = 1; i < drawing.length; i += 1) {
           context.strokeStyle = drawing[i].color;
           context.lineWidth = drawing[i].width;
+          context.globalAlpha = drawing[i].opacity;
           context.lineTo(drawing[i].xPoint, drawing[i].yPoint);
           context.stroke();
         }
@@ -137,6 +147,8 @@ export default function Document() {
 }
 
 const Background = styled.div`
+  background-color: yellow;
+  border: 10px solid red;
   display: flex;
   justify-content: center;
   position: relative;
@@ -152,6 +164,7 @@ const CanvasPage = styled.canvas`
 `;
 
 const PdfPage = styled.canvas`
+  border: 10px solid blue;
   position: absolute;
   width: 700px;
   height: 900px;

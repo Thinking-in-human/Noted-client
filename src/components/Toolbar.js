@@ -16,14 +16,17 @@ import {
   post1Icon,
   post2Icon,
 } from "../assets/editorIcon";
-import { selectCurrentEditorTool, setEditorTool } from "../feature/editorSlice";
+import {
+  selectCurrentEditorTool,
+  changeGlobalToolOption,
+} from "../feature/editorSlice";
 
 export default function Toolbar() {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
 
-  const changeEditorTool = (input) => {
-    dispatch(setEditorTool(input));
+  const changeEditorTool = (tool) => {
+    dispatch(changeGlobalToolOption(tool));
   };
 
   return (
