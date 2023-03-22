@@ -8,43 +8,33 @@ export default function Document() {
   const pencilColor = useSelector(selectPencilColor);
   const pencilWidth = useSelector(selectPencilWidth);
   const canvasRef = useRef(null);
-  const [points, setPoints] = useState([]);
+  const pdfRef = useRef(null);
   const [drawQueue, setDrawQueue] = useState([]);
 
-  const changePoints = (x, y) => {
-    setPoints((prev) => [...prev, { xPoint: x, yPoint: y }]);
-  };
-
-  const resetPoints = () => {
-    setPoints([]);
-  };
-
-  const pushDrawQueue = (newPoints) => {
-    setDrawQueue((prev) => [...prev, newPoints]);
+  const pushDrawQueue = (input) => {
+    setDrawQueue((prev) => [...prev, input]);
   };
 
   const popDrawQueue = () => {
-    setDrawQueue((prev) =>
-      prev.filter((point, index) => index < prev.length - 1),
-    );
+    setDrawQueue((prev) => prev.slice(0, prev.length - 1));
   };
-
-  console.log(points, "points");
-  console.log(drawQueue, "drawQueue");
 
   useEffect(() => {
     const renderPdf = async () => {
       const pdfJS = await import("pdfjs-dist/build/pdf");
       pdfJS.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
       const pdf = await pdfJS.getDocument("example.pdf").promise;
-
       const page = await pdf.getPage(1);
       const viewport = page.getViewport({ scale: 1 });
 
       const canvas = canvasRef.current;
-      const canvasContext = canvas.getContext("2d");
-      canvas.height = 900;
       canvas.width = 700;
+      canvas.height = 900;
+
+      const pdfCanvas = pdfRef.current;
+      const canvasContext = pdfCanvas.getContext("2d");
+      pdfCanvas.width = 700;
+      pdfCanvas.height = 900;
 
       const renderContext = { canvasContext, viewport };
       page.render(renderContext);
@@ -53,31 +43,34 @@ export default function Document() {
     renderPdf();
   }, []);
 
-  // function rememberPath(canvas, evt) {
-  //   return {
-  //     x: Math.round(evt.clientX - ClientRect.left),
-  //     y: Math.round(evt.clientY - ClientRect.top),
-  //   };
-  // }
-
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    context.globalAlpha = 1;
-    context.strokeStyle = pencilColor;
-    context.lineWidth = pencilWidth;
+    const linePoints = [];
 
     const handleMouseMove = (e) => {
       const x = e.offsetX;
       const y = e.offsetY;
-      changePoints(x, y);
+      context.lineJoin = "round";
+      context.lineCap = "round";
+      context.globalAlpha = 1;
+      context.strokeStyle = pencilColor;
+      context.lineWidth = pencilWidth;
+
+      linePoints.push({
+        xPoint: x,
+        yPoint: y,
+        color: pencilColor,
+        width: pencilWidth,
+      });
 
       context.lineTo(x, y);
       context.stroke();
     };
 
     const handleMouseUp = () => {
-      pushDrawQueue(points);
+      pushDrawQueue(linePoints);
+
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
     };
@@ -86,10 +79,17 @@ export default function Document() {
       const x = e.offsetX;
       const y = e.offsetY;
 
+      linePoints.length = 0;
+      linePoints.push({
+        xPoint: x,
+        yPoint: y,
+        color: pencilColor,
+        width: pencilWidth,
+      });
+
       context.beginPath();
-      resetPoints();
-      changePoints(x, y);
       context.moveTo(x, y);
+
       canvas.addEventListener("mousemove", handleMouseMove);
       canvas.addEventListener("mouseup", handleMouseUp);
     };
@@ -99,53 +99,60 @@ export default function Document() {
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [pencilColor, points, pencilWidth]);
+  }, [drawQueue, pencilColor, pencilWidth]);
 
-  function drawPaths() {
+  const drawUndoPath = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
     context.clearRect(0, 0, 700, 900);
-    drawQueue.forEach((path) => {
-      context.beginPath();
-      context.moveTo(path[0]?.xPoint, path[0]?.yPoint);
-      for (let i = 1; i < path.length; i += 1) {
-        context.lineTo(path[i].xPoint, path[i].yPoint);
-      }
-      context.strokeStyle = pencilColor;
-      context.lineWidth = pencilWidth;
-      context.stroke();
-    });
-  }
 
-  function Undo() {
+    drawQueue.forEach((drawing, index) => {
+      if (index < drawQueue.length - 1) {
+        context.beginPath();
+        context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+        for (let i = 1; i < drawing.length; i += 1) {
+          context.strokeStyle = drawing[i].color;
+          context.lineWidth = drawing[i].width;
+          context.lineTo(drawing[i].xPoint, drawing[i].yPoint);
+          context.stroke();
+        }
+      }
+    });
+
     popDrawQueue();
-    drawPaths();
-  }
+  };
 
   return (
-    <Background>
-      <button type="button" onClick={Undo}>
+    <>
+      <button type="button" onClick={drawUndoPath}>
         undo
       </button>
-      <DocumentPage ref={canvasRef} />
-    </Background>
+      <Background>
+        <CanvasPage ref={canvasRef} />
+        <PdfPage ref={pdfRef} />
+      </Background>
+    </>
   );
 }
 
 const Background = styled.div`
   display: flex;
   justify-content: center;
+  position: relative;
   width: 100%;
   height: 100%;
 `;
 
-const DocumentPage = styled.canvas`
+const CanvasPage = styled.canvas`
+  position: absolute;
   width: 700px;
   height: 900px;
-  /* padding: 2cm;
-  margin: 4rem;
-  border: 1px #d3d3d3 solid;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); */
-  background-color: white;
+  z-index: 1;
+`;
+
+const PdfPage = styled.canvas`
+  position: absolute;
+  width: 700px;
+  height: 900px;
 `;

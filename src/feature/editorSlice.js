@@ -8,11 +8,13 @@ const initialState = {
   currentEditorTool: "pencil",
   pencil: {
     color: "black",
-    width: "2px",
+    width: "3px",
+    opacity: 1,
   },
   highLightPen: {
     color: "yellow",
-    opacity: "0.4",
+    width: "8px",
+    opacity: "0.05",
   },
   eraser: {
     width: "8px",
