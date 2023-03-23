@@ -9,7 +9,7 @@ export default function Sidebar() {
       {array.map((element) => {
         return (
           <PageGroup key={element}>
-            <div> {element} </div>
+            <div>{element}</div>
             <File>+</File>
           </PageGroup>
         );

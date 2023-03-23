@@ -80,6 +80,9 @@ export const editorSlice = createSlice({
       state.canvasRedoArray = restRedoArray;
       state.canvasDrawingArray = [state.canvasDrawingArray, poppedData];
     },
+    setSelectedDocument: (state, action) => {
+      state.selectedPdfId = action.payload;
+    },
   },
 });
 
@@ -94,6 +97,7 @@ export const {
   setDataUndo,
   setDataRedo,
   makeNewPostIt,
+  setSelectedDocument
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
@@ -105,6 +109,7 @@ export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDrawingArray = (state) => state.editor.canvasDrawingArray;
 export const selectRedoArray = (state) => state.editor.canvasRedoArray;
+export const selectDocument = (state) => state.editor.selectedPdfId;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;

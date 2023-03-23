@@ -1,14 +1,37 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 
 export default function PostItStatusTool() {
-  const fontSizeArr = [];
+  const [color, setColor] = useState("");
 
-  for (let i = 1; i <= 100; i += 1) {
-    fontSizeArr.push(i);
-  }
+  const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
+
+  const handleSelection = () => {
+    const selection = document.getSelection();
+
+    if (selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0);
+      const selectedText = range.toString();
+    }
+  };
+
+  const handleClickBold = () => {
+    handleSelection();
+  };
+
+  const handleClickItalic = () => {
+    handleSelection();
+  };
+
+  const handleClickUnderLine = () => {
+    handleSelection();
+  };
+
+  const handleChangeColor = (event) => {
+    setColor(event.target.value);
+  };
 
   return (
     <ToolStatusField>
@@ -22,20 +45,44 @@ export default function PostItStatusTool() {
         <option>cursive</option>
       </select>
       <select>
-        {fontSizeArr.map((size) => {
-          return <option>{size}</option>;
+        {fontSizeArray.map((size) => {
+          return <option key={size}>{size}</option>;
         })}
       </select>
       <FormatIcon>
-        <Icon src={boldIcon} alt="boldIcon" />
-        <Icon src={italicIcon} alt="italicIcon" />
-        <Icon src={underlineIcon} alt="underlineIcon" />
+        <Icon src={boldIcon} alt="Bold Button Icon" onClick={handleClickBold} />
+        <Icon
+          src={italicIcon}
+          alt="Italic Button Icon"
+          onClick={handleClickItalic}
+        />
+        <Icon
+          src={underlineIcon}
+          alt="Underline Button Icon"
+          onClick={handleClickUnderLine}
+        />
       </FormatIcon>
       <FormatColor>
-        <Color type="color" value="#000000" />
-        <Color type="color" value="#ff0000" />
-        <Color type="color" value="#0000FF" />
-        <Color type="color" value="#808080" />
+        <Color
+          type="color"
+          defaultValue="#000000"
+          onChange={handleChangeColor}
+        />
+        <Color
+          type="color"
+          defaultValue="#ff0000"
+          onChange={handleChangeColor}
+        />
+        <Color
+          type="color"
+          defaultValue="#0000FF"
+          onChange={handleChangeColor}
+        />
+        <Color
+          type="color"
+          defaultValue="#808080"
+          onChange={handleChangeColor}
+        />
       </FormatColor>
     </ToolStatusField>
   );
