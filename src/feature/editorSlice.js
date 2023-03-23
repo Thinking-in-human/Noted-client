@@ -34,6 +34,10 @@ const initialState = {
       color: "black",
     },
   },
+  currentPostIt: null,
+  madePostIts: {},
+  fontUrl: "",
+  fontName: "",
 };
 
 export const editorSlice = createSlice({
@@ -83,6 +87,12 @@ export const editorSlice = createSlice({
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
     },
+    setSelectedFontUrl: (state, action) => {
+      state.fontUrl = action.payload;
+    },
+    setSelectedFontName: (state, action) => {
+      state.fontName = action.payload;
+    },
   },
 });
 
@@ -97,7 +107,9 @@ export const {
   setDataUndo,
   setDataRedo,
   makeNewPostIt,
-  setSelectedDocument
+  setSelectedDocument,
+  setSelectedFontUrl,
+  setSelectedFontName,
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
@@ -110,6 +122,8 @@ export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDrawingArray = (state) => state.editor.canvasDrawingArray;
 export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 export const selectDocument = (state) => state.editor.selectedPdfId;
+export const selectFontUrl = (state) => state.editor.fontUrl;
+export const selectFontName = (state) => state.editor.fontName;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;

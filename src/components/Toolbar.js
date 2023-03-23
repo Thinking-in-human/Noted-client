@@ -27,6 +27,7 @@ import {
 } from "../feature/editorSlice";
 
 export default function Toolbar() {
+
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
 
