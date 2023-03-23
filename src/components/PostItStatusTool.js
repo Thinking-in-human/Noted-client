@@ -1,11 +1,14 @@
 import React, { useState, useRef } from "react";
+import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
+import { setSelectedFontUrl } from "../feature/editorSlice";
 
 export default function PostItStatusTool() {
   const [color, setColor] = useState("");
+  const dispatch = useDispatch();
 
   const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
 
@@ -48,6 +51,8 @@ export default function PostItStatusTool() {
       type: "font/woff2",
     });
     const fontUrl = URL.createObjectURL(fontBlob);
+
+    dispatch(setSelectedFontUrl(fontUrl));
   };
 
   return (
