@@ -29,12 +29,12 @@ export default function Document() {
 
       const canvas = canvasRef.current;
       canvas.width = 700;
-      canvas.height = 900;
+      canvas.height = 990;
 
       const pdfCanvas = pdfRef.current;
       const canvasContext = pdfCanvas.getContext("2d");
       pdfCanvas.width = 700;
-      pdfCanvas.height = 900;
+      pdfCanvas.height = 990;
 
       const renderContext = { canvasContext, viewport };
       page.render(renderContext);
@@ -49,9 +49,9 @@ export default function Document() {
 
     let linePoints = [];
 
-    const drawWhenMouseMove = (e) => {
-      const x = e.offsetX;
-      const y = e.offsetY;
+    const drawWhenMouseMove = (event) => {
+      const x = event.offsetX;
+      const y = event.offsetY;
       context.lineJoin = "round";
       context.lineCap = "round";
       context.globalAlpha = globalOpacity;
@@ -77,9 +77,9 @@ export default function Document() {
       canvas.removeEventListener("mouseup", handleMouseUp);
     };
 
-    const handleMouseDown = (e) => {
-      const x = e.offsetX;
-      const y = e.offsetY;
+    const handleMouseDown = (event) => {
+      const x = event.offsetX;
+      const y = event.offsetY;
 
       linePoints = [];
       linePoints.push({
@@ -108,11 +108,11 @@ export default function Document() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    context.clearRect(0, 0, 700, 900);
+    context.clearRect(0, 0, 700, 990);
 
-    drawingData?.forEach((drawing) => {
+    drawingData.forEach((drawing) => {
       context.beginPath();
-      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+      context.moveTo(drawing[0].xPoint, drawing[0].yPoint);
       for (let i = 1; i < drawing.length; i += 1) {
         context.strokeStyle = drawing[i].color;
         context.lineWidth = drawing[i].width;
@@ -142,7 +142,7 @@ const Background = styled.div`
 const CanvasPage = styled.canvas`
   position: absolute;
   width: 700px;
-  height: 900px;
+  height: 990px;
   z-index: 1;
 `;
 
@@ -150,5 +150,5 @@ const PdfPage = styled.canvas`
   border: 5px solid brown;
   position: absolute;
   width: 700px;
-  height: 900px;
+  height: 990px;
 `;

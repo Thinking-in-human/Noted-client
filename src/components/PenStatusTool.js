@@ -43,13 +43,16 @@ export default function PenStatusTool() {
         />
       </FormatIcon>
       <input
-        onChange={(e) => changeWidth(e.target.value)}
+        onChange={(event) => changeWidth(event.target.value)}
         type="range"
         defaultValue={pencilWidth}
         min="2"
         max="40"
       />
-      <Color onChange={(e) => changeColor(e.target.value)} type="color" />
+      <Color
+        onChange={(event) => changeColor(event.target.value)}
+        type="color"
+      />
     </ToolStatusField>
   );
 }

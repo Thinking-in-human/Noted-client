@@ -23,6 +23,7 @@ import {
   changeGlobalToolOption,
   moveDataUndoArray,
   moveDataRedoArray,
+  makeNewPostIt,
 } from "../feature/editorSlice";
 
 export default function Toolbar() {
@@ -39,6 +40,10 @@ export default function Toolbar() {
 
   const showNextDrawing = () => {
     dispatch(moveDataRedoArray());
+  };
+
+  const makeNewPostItStatus = () => {
+    dispatch(makeNewPostIt());
   };
 
   return (
@@ -72,7 +77,7 @@ export default function Toolbar() {
           alt="Marker Icon"
         />
         <Icon
-          onClick={() => changeEditorTool("postIt")}
+          onClick={makeNewPostItStatus}
           src={editorTool === "postIt" ? post2Icon : post1Icon}
           alt="PostIt Icon"
         />

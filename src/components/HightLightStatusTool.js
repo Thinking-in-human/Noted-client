@@ -27,29 +27,32 @@ export default function HightLightStatusTool() {
           onClick={() => changeWidth(8)}
           type="image"
           src={width1Icon}
-          alt="widthThinIcon"
+          alt="Thin Width Icon"
         />
         <WidthIcon
           onClick={() => changeWidth(14)}
           type="image"
           src={width2Icon}
-          alt="widthBasicIcon"
+          alt="Basic Width Icon"
         />
         <WidthIcon
           onClick={() => changeWidth(20)}
           type="image"
           src={width3Icon}
-          alt="widthThickIcon"
+          alt="Thick Width Icon"
         />
       </FormatIcon>
       <input
-        onChange={(e) => changeWidth(e.target.value)}
+        onChange={(event) => changeWidth(event.target.value)}
         defaultValue={highLightWidth}
         type="range"
         min="8"
         max="40"
       />
-      <Color onChange={(e) => changeColor(e.target.value)} type="color" />
+      <Color
+        onChange={(event) => changeColor(event.target.value)}
+        type="color"
+      />
     </ToolStatusField>
   );
 }

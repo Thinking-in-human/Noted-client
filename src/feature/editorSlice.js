@@ -7,8 +7,6 @@ const initialState = {
   currentEditorTool: "pencil",
   canvasDrawingArray: [],
   canvasRedoArray: [],
-  drawingArrayIndex: 0,
-  currentDrawingIndex: 0,
   pencil: {
     color: "black",
     width: 3,
@@ -36,8 +34,6 @@ const initialState = {
       color: "black",
     },
   },
-  currentPostIt: null,
-  madePostIts: {},
 };
 
 export const editorSlice = createSlice({
@@ -82,7 +78,7 @@ export const editorSlice = createSlice({
     setDataRedo: (state, action) => {
       const { restRedoArray, poppedData } = action.payload;
       state.canvasRedoArray = restRedoArray;
-      state.canvasDrawingArray = [...state.canvasDrawingArray, poppedData];
+      state.canvasDrawingArray = [state.canvasDrawingArray, poppedData];
     },
   },
 });
@@ -97,6 +93,7 @@ export const {
   pushDrawingData,
   setDataUndo,
   setDataRedo,
+  makeNewPostIt,
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
