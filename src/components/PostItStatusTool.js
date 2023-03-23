@@ -4,7 +4,10 @@ import styled from "styled-components";
 import axios from "axios";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
-import { setSelectedFontUrl } from "../feature/editorSlice";
+import {
+  setSelectedFontUrl,
+  setSelectedFontName,
+} from "../feature/editorSlice";
 
 export default function PostItStatusTool() {
   const [color, setColor] = useState("");
@@ -37,9 +40,11 @@ export default function PostItStatusTool() {
     setColor(event.target.value);
   };
 
-  const selectFont = async (event) => {
+  const handleChangeFont = async (event) => {
+    const selectedFont = event.target.value;
+    dispatch(setSelectedFontName(selectedFont));
     const response = await axios.get(
-      `http://localhost:4000/fonts/${event.target.value}`,
+      `http://localhost:4000/fonts/${selectedFont}`,
       {
         withCredentials: true,
         responseType: "arraybuffer",
@@ -57,7 +62,7 @@ export default function PostItStatusTool() {
 
   return (
     <ToolStatusField>
-      <select onChange={selectFont}>
+      <select onChange={handleChangeFont}>
         <option>Fasthand-Regular</option>
         <option>MavenPro-Regular</option>
         <option>PlayfairDisplay-Regular</option>
