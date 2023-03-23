@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
+import axios from "axios";
 
 import Loading from "./Loading";
 import { setErrorInfo } from "../feature/userSlice";
@@ -14,10 +15,16 @@ export default function PDFViewer({ url }) {
   useEffect(() => {
     const loadPdf = async () => {
       try {
-        const pdf = await pdfjs.getDocument(url).promise;
+        const response = await axios(url, {
+          method: "GET",
+          withCredentials: true,
+          responseType: "arraybuffer",
+        });
+        const selectDocuments = new Uint8Array(response.data);
+        const pdf = await pdfjs.getDocument(selectDocuments).promise;
         setPdfDocument(pdf);
       } catch (error) {
-        dispatch(setErrorInfo(error.response.data));
+        dispatch(setErrorInfo(error.response?.data));
       }
     };
 

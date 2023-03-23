@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
 import PenStatusTool from "./PenStatusTool";
@@ -24,7 +24,7 @@ export default function Toolbar() {
     editorTool = <PenStatusTool />;
   } else if (mode === "eraser") {
     editorTool = <EraserStatusTool />;
-  } else if (mode === "hightlight") {
+  } else if (mode === "hightLight") {
     editorTool = <HightLightStatusTool />;
   } else if (mode === "postIt") {
     editorTool = <PostItStatusTool />;
@@ -36,7 +36,7 @@ export default function Toolbar() {
         <Icon src={pen2Icon} alt="penIcon" />
         <Icon src={eraser1Icon} alt="eraserIcon" />
         <Icon src={marker1Icon} alt="markerIcon" />
-        <Icon src={post1Icon} alt="posetItIcon" />
+        <Icon src={post1Icon} alt="postItIcon" />
       </EditorToolField>
       {editorTool}
     </EditorTool>
@@ -47,7 +47,6 @@ const EditorTool = styled.div`
   display: flex;
   width: 100%;
   height: 35px;
-  border: 1px solid black;
 `;
 
 const EditorToolField = styled.div`
