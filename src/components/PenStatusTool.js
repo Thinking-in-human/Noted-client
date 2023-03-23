@@ -1,18 +1,58 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
 
 import { width1Icon, width2Icon, width3Icon } from "../assets/editorIcon";
+import {
+  setPencilWidth,
+  setPencilColor,
+  selectPencilWidth,
+} from "../feature/editorSlice";
 
 export default function PenStatusTool() {
+  const dispatch = useDispatch();
+  const pencilWidth = useSelector(selectPencilWidth);
+
+  const changeWidth = (width) => {
+    dispatch(setPencilWidth(width));
+  };
+  const changeColor = (color) => {
+    dispatch(setPencilColor(color));
+  };
+
   return (
     <ToolStatusField>
       <FormatIcon>
-        <WidthIcon type="image" src={width1Icon} alt="widthThinIcon" />
-        <WidthIcon type="image" src={width2Icon} alt="widthBasicIcon" />
-        <WidthIcon type="image" src={width3Icon} alt="widthThickIcon" />
+        <WidthIcon
+          onClick={() => changeWidth(2)}
+          type="image"
+          src={width1Icon}
+          alt="widthThinIcon"
+        />
+        <WidthIcon
+          onClick={() => changeWidth(5)}
+          type="image"
+          src={width2Icon}
+          alt="widthBasicIcon"
+        />
+        <WidthIcon
+          onClick={() => changeWidth(8)}
+          type="image"
+          src={width3Icon}
+          alt="widthThickIcon"
+        />
       </FormatIcon>
-      <input type="range" min="2" max="40" value="2" />
-      <Color type="color" />
+      <input
+        onChange={(event) => changeWidth(event.target.value)}
+        type="range"
+        defaultValue={pencilWidth}
+        min="2"
+        max="40"
+      />
+      <Color
+        onChange={(event) => changeColor(event.target.value)}
+        type="color"
+      />
     </ToolStatusField>
   );
 }

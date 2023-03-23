@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
+import { useSelector, useDispatch } from "react-redux";
 
 import PenStatusTool from "./PenStatusTool";
 import EraserStatusTool from "./EraserStatusTool";
@@ -10,35 +11,81 @@ import {
   pen2Icon,
   eraser1Icon,
   eraser2Icon,
-  marker1Icon,
-  marker2Icon,
+  highLight1Icon,
+  highLight2Icon,
   post1Icon,
   post2Icon,
+  undoIcon,
+  redoIcon,
 } from "../assets/editorIcon";
+import {
+  selectCurrentEditorTool,
+  changeGlobalToolOption,
+  moveDataUndoArray,
+  moveDataRedoArray,
+  makeNewPostIt,
+} from "../feature/editorSlice";
 
 export default function Toolbar() {
-  const [mode, setMode] = useState("pen");
-  let editorTool = null;
+  const dispatch = useDispatch();
+  const editorTool = useSelector(selectCurrentEditorTool);
 
-  if (mode === "pen") {
-    editorTool = <PenStatusTool />;
-  } else if (mode === "eraser") {
-    editorTool = <EraserStatusTool />;
-  } else if (mode === "hightLight") {
-    editorTool = <HightLightStatusTool />;
-  } else if (mode === "postIt") {
-    editorTool = <PostItStatusTool />;
-  }
+  const changeEditorTool = (tool) => {
+    dispatch(changeGlobalToolOption(tool));
+  };
+
+  const showPrevDrawing = () => {
+    dispatch(moveDataUndoArray());
+  };
+
+  const showNextDrawing = () => {
+    dispatch(moveDataRedoArray());
+  };
+
+  const makeNewPostItStatus = () => {
+    dispatch(makeNewPostIt());
+  };
 
   return (
     <EditorTool>
+      <ExecuteField>
+        <Icon
+          onClick={showPrevDrawing}
+          src={undoIcon}
+          alt="Toggle to Show PrevDrawing"
+        />
+        <Icon
+          onClick={showNextDrawing}
+          src={redoIcon}
+          alt="Toggle to Show NextDrawing"
+        />
+      </ExecuteField>
       <EditorToolField>
-        <Icon src={pen2Icon} alt="penIcon" />
-        <Icon src={eraser1Icon} alt="eraserIcon" />
-        <Icon src={marker1Icon} alt="markerIcon" />
-        <Icon src={post1Icon} alt="postItIcon" />
+        <Icon
+          onClick={() => changeEditorTool("pencil")}
+          src={editorTool === "pencil" ? pen2Icon : pen1Icon}
+          alt="Pen Icon"
+        />
+        <Icon
+          onClick={() => changeEditorTool("eraser")}
+          src={editorTool === "eraser" ? eraser2Icon : eraser1Icon}
+          alt="Eraser Icon"
+        />
+        <Icon
+          onClick={() => changeEditorTool("highLightPen")}
+          src={editorTool === "highLightPen" ? highLight2Icon : highLight1Icon}
+          alt="Marker Icon"
+        />
+        <Icon
+          onClick={makeNewPostItStatus}
+          src={editorTool === "postIt" ? post2Icon : post1Icon}
+          alt="PostIt Icon"
+        />
       </EditorToolField>
-      {editorTool}
+      {editorTool === "pencil" && <PenStatusTool />}
+      {editorTool === "eraser" && <EraserStatusTool />}
+      {editorTool === "highLightPen" && <HightLightStatusTool />}
+      {editorTool === "postIt" && <PostItStatusTool />}
     </EditorTool>
   );
 }
@@ -49,11 +96,19 @@ const EditorTool = styled.div`
   height: 35px;
 `;
 
+const ExecuteField = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15%;
+  border: 1px solid black;
+`;
+
 const EditorToolField = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50%;
+  width: 35%;
   border: 1px solid black;
 `;
 
