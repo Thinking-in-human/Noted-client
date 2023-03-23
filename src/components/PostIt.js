@@ -1,9 +1,29 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+
+import { selectFontUrl, selectFontName } from "../feature/editorSlice";
 
 export default function PostIt() {
-  const [content, setContent] = useState(null);
+  const fontUrl = useSelector(selectFontUrl);
+  const fontName = useSelector(selectFontName);
   const divRef = useRef(null);
+  const [content, setContent] = useState("");
+
+  useEffect(() => {
+    const getFont = async () => {
+      if (fontUrl) {
+        const fontFace = new FontFace(`${fontName}`, `url(${fontUrl})`);
+        await fontFace.load();
+        document.fonts.add(fontFace);
+
+        const editor = divRef.current;
+        editor.style.fontFamily = `${fontName}`;
+      }
+    };
+
+    getFont();
+  }, [fontUrl]);
 
   const handleInput = () => {
     setContent(divRef.current.innerText);

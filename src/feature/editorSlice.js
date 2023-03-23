@@ -30,6 +30,7 @@ const initialState = {
   currentPostIt: null,
   madePostIts: {},
   fontUrl: "",
+  fontName: "",
 };
 
 export const editorSlice = createSlice({
@@ -42,12 +43,16 @@ export const editorSlice = createSlice({
     setSelectedFontUrl: (state, action) => {
       state.fontUrl = action.payload;
     },
+    setSelectedFontName: (state, action) => {
+      state.fontName = action.payload;
+    },
   },
 });
 
-export const { setSelectedDocument, setSelectedFontUrl } = editorSlice.actions;
+export const { setSelectedDocument, setSelectedFontUrl, setSelectedFontName } =
+  editorSlice.actions;
 
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
-
+export const selectFontName = (state) => state.editor.fontName;
 export default editorSlice.reducer;
