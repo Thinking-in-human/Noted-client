@@ -4,118 +4,87 @@ import styled from "styled-components";
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 
 export default function PostItStatusTool() {
-  const [content, setContent] = useState(null);
   const [color, setColor] = useState("");
-  const divRef = useRef(null);
-
-  const handleInput = () => {
-    setContent(divRef.current.innerText);
-  };
 
   const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
 
-  const handleClickBold = () => {
+  const handleSelection = () => {
     const selection = document.getSelection();
+
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const selectedText = range.toString();
-      const boldElement = document.createElement("strong");
-      boldElement.textContent = selectedText;
-      range.deleteContents();
-      range.insertNode(boldElement);
     }
+  };
+
+  const handleClickBold = () => {
+    handleSelection();
   };
 
   const handleClickItalic = () => {
-    const selection = document.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const selectedText = range.toString();
-      const italicElement = document.createElement("em");
-      italicElement.textContent = selectedText;
-      range.deleteContents();
-      range.insertNode(italicElement);
-    }
+    handleSelection();
   };
 
   const handleClickUnderLine = () => {
-    const selection = document.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const selectedText = range.toString();
-      const underLineElement = document.createElement("u");
-      underLineElement.textContent = selectedText;
-      range.deleteContents();
-      range.insertNode(underLineElement);
-    }
+    handleSelection();
+  };
+
+  const handleChangeColor = (event) => {
+    setColor(event.target.value);
   };
 
   return (
-    <>
-      <ToolStatusField>
-        <select>
-          <option>Arial</option>
-          <option>Verdana</option>
-          <option>Times New Roman</option>
-          <option>Garamond</option>
-          <option>Georgia</option>
-          <option>Courier New</option>
-          <option>cursive</option>
-        </select>
-        <select>
-          {fontSizeArray.map((size) => {
-            return <option key={size}>{size}</option>;
-          })}
-        </select>
-        <FormatIcon>
-          <Icon src={boldIcon} alt="boldIcon" onClick={handleClickBold} />
-          <Icon src={italicIcon} alt="italicIcon" onClick={handleClickItalic} />
-          <Icon
-            src={underlineIcon}
-            alt="underlineIcon"
-            onClick={handleClickUnderLine}
-          />
-        </FormatIcon>
-        <FormatColor>
-          <Color
-            type="color"
-            defaultValue="#000000"
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <Color
-            type="color"
-            defaultValue="#ff0000"
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <Color
-            type="color"
-            defaultValue="#0000FF"
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <Color
-            type="color"
-            defaultValue="#808080"
-            onChange={(e) => setColor(e.target.value)}
-          />
-        </FormatColor>
-      </ToolStatusField>
-      <Wrapper>
-        <div
-          id="input22"
-          style={{
-            border: "1px solid",
-            height: "400px",
-            width: "400px",
-            borderRadius: "5px",
-            position: "absolute",
-            backgroundColor: "#ffff33",
-          }}
-          contentEditable
-          ref={divRef}
-          onInput={handleInput}
+    <ToolStatusField>
+      <select>
+        <option>Arial</option>
+        <option>Verdana</option>
+        <option>Times New Roman</option>
+        <option>Garamond</option>
+        <option>Georgia</option>
+        <option>Courier New</option>
+        <option>cursive</option>
+      </select>
+      <select>
+        {fontSizeArray.map((size) => {
+          return <option key={size}>{size}</option>;
+        })}
+      </select>
+      <FormatIcon>
+        <Icon src={boldIcon} alt="Bold Button Icon" onClick={handleClickBold} />
+        <Icon
+          src={italicIcon}
+          alt="Italic Button Icon"
+          onClick={handleClickItalic}
         />
-      </Wrapper>
-    </>
+        <Icon
+          src={underlineIcon}
+          alt="Underline Button Icon"
+          onClick={handleClickUnderLine}
+        />
+      </FormatIcon>
+      <FormatColor>
+        <Color
+          type="color"
+          defaultValue="#000000"
+          onChange={handleChangeColor}
+        />
+        <Color
+          type="color"
+          defaultValue="#ff0000"
+          onChange={handleChangeColor}
+        />
+        <Color
+          type="color"
+          defaultValue="#0000FF"
+          onChange={handleChangeColor}
+        />
+        <Color
+          type="color"
+          defaultValue="#808080"
+          onChange={handleChangeColor}
+        />
+      </FormatColor>
+    </ToolStatusField>
   );
 }
 
@@ -162,8 +131,4 @@ const Color = styled.input`
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
-`;
-
-const Wrapper = styled.div`
-  width: 100vw;
 `;

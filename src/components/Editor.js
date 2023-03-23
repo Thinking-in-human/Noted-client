@@ -7,6 +7,7 @@ import PDFViewer from "./PDFViewer";
 import { selectUserId } from "../feature/userSlice";
 import Toolbar from "./Toolbar";
 import { setSelectedDocument } from "../feature/editorSlice";
+import PostIt from "./PostIt";
 
 export default function Editor() {
   const loginUserId = useSelector(selectUserId);
@@ -18,6 +19,7 @@ export default function Editor() {
   return (
     <Wrapper>
       <Toolbar />
+      <PostIt />
       <PDFViewer
         url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
       />

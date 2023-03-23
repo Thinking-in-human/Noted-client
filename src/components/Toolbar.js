@@ -17,7 +17,7 @@ import {
 } from "../assets/editorIcon";
 
 export default function Toolbar() {
-  const [mode, setMode] = useState("postIt");
+  const [mode, setMode] = useState("pen");
   let editorTool = null;
 
   if (mode === "pen") {
