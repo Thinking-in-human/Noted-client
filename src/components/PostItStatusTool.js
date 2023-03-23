@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
+import axios from "axios";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 
@@ -33,16 +34,31 @@ export default function PostItStatusTool() {
     setColor(event.target.value);
   };
 
+  const selectFont = async (event) => {
+    const response = await axios.get(
+      `http://localhost:4000/fonts/${event.target.value}`,
+      {
+        withCredentials: true,
+        responseType: "arraybuffer",
+      },
+    );
+    const fontBuffer = response.data;
+
+    const fontBlob = new Blob([fontBuffer], {
+      type: "font/woff2",
+    });
+    const fontUrl = URL.createObjectURL(fontBlob);
+  };
+
   return (
     <ToolStatusField>
-      <select>
-        <option>Arial</option>
-        <option>Verdana</option>
-        <option>Times New Roman</option>
-        <option>Garamond</option>
-        <option>Georgia</option>
-        <option>Courier New</option>
-        <option>cursive</option>
+      <select onChange={selectFont}>
+        <option>Fasthand-Regular</option>
+        <option>MavenPro-Regular</option>
+        <option>PlayfairDisplay-Regular</option>
+        <option>Roboto-Regular</option>
+        <option>Rubik-Regular</option>
+        <option>RubikIso-Regular</option>
       </select>
       <select>
         {fontSizeArray.map((size) => {
