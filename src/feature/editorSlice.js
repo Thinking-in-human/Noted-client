@@ -34,6 +34,9 @@ const initialState = {
       color: "black",
     },
   },
+  currentPostIt: null,
+  madePostIts: {},
+  fontUrl: "",
 };
 
 export const editorSlice = createSlice({
@@ -83,22 +86,13 @@ export const editorSlice = createSlice({
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
     },
+    setSelectedFontUrl: (state, action) => {
+      state.fontUrl = action.payload;
+    },
   },
 });
 
-export const {
-  setEditorTool,
-  setPencilWidth,
-  setPencilColor,
-  setHighLightWidth,
-  setHighLightColor,
-  setGlobalStyle,
-  pushDrawingData,
-  setDataUndo,
-  setDataRedo,
-  makeNewPostIt,
-  setSelectedDocument
-} = editorSlice.actions;
+export const { setSelectedDocument, setSelectedFontUrl } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
@@ -110,39 +104,6 @@ export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDrawingArray = (state) => state.editor.canvasDrawingArray;
 export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 export const selectDocument = (state) => state.editor.selectedPdfId;
-
-export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
-  const selectToolColor = (state) => state.editor[tool].color;
-  const selectToolWidth = (state) => state.editor[tool].width;
-  const selectToolOpacity = (state) => state.editor[tool].opacity;
-
-  const color = selectToolColor(getState());
-  const width = selectToolWidth(getState());
-  const opacity = selectToolOpacity(getState());
-
-  dispatch(setGlobalStyle({ tool, color, width, opacity }));
-};
-
-export const moveDataUndoArray = () => (dispatch, getState) => {
-  const drawingArray = selectDrawingArray(getState());
-
-  if (drawingArray.length) {
-    const poppedData = drawingArray[drawingArray.length - 1];
-    const restDrawingArray = drawingArray.slice(0, drawingArray.length - 1);
-
-    dispatch(setDataUndo({ restDrawingArray, poppedData }));
-  }
-};
-
-export const moveDataRedoArray = () => (dispatch, getState) => {
-  const redoArray = selectRedoArray(getState());
-
-  if (redoArray.length) {
-    const poppedData = redoArray[redoArray.length - 1];
-    const restRedoArray = redoArray.slice(0, redoArray.length - 1);
-
-    dispatch(setDataRedo({ restRedoArray, poppedData }));
-  }
-};
+export const selectFontUrl = (state) => state.editor.fontUrl;
 
 export default editorSlice.reducer;
