@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -6,24 +6,18 @@ import {
   selectGlobalColor,
   selectGlobalWidth,
   selectGlobalOpacity,
+  pushDrawingData,
+  selectDrawingArray,
 } from "../feature/editorSlice";
 
 export default function Document() {
   const globalColor = useSelector(selectGlobalColor);
   const globalWidth = useSelector(selectGlobalWidth);
   const globalOpacity = useSelector(selectGlobalOpacity);
+  const drawingData = useSelector(selectDrawingArray);
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
-  const [drawQueue, setDrawQueue] = useState([]);
-
-  const pushDrawQueue = (input) => {
-    setDrawQueue((prev) => [...prev, input]);
-  };
-
-  const popDrawQueue = () => {
-    setDrawQueue((prev) => prev.slice(0, prev.length - 1));
-  };
 
   useEffect(() => {
     const renderPdf = async () => {
@@ -52,9 +46,10 @@ export default function Document() {
   useEffect(() => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
-    const linePoints = [];
 
-    const handleMouseMove = (e) => {
+    let linePoints = [];
+
+    const drawWhenMouseMove = (e) => {
       const x = e.offsetX;
       const y = e.offsetY;
       context.lineJoin = "round";
@@ -76,10 +71,9 @@ export default function Document() {
     };
 
     const handleMouseUp = () => {
-      pushDrawQueue(linePoints);
-      console.log(linePoints, "라인 포인트");
+      dispatch(pushDrawingData(linePoints));
 
-      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("mousemove", drawWhenMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
     };
 
@@ -87,7 +81,7 @@ export default function Document() {
       const x = e.offsetX;
       const y = e.offsetY;
 
-      linePoints.length = 0;
+      linePoints = [];
       linePoints.push({
         xPoint: x,
         yPoint: y,
@@ -99,7 +93,7 @@ export default function Document() {
       context.beginPath();
       context.moveTo(x, y);
 
-      canvas.addEventListener("mousemove", handleMouseMove);
+      canvas.addEventListener("mousemove", drawWhenMouseMove);
       canvas.addEventListener("mouseup", handleMouseUp);
     };
 
@@ -108,47 +102,36 @@ export default function Document() {
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
     };
-  }, [drawQueue, globalWidth, globalOpacity, globalColor]);
+  }, [dispatch, globalWidth, globalOpacity, globalColor]);
 
-  const drawUndoPath = () => {
+  if (canvasRef.current) {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
     context.clearRect(0, 0, 700, 900);
 
-    drawQueue.forEach((drawing, index) => {
-      if (index < drawQueue.length - 1) {
-        context.beginPath();
-        context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
-        for (let i = 1; i < drawing.length; i += 1) {
-          context.strokeStyle = drawing[i].color;
-          context.lineWidth = drawing[i].width;
-          context.globalAlpha = drawing[i].opacity;
-          context.lineTo(drawing[i].xPoint, drawing[i].yPoint);
-          context.stroke();
-        }
+    drawingData?.forEach((drawing) => {
+      context.beginPath();
+      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+      for (let i = 1; i < drawing.length; i += 1) {
+        context.strokeStyle = drawing[i].color;
+        context.lineWidth = drawing[i].width;
+        context.globalAlpha = drawing[i].opacity;
+        context.lineTo(drawing[i].xPoint, drawing[i].yPoint);
+        context.stroke();
       }
     });
-
-    popDrawQueue();
-  };
+  }
 
   return (
-    <>
-      <button type="button" onClick={drawUndoPath}>
-        undo
-      </button>
-      <Background>
-        <CanvasPage ref={canvasRef} />
-        <PdfPage ref={pdfRef} />
-      </Background>
-    </>
+    <Background>
+      <CanvasPage ref={canvasRef} />
+      <PdfPage ref={pdfRef} />
+    </Background>
   );
 }
 
 const Background = styled.div`
-  background-color: yellow;
-  border: 10px solid red;
   display: flex;
   justify-content: center;
   position: relative;
@@ -164,7 +147,7 @@ const CanvasPage = styled.canvas`
 `;
 
 const PdfPage = styled.canvas`
-  border: 10px solid blue;
+  border: 5px solid brown;
   position: absolute;
   width: 700px;
   height: 900px;

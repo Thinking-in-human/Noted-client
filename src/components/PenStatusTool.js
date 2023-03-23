@@ -43,7 +43,7 @@ export default function PenStatusTool() {
         />
       </FormatIcon>
       <input
-        onMouseUp={(e) => changeWidth(e.target.value)}
+        onChange={(e) => changeWidth(e.target.value)}
         type="range"
         defaultValue={pencilWidth}
         min="2"

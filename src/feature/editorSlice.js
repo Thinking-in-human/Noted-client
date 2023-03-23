@@ -5,6 +5,10 @@ const initialState = {
   globalWidth: 3,
   globalOpacity: 1,
   currentEditorTool: "pencil",
+  canvasDrawingArray: [],
+  canvasRedoArray: [],
+  drawingArrayIndex: 0,
+  currentDrawingIndex: 0,
   pencil: {
     color: "black",
     width: 3,
@@ -12,7 +16,7 @@ const initialState = {
   },
   highLightPen: {
     color: "yellow",
-    width: 8,
+    width: 10,
     opacity: 0.03,
   },
   eraser: {
@@ -67,6 +71,19 @@ export const editorSlice = createSlice({
       state.globalWidth = width;
       state.globalOpacity = opacity;
     },
+    pushDrawingData: (state, action) => {
+      state.canvasDrawingArray = [...state.canvasDrawingArray, action.payload];
+    },
+    setDataUndo: (state, action) => {
+      const { restDrawingArray, poppedData } = action.payload;
+      state.canvasDrawingArray = restDrawingArray;
+      state.canvasRedoArray = [...state.canvasRedoArray, poppedData];
+    },
+    setDataRedo: (state, action) => {
+      const { restRedoArray, poppedData } = action.payload;
+      state.canvasRedoArray = restRedoArray;
+      state.canvasDrawingArray = [...state.canvasDrawingArray, poppedData];
+    },
   },
 });
 
@@ -77,6 +94,9 @@ export const {
   setHighLightWidth,
   setHighLightColor,
   setGlobalStyle,
+  pushDrawingData,
+  setDataUndo,
+  setDataRedo,
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
@@ -86,6 +106,8 @@ export const selectHighlightWidth = (state) => state.editor.highLightPen.width;
 export const selectGlobalColor = (state) => state.editor.globalColor;
 export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
+export const selectDrawingArray = (state) => state.editor.canvasDrawingArray;
+export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;
@@ -97,6 +119,28 @@ export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const opacity = selectToolOpacity(getState());
 
   dispatch(setGlobalStyle({ tool, color, width, opacity }));
+};
+
+export const moveDataUndoArray = () => (dispatch, getState) => {
+  const drawingArray = selectDrawingArray(getState());
+
+  if (drawingArray.length) {
+    const poppedData = drawingArray[drawingArray.length - 1];
+    const restDrawingArray = drawingArray.slice(0, drawingArray.length - 1);
+
+    dispatch(setDataUndo({ restDrawingArray, poppedData }));
+  }
+};
+
+export const moveDataRedoArray = () => (dispatch, getState) => {
+  const redoArray = selectRedoArray(getState());
+
+  if (redoArray.length) {
+    const poppedData = redoArray[redoArray.length - 1];
+    const restRedoArray = redoArray.slice(0, redoArray.length - 1);
+
+    dispatch(setDataRedo({ restRedoArray, poppedData }));
+  }
 };
 
 export default editorSlice.reducer;

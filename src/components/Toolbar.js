@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 
@@ -11,14 +11,18 @@ import {
   pen2Icon,
   eraser1Icon,
   eraser2Icon,
-  marker1Icon,
-  marker2Icon,
+  highLight1Icon,
+  highLight2Icon,
   post1Icon,
   post2Icon,
+  undoIcon,
+  redoIcon,
 } from "../assets/editorIcon";
 import {
   selectCurrentEditorTool,
   changeGlobalToolOption,
+  moveDataUndoArray,
+  moveDataRedoArray,
 } from "../feature/editorSlice";
 
 export default function Toolbar() {
@@ -29,28 +33,48 @@ export default function Toolbar() {
     dispatch(changeGlobalToolOption(tool));
   };
 
+  const showPrevDrawing = () => {
+    dispatch(moveDataUndoArray());
+  };
+
+  const showNextDrawing = () => {
+    dispatch(moveDataRedoArray());
+  };
+
   return (
     <EditorTool>
+      <ExecuteField>
+        <Icon
+          onClick={showPrevDrawing}
+          src={undoIcon}
+          alt="Toggle to Show PrevDrawing"
+        />
+        <Icon
+          onClick={showNextDrawing}
+          src={redoIcon}
+          alt="Toggle to Show NextDrawing"
+        />
+      </ExecuteField>
       <EditorToolField>
         <Icon
           onClick={() => changeEditorTool("pencil")}
-          src={pen2Icon}
-          alt="penIcon"
+          src={editorTool === "pencil" ? pen2Icon : pen1Icon}
+          alt="Pen Icon"
         />
         <Icon
           onClick={() => changeEditorTool("eraser")}
-          src={eraser1Icon}
-          alt="eraserIcon"
+          src={editorTool === "eraser" ? eraser2Icon : eraser1Icon}
+          alt="Eraser Icon"
         />
         <Icon
           onClick={() => changeEditorTool("highLightPen")}
-          src={marker1Icon}
-          alt="markerIcon"
+          src={editorTool === "highLightPen" ? highLight2Icon : highLight1Icon}
+          alt="Marker Icon"
         />
         <Icon
           onClick={() => changeEditorTool("postIt")}
-          src={post1Icon}
-          alt="postItIcon"
+          src={editorTool === "postIt" ? post2Icon : post1Icon}
+          alt="PostIt Icon"
         />
       </EditorToolField>
       {editorTool === "pencil" && <PenStatusTool />}
@@ -68,11 +92,19 @@ const EditorTool = styled.div`
   border: 1px solid black;
 `;
 
+const ExecuteField = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 15%;
+  border: 1px solid black;
+`;
+
 const EditorToolField = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50%;
+  width: 35%;
   border: 1px solid black;
 `;
 
