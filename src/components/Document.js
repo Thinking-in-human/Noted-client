@@ -31,7 +31,6 @@ export default function Document({ url, pdfDocument }) {
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
   const combinedRef = useRef(null);
-  console.log(drawingData, "data");
 
   useEffect(() => {
     const renderPdf = async () => {
@@ -56,6 +55,8 @@ export default function Document({ url, pdfDocument }) {
           context.beginPath();
           context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
           for (let i = 1; i < drawing.length; i += 1) {
+            context.lineJoin = "round";
+            context.lineCap = "round";
             context.strokeStyle = drawing[i]?.color;
             context.lineWidth = drawing[i]?.width;
             context.globalAlpha = drawing[i]?.opacity;
@@ -91,15 +92,28 @@ export default function Document({ url, pdfDocument }) {
 
     const loadPdf = await PDFDocument.load(selectDocuments);
     const page = loadPdf.getPages([CANVAS_WIDTH, CANVAS_HEIGHT]);
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = CANVAS_WIDTH;
+    canvas.height = CANVAS_HEIGHT;
 
-    const combinedCanvas = document.createElement("canvas");
-    combinedCanvas.width = CANVAS_WIDTH;
-    combinedCanvas.height = CANVAS_HEIGHT;
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    const combinedContext = combinedCanvas.getContext("2d");
-    combinedContext.drawImage(canvasRef.current, 0, 0);
+    drawingData.forEach((drawing) => {
+      context.beginPath();
+      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+      for (let i = 1; i < drawing.length; i += 1) {
+        context.lineJoin = "round";
+        context.lineCap = "round";
+        context.strokeStyle = drawing[i]?.color;
+        context.lineWidth = drawing[i]?.width;
+        context.globalAlpha = drawing[i]?.opacity;
+        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
+        context.stroke();
+      }
+    });
 
-    const imageData = combinedCanvas.toDataURL("image/png");
+    const imageData = canvas.toDataURL("image/png");
     const imageDataBytes = await fetch(imageData).then((res) =>
       res.arrayBuffer(),
     );
@@ -124,8 +138,6 @@ export default function Document({ url, pdfDocument }) {
     const drawWhenMouseMove = (event) => {
       const x = event.offsetX;
       const y = event.offsetY;
-      context.lineJoin = "round";
-      context.lineCap = "round";
       context.globalAlpha = globalOpacity;
       context.strokeStyle = globalColor;
       context.lineWidth = globalWidth;
@@ -186,6 +198,8 @@ export default function Document({ url, pdfDocument }) {
       context.beginPath();
       context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
       for (let i = 1; i < drawing.length; i += 1) {
+        context.lineJoin = "round";
+        context.lineCap = "round";
         context.strokeStyle = drawing[i]?.color;
         context.lineWidth = drawing[i]?.width;
         context.globalAlpha = drawing[i]?.opacity;
