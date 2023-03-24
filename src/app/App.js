@@ -16,7 +16,7 @@ export default function App() {
 
   useEffect(() => {
     if (!loginUserId) {
-      navigate("/login");
+      navigate("/");
     }
   }, [navigate, loginUserId]);
 
@@ -25,19 +25,19 @@ export default function App() {
       <GlobalStyle />
       {pathname !== "/login" && <Header />}
       <Routes>
-        <Route path="/" element={<OpenPdf />} />
+        <Route path="/openPdf" element={<OpenPdf />} />
         <Route path="/documents/:documentId" element={<Editor />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
       </Routes>
     </>
   );
 }
 
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: "DMSerifText-Regular";
-    src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
-  }
+@font-face {
+  font-family: "DMSerifText-Regular";
+  src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
+}
   body {
     font-family: "DMSerifText-Regular";
     margin: 0;

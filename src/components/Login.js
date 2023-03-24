@@ -41,7 +41,7 @@ export default function Login() {
         );
       }
 
-      navigate("/");
+      navigate("/openPdf");
     } catch (error) {
       dispatch(setErrorInfo(error.response.data));
     }

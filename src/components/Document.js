@@ -1,6 +1,10 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import * as pdfjs from "pdfjs-dist";
+import { PDFDocument } from "pdf-lib";
+import { saveAs } from "file-saver";
+import axios from "axios";
 
 import {
   selectGlobalColor,
@@ -10,7 +14,12 @@ import {
   selectDrawingArray,
 } from "../feature/editorSlice";
 
-export default function Document() {
+const CANVAS_WIDTH = 594.95996;
+const CANVAS_HEIGHT = 841.91998;
+
+pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
+
+export default function Document({ url, pdfDocument }) {
   const globalColor = useSelector(selectGlobalColor);
   const globalWidth = useSelector(selectGlobalWidth);
   const globalOpacity = useSelector(selectGlobalOpacity);
@@ -18,30 +27,78 @@ export default function Document() {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
+  const combinedRef = useRef(null);
+  const [pageState, setPageState] = useState(1);
 
   useEffect(() => {
     const renderPdf = async () => {
-      const pdfJS = await import("pdfjs-dist/build/pdf");
-      pdfJS.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
-      const pdf = await pdfJS.getDocument("example.pdf").promise;
-      const page = await pdf.getPage(1);
+      const page = await pdfDocument.getPage(pageState);
       const viewport = page.getViewport({ scale: 1 });
 
       const canvas = canvasRef.current;
-      canvas.width = 700;
-      canvas.height = 990;
+      canvas.width = CANVAS_WIDTH;
+      canvas.height = CANVAS_HEIGHT;
 
       const pdfCanvas = pdfRef.current;
       const canvasContext = pdfCanvas.getContext("2d");
-      pdfCanvas.width = 700;
-      pdfCanvas.height = 990;
+      pdfCanvas.width = CANVAS_WIDTH;
+      pdfCanvas.height = CANVAS_HEIGHT;
 
       const renderContext = { canvasContext, viewport };
       page.render(renderContext);
     };
 
     renderPdf();
-  }, []);
+  }, [pageState]);
+
+  const setNextPage = () => {
+    setPageState((prev) => prev + 1);
+  };
+
+  const setPrevPage = () => {
+    if (pageState > 0) {
+      setPageState((prev) => prev - 1);
+    }
+  };
+
+  const savePdf = async () => {
+    const response = await axios(url, {
+      method: "GET",
+      withCredentials: true,
+      responseType: "arraybuffer",
+    });
+
+    const selectDocuments = new Uint8Array(response.data);
+
+    const loadPdf = await PDFDocument.load(selectDocuments);
+    const page = loadPdf.getPages([CANVAS_WIDTH, CANVAS_HEIGHT]);
+    const pdfWidth = page[0].getWidth();
+    const pdfHeight = page[0].getHeight();
+
+    const combinedCanvas = document.createElement("canvas");
+    combinedCanvas.width = pdfWidth;
+    combinedCanvas.height = pdfHeight;
+
+    const combinedContext = combinedCanvas.getContext("2d");
+
+    combinedContext.drawImage(canvasRef.current, 0, 0);
+
+    const imageData = combinedCanvas.toDataURL("image/png");
+    console.log(imageData);
+
+    const imageDataBytes = await fetch(imageData).then((res) =>
+      res.arrayBuffer(),
+    );
+    const pdfImage = await loadPdf.embedPng(imageDataBytes);
+
+    page[0].drawImage(pdfImage, {
+      width: pdfWidth,
+      height: pdfHeight,
+    });
+
+    const pdfBytes = await loadPdf.save();
+    saveAs(new Blob([pdfBytes]), "combined.pdf");
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -108,26 +165,44 @@ export default function Document() {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
 
-    context.clearRect(0, 0, 700, 990);
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
     drawingData.forEach((drawing) => {
       context.beginPath();
-      context.moveTo(drawing[0].xPoint, drawing[0].yPoint);
+      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
       for (let i = 1; i < drawing.length; i += 1) {
-        context.strokeStyle = drawing[i].color;
-        context.lineWidth = drawing[i].width;
-        context.globalAlpha = drawing[i].opacity;
-        context.lineTo(drawing[i].xPoint, drawing[i].yPoint);
+        context.strokeStyle = drawing[i]?.color;
+        context.lineWidth = drawing[i]?.width;
+        context.globalAlpha = drawing[i]?.opacity;
+        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
         context.stroke();
       }
     });
   }
 
   return (
-    <Background>
-      <CanvasPage ref={canvasRef} />
-      <PdfPage ref={pdfRef} />
-    </Background>
+    <>
+      {/* <button type="button" onClick={savePdf}>
+        저장
+      </button> */}
+      <Background>
+        <ButtonWrapper>
+          <PageButton onClick={setPrevPage} type="button">
+            ⬅️
+          </PageButton>
+        </ButtonWrapper>
+        <PdfWrapper>
+          <CombinedCanvas ref={combinedRef} />
+          <CanvasPage ref={canvasRef} />
+          <PdfPage ref={pdfRef} />
+        </PdfWrapper>
+        <ButtonWrapper>
+          <PageButton onClick={setNextPage} type="button">
+            ➡️
+          </PageButton>
+        </ButtonWrapper>
+      </Background>
+    </>
   );
 }
 
@@ -139,16 +214,51 @@ const Background = styled.div`
   height: 100%;
 `;
 
+const PdfWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 60%;
+  height: 100%;
+`;
+
 const CanvasPage = styled.canvas`
   position: absolute;
-  width: 700px;
-  height: 990px;
-  z-index: 1;
+  border: 5px solid brown;
+  width: ${CANVAS_WIDTH};
+  height: ${CANVAS_HEIGHT};
+  z-index: 2;
 `;
 
 const PdfPage = styled.canvas`
-  border: 5px solid brown;
   position: absolute;
-  width: 700px;
-  height: 990px;
+  border: 5px solid brown;
+  width: ${CANVAS_WIDTH};
+  height: ${CANVAS_HEIGHT};
+`;
+
+const CombinedCanvas = styled.canvas`
+  position: absolute;
+  width: ${CANVAS_WIDTH};
+  height: ${CANVAS_HEIGHT};
+  z-index: 1;
+`;
+
+const PageButton = styled.button`
+  width: 60px;
+  height: 60px;
+  font-size: 40px;
+
+  &:hover {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  margin: auto;
 `;

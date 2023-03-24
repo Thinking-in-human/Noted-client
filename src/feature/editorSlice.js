@@ -7,6 +7,8 @@ const initialState = {
   currentEditorTool: "pencil",
   canvasDrawingArray: [],
   canvasRedoArray: [],
+  selectedPdfId: "",
+  pdfUnit8Array: "",
   pencil: {
     color: "black",
     width: 3,
@@ -82,10 +84,13 @@ export const editorSlice = createSlice({
     setDataRedo: (state, action) => {
       const { restRedoArray, poppedData } = action.payload;
       state.canvasRedoArray = restRedoArray;
-      state.canvasDrawingArray = [state.canvasDrawingArray, poppedData];
+      state.canvasDrawingArray = [...state.canvasDrawingArray, poppedData];
     },
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
+    },
+    setPdfUnit8Array: (state, action) => {
+      state.pdfUnit8Array = action.payload;
     },
     setSelectedFontUrl: (state, action) => {
       state.fontUrl = action.payload;
@@ -110,6 +115,7 @@ export const {
   setSelectedDocument,
   setSelectedFontUrl,
   setSelectedFontName,
+  setPdfUnit8Array,
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
@@ -124,6 +130,7 @@ export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
+export const selectPdfUnit8Array = (state) => state.editor.pdfUnit8Array;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;
