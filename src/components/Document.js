@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
@@ -10,7 +10,7 @@ import {
   selectGlobalColor,
   selectGlobalWidth,
   selectGlobalOpacity,
-  pushDrawingData,
+  pushDrawingDataCurrentPage,
   selectCurrentPage,
   changePageNumber,
   selectDrawingData,
@@ -47,6 +47,24 @@ export default function Document({ url, pdfDocument }) {
       pdfCanvas.width = CANVAS_WIDTH;
       pdfCanvas.height = CANVAS_HEIGHT;
 
+      if (canvasRef.current) {
+        const context = canvas.getContext("2d");
+
+        context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+        drawingData.forEach((drawing) => {
+          context.beginPath();
+          context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+          for (let i = 1; i < drawing.length; i += 1) {
+            context.strokeStyle = drawing[i]?.color;
+            context.lineWidth = drawing[i]?.width;
+            context.globalAlpha = drawing[i]?.opacity;
+            context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
+            context.stroke();
+          }
+        });
+      }
+
       const renderContext = { canvasContext, viewport };
       page.render(renderContext);
     };
@@ -73,28 +91,24 @@ export default function Document({ url, pdfDocument }) {
 
     const loadPdf = await PDFDocument.load(selectDocuments);
     const page = loadPdf.getPages([CANVAS_WIDTH, CANVAS_HEIGHT]);
-    const pdfWidth = page[0].getWidth();
-    const pdfHeight = page[0].getHeight();
 
     const combinedCanvas = document.createElement("canvas");
-    combinedCanvas.width = pdfWidth;
-    combinedCanvas.height = pdfHeight;
+    combinedCanvas.width = CANVAS_WIDTH;
+    combinedCanvas.height = CANVAS_HEIGHT;
 
     const combinedContext = combinedCanvas.getContext("2d");
-
     combinedContext.drawImage(canvasRef.current, 0, 0);
 
     const imageData = combinedCanvas.toDataURL("image/png");
-    console.log(imageData);
-
     const imageDataBytes = await fetch(imageData).then((res) =>
       res.arrayBuffer(),
     );
+
     const pdfImage = await loadPdf.embedPng(imageDataBytes);
 
     page[0].drawImage(pdfImage, {
-      width: pdfWidth,
-      height: pdfHeight,
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
     });
 
     const pdfBytes = await loadPdf.save();
@@ -129,7 +143,7 @@ export default function Document({ url, pdfDocument }) {
     };
 
     const handleMouseUp = () => {
-      dispatch(pushDrawingData({ currentPage, linePoints }));
+      dispatch(pushDrawingDataCurrentPage(linePoints));
 
       canvas.removeEventListener("mousemove", drawWhenMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
@@ -162,32 +176,30 @@ export default function Document({ url, pdfDocument }) {
     };
   }, [dispatch, globalWidth, globalOpacity, globalColor]);
 
-  useEffect(() => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
+  if (canvasRef.current) {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
 
-      context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-      drawingData.forEach((drawing) => {
-        context.beginPath();
-        context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
-        for (let i = 1; i < drawing.length; i += 1) {
-          context.strokeStyle = drawing[i]?.color;
-          context.lineWidth = drawing[i]?.width;
-          context.globalAlpha = drawing[i]?.opacity;
-          context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
-          context.stroke();
-        }
-      });
-    }
-  }, [canvasRef, drawingData, currentPage]);
+    drawingData.forEach((drawing) => {
+      context.beginPath();
+      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+      for (let i = 1; i < drawing.length; i += 1) {
+        context.strokeStyle = drawing[i]?.color;
+        context.lineWidth = drawing[i]?.width;
+        context.globalAlpha = drawing[i]?.opacity;
+        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
+        context.stroke();
+      }
+    });
+  }
 
   return (
     <>
-      {/* <button type="button" onClick={savePdf}>
+      <button type="button" onClick={savePdf}>
         저장
-      </button> */}
+      </button>
       <Background>
         <ButtonWrapper>
           <PageButton onClick={setPrevPage} type="button">

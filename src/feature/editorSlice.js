@@ -81,11 +81,11 @@ export const editorSlice = createSlice({
       state.globalOpacity = opacity;
     },
     pushDrawingData: (state, action) => {
-      const { currentPage, linePoints } = action.payload;
-      state.canvasDrawingArray = [...state.canvasDrawingArray, linePoints];
+      const { currentPage, points } = action.payload;
+      state.canvasDrawingArray = [...state.canvasDrawingArray, points];
       state.drawingData[currentPage] = [
         ...state.drawingData[currentPage],
-        linePoints,
+        points,
       ];
     },
     setDataUndo: (state, action) => {
@@ -223,6 +223,12 @@ export const changePageNumber = (input) => (dispatch, getState) => {
   if (input === "prev" && currentPage > 1) {
     dispatch(setPrevPage());
   }
+};
+
+export const pushDrawingDataCurrentPage = (points) => (dispatch, getState) => {
+  const currentPage = selectCurrentPage(getState());
+
+  dispatch(pushDrawingData({ currentPage, points }));
 };
 
 export default editorSlice.reducer;
