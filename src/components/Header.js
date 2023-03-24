@@ -17,8 +17,6 @@ export default function Header() {
   const documentId = useSelector(selectDocument);
   const userId = useSelector(selectUserId);
   const dispatch = useDispatch();
-  console.log(userId, "id");
-  console.log(documentId, "document");
 
   const requestLogout = async () => {
     try {

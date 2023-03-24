@@ -11,7 +11,9 @@ import {
   selectGlobalWidth,
   selectGlobalOpacity,
   pushDrawingData,
-  selectDrawingArray,
+  selectCurrentPage,
+  changePageNumber,
+  selectDrawingData,
 } from "../feature/editorSlice";
 
 const CANVAS_WIDTH = 594.95996;
@@ -23,16 +25,17 @@ export default function Document({ url, pdfDocument }) {
   const globalColor = useSelector(selectGlobalColor);
   const globalWidth = useSelector(selectGlobalWidth);
   const globalOpacity = useSelector(selectGlobalOpacity);
-  const drawingData = useSelector(selectDrawingArray);
+  const currentPage = useSelector(selectCurrentPage);
+  const drawingData = useSelector(selectDrawingData)[currentPage];
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
   const combinedRef = useRef(null);
-  const [pageState, setPageState] = useState(1);
+  console.log(drawingData, "data");
 
   useEffect(() => {
     const renderPdf = async () => {
-      const page = await pdfDocument.getPage(pageState);
+      const page = await pdfDocument.getPage(currentPage);
       const viewport = page.getViewport({ scale: 1 });
 
       const canvas = canvasRef.current;
@@ -49,16 +52,14 @@ export default function Document({ url, pdfDocument }) {
     };
 
     renderPdf();
-  }, [pageState]);
+  }, [currentPage]);
 
   const setNextPage = () => {
-    setPageState((prev) => prev + 1);
+    dispatch(changePageNumber("next"));
   };
 
   const setPrevPage = () => {
-    if (pageState > 0) {
-      setPageState((prev) => prev - 1);
-    }
+    dispatch(changePageNumber("prev"));
   };
 
   const savePdf = async () => {
@@ -128,7 +129,7 @@ export default function Document({ url, pdfDocument }) {
     };
 
     const handleMouseUp = () => {
-      dispatch(pushDrawingData(linePoints));
+      dispatch(pushDrawingData({ currentPage, linePoints }));
 
       canvas.removeEventListener("mousemove", drawWhenMouseMove);
       canvas.removeEventListener("mouseup", handleMouseUp);
@@ -161,24 +162,26 @@ export default function Document({ url, pdfDocument }) {
     };
   }, [dispatch, globalWidth, globalOpacity, globalColor]);
 
-  if (canvasRef.current) {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
+  useEffect(() => {
+    if (canvasRef.current) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
 
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+      context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
-    drawingData.forEach((drawing) => {
-      context.beginPath();
-      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
-      for (let i = 1; i < drawing.length; i += 1) {
-        context.strokeStyle = drawing[i]?.color;
-        context.lineWidth = drawing[i]?.width;
-        context.globalAlpha = drawing[i]?.opacity;
-        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
-        context.stroke();
-      }
-    });
-  }
+      drawingData.forEach((drawing) => {
+        context.beginPath();
+        context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+        for (let i = 1; i < drawing.length; i += 1) {
+          context.strokeStyle = drawing[i]?.color;
+          context.lineWidth = drawing[i]?.width;
+          context.globalAlpha = drawing[i]?.opacity;
+          context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
+          context.stroke();
+        }
+      });
+    }
+  }, [canvasRef, drawingData, currentPage]);
 
   return (
     <>
