@@ -13,7 +13,6 @@ export default function PDFViewer({ url }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
   const postIts = useSelector(selectPostIts);
-  console.log(postIts);
 
   useEffect(() => {
     const loadPdf = async () => {

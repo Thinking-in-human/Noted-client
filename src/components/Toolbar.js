@@ -127,6 +127,7 @@ const Icon = styled.img`
   margin: 0 10px;
   padding: 1px;
   border-radius: 10%;
+
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
