@@ -42,8 +42,10 @@ const Wrapper = styled.div`
 
 const TextBox = styled.div`
   border: 1px solid black;
-  height: 400px;
-  width: 400px;
+  height: 300px;
+  width: 300px;
+  top: 40%;
+  left: 40%;
   border-radius: 5px;
   position: absolute;
   background-color: #fff000;

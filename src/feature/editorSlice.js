@@ -38,6 +38,7 @@ const initialState = {
   madePostIts: {},
   fontUrl: "",
   fontName: "",
+  postIts: [],
 };
 
 export const editorSlice = createSlice({
@@ -93,11 +94,30 @@ export const editorSlice = createSlice({
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
     },
+    setPostIts: (state, action) => {
+      state.postIts = [...state.postIts, action.payload];
+    },
   },
 });
 
-export const { setSelectedDocument, setSelectedFontUrl, setSelectedFontName } =
-  editorSlice.actions;
+export const {
+  setPostIts,
+  setEditorTool,
+  setPencilWidth,
+  setPencilColor,
+  setHighLightWidth,
+  setHighLightColor,
+  setGlobalStyle,
+  pushDrawingData,
+  setDataUndo,
+  setDataRedo,
+  makeNewPostIt,
+  setSelectedDocument,
+  setSelectedFontUrl,
+  setSelectedFontName,
+} = editorSlice.actions;
+
+export const selectPostIts = (state) => state.editor.postIts;
 
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;

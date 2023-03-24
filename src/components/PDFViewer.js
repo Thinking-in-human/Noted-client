@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
 import axios from "axios";
 
 import Loading from "./Loading";
 import { setErrorInfo } from "../feature/userSlice";
+import { selectPostIts } from "../feature/editorSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
 export default function PDFViewer({ url }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
+  const postIts = useSelector(selectPostIts);
+  console.log(postIts);
 
   useEffect(() => {
     const loadPdf = async () => {
@@ -59,5 +62,10 @@ export default function PDFViewer({ url }) {
     );
   }
 
-  return <div>{pages}</div>;
+  return (
+    <div>
+      {postIts.map((postIt) => postIt)}
+      {pages}
+    </div>
+  );
 }

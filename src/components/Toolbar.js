@@ -24,11 +24,15 @@ import {
   moveDataUndoArray,
   moveDataRedoArray,
   makeNewPostIt,
+  setPostIts,
+  selectPostIts,
 } from "../feature/editorSlice";
+import PostIt from "./PostIt";
 
 export default function Toolbar() {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
+  const postIts = useSelector(selectPostIts);
 
   const changeEditorTool = (tool) => {
     dispatch(changeGlobalToolOption(tool));
@@ -43,7 +47,12 @@ export default function Toolbar() {
   };
 
   const makeNewPostItStatus = () => {
-    dispatch(makeNewPostIt());
+    // dispatch(makeNewPostIt());
+    dispatch(
+      setPostIts(
+        <PostIt key={postIts.length} style={{ zIndex: postIts.length }} />,
+      ),
+    );
   };
 
   return (
@@ -118,7 +127,6 @@ const Icon = styled.img`
   margin: 0 10px;
   padding: 1px;
   border-radius: 10%;
-
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
