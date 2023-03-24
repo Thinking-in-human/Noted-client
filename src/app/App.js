@@ -39,7 +39,7 @@ const GlobalStyle = createGlobalStyle`
     src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
   }
   body {
-    font-family: "DMSerifText-Regular";
+    /* font-family: "DMSerifText-Regular"; */
     margin: 0;
   }
 `;

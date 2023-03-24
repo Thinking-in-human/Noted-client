@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -7,33 +7,49 @@ import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
   setSelectedFontName,
+  setTextContent,
+  selectTextContent,
 } from "../feature/editorSlice";
 
 export default function PostItStatusTool() {
   const [color, setColor] = useState("");
+  const content = useSelector(selectTextContent);
   const dispatch = useDispatch();
+
+  console.log("content", content);
 
   const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
 
-  const handleSelection = () => {
+  const htmlFunc = (buttonAtt, selectedText) => {
+    return `<${buttonAtt}>${selectedText}</${buttonAtt}>`;
+  };
+  const handleClickBold = () => {
+    // console.log(content);
+    const contentArray = content.split("");
+    console.log("contentArray", contentArray); // 각 단어별로 배열화
     const selection = document.getSelection();
-
     if (selection.rangeCount > 0) {
       const range = selection.getRangeAt(0);
       const selectedText = range.toString();
+      const selectedTextLength = range.toString().length;
+      console.log("selectedText", selectedText);
+      const result = htmlFunc("b", selectedText);
+      contentArray.splice(range.startOffset, selectedTextLength, result);
+      const htmlString = contentArray.join("");
+
+      console.log("htmlString", htmlString);
+      console.log("contentArray", contentArray);
+      const element = <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
+      dispatch(setTextContent(element));
     }
   };
 
-  const handleClickBold = () => {
-    handleSelection();
-  };
-
   const handleClickItalic = () => {
-    handleSelection();
+    // handleSelection();
   };
 
   const handleClickUnderLine = () => {
-    handleSelection();
+    // handleSelection();
   };
 
   const handleChangeColor = (event) => {
