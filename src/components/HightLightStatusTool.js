@@ -6,13 +6,13 @@ import { width1Icon, width2Icon, width3Icon } from "../assets/editorIcon";
 import {
   setHighLightWidth,
   setHighLightColor,
-  selectHighlightPen,
+  selectHighLightPen,
 } from "../feature/editorSlice";
 
 export default function HightLightStatusTool() {
   const dispatch = useDispatch();
-  const highLightWidth = useSelector(selectHighlightPen).width;
-  const highLightColor = useSelector(selectHighlightPen).color;
+  const highLightWidth = useSelector(selectHighLightPen).width;
+  const highLightColor = useSelector(selectHighLightPen).color;
 
   const changeWidth = (width) => {
     dispatch(setHighLightWidth(width));

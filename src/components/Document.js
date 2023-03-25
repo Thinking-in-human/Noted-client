@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import * as pdfjs from "pdfjs-dist";
+
 import {
   selectCurrentPage,
   changePageNumber,
@@ -18,7 +19,6 @@ export default function Document({ pdfDocument }) {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
-  const combinedRef = useRef(null);
 
   useEffect(() => {
     const renderPdf = async () => {
@@ -39,11 +39,11 @@ export default function Document({ pdfDocument }) {
     renderPdf();
   }, [currentPage]);
 
-  const setNextPage = () => {
+  const handleNextPage = () => {
     dispatch(changePageNumber("next"));
   };
 
-  const setPrevPage = () => {
+  const handlePrevPage = () => {
     dispatch(changePageNumber("prev"));
   };
 
@@ -53,17 +53,16 @@ export default function Document({ pdfDocument }) {
   return (
     <Background>
       <ButtonWrapper>
-        <PageButton onClick={setPrevPage} type="button">
+        <PageButton onClick={handlePrevPage} type="button">
           ⬅️
         </PageButton>
       </ButtonWrapper>
       <PdfWrapper>
-        <CombinedCanvas ref={combinedRef} />
         <CanvasPage ref={canvasRef} />
         <PdfPage ref={pdfRef} />
       </PdfWrapper>
       <ButtonWrapper>
-        <PageButton onClick={setNextPage} type="button">
+        <PageButton onClick={handleNextPage} type="button">
           ➡️
         </PageButton>
       </ButtonWrapper>

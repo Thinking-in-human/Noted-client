@@ -35,7 +35,9 @@ export default function OpenPdf() {
       }
     };
 
-    if (userId) getAllDocumentsOfUser();
+    if (userId) {
+      getAllDocumentsOfUser();
+    }
   }, []);
 
   const navigate = useNavigate();

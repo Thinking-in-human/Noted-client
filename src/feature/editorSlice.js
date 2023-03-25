@@ -8,8 +8,6 @@ const initialState = {
   selectedPdfId: "",
   currentPdfPage: 1,
   wholePageNum: "",
-  canvasDrawingArray: [],
-  canvasRedoArray: [],
   pencil: {
     color: "#000000",
     width: 4,
@@ -79,7 +77,6 @@ export const editorSlice = createSlice({
     },
     pushDrawingData: (state, action) => {
       const { currentPage, points } = action.payload;
-      state.canvasDrawingArray = [...state.canvasDrawingArray, points];
       state.drawingData[currentPage] = [
         ...state.drawingData[currentPage],
         points,
@@ -110,10 +107,10 @@ export const editorSlice = createSlice({
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
     },
-    setNextPage: (state) => {
+    goToNextPage: (state) => {
       state.currentPdfPage += 1;
     },
-    setPrevPage: (state) => {
+    goToPrevPage: (state) => {
       state.currentPdfPage -= 1;
     },
     setPageData: (state, action) => {
@@ -147,20 +144,18 @@ export const {
   setSelectedFontUrl,
   setSelectedFontName,
   setPdfUnit8Array,
-  setNextPage,
-  setPrevPage,
+  goToNextPage,
+  goToPrevPage,
   setPageData,
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
 export const selectPencil = (state) => state.editor.pencil;
-export const selectHighlightPen = (state) => state.editor.highLightPen;
+export const selectHighLightPen = (state) => state.editor.highLightPen;
 export const selectGlobalColor = (state) => state.editor.globalColor;
 export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
-export const selectDrawingArray = (state) => state.editor.canvasDrawingArray;
-export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
@@ -211,11 +206,11 @@ export const changePageNumber = (input) => (dispatch, getState) => {
   const currentPage = selectCurrentPage(getState());
 
   if (input === "next" && currentPage < wholePage) {
-    dispatch(setNextPage());
+    dispatch(goToNextPage());
   }
 
   if (input === "prev" && currentPage > 1) {
-    dispatch(setPrevPage());
+    dispatch(goToPrevPage());
   }
 };
 

@@ -25,7 +25,7 @@ export default function App() {
       <GlobalStyle />
       {pathname !== "/login" && <Header />}
       <Routes>
-        <Route path="/openPdf" element={<OpenPdf />} />
+        <Route path="/open-pdf" element={<OpenPdf />} />
         <Route path="/documents/:documentId" element={<Editor />} />
         <Route path="/" element={<Login />} />
       </Routes>
@@ -34,10 +34,10 @@ export default function App() {
 }
 
 const GlobalStyle = createGlobalStyle`
-@font-face {
-  font-family: "DMSerifText-Regular";
-  src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
-}
+  @font-face {
+    font-family: "DMSerifText-Regular";
+    src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
+  }
   body {
     font-family: "DMSerifText-Regular";
     margin: 0;

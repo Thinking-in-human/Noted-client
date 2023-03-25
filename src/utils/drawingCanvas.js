@@ -1,22 +1,21 @@
 import { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+
 import {
   selectGlobalWidth,
   selectGlobalColor,
   selectGlobalOpacity,
   pushDrawingDataCurrentPage,
 } from "../feature/editorSlice";
-
-const CANVAS_WIDTH = 594.95996;
-const CANVAS_HEIGHT = 841.91998;
+import CONSTANT from "../constants/constant";
 
 export const drawByStatus = (canvas, drawingData) => {
   if (canvas) {
     const context = canvas.getContext("2d");
-    canvas.width = CANVAS_WIDTH;
-    canvas.height = CANVAS_HEIGHT;
+    canvas.width = CONSTANT.CANVAS_WIDTH;
+    canvas.height = CONSTANT.CANVAS_HEIGHT;
 
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    context.clearRect(0, 0, CONSTANT.CANVAS_WIDTH, CONSTANT.CANVAS_HEIGHT);
 
     drawingData.forEach((drawing) => {
       context.beginPath();

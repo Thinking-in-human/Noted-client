@@ -43,7 +43,7 @@ export default function Header() {
     }
   };
 
-  const useSavePdf = () => {
+  const handleSavePdf = () => {
     try {
       saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
     } catch (error) {
@@ -57,9 +57,9 @@ export default function Header() {
         <Link to="/">Noted</Link>
       </Logo>
       <NavWrapper>
-        <NavButton onClick={useSavePdf}>save</NavButton>
+        <NavButton onClick={handleSavePdf}>save</NavButton>
         <NavButton>
-          <Link to="/openPdf">open pdf</Link>
+          <Link to="/open-pdf">open pdf</Link>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         <UserProfile src={userImage} alt="userProfile"></UserProfile>
