@@ -107,9 +107,6 @@ export const editorSlice = createSlice({
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
     },
-    setPdfUnit8Array: (state, action) => {
-      state.pdfUnit8Array = action.payload;
-    },
     setSelectedFontUrl: (state, action) => {
       state.fontUrl = action.payload;
     },

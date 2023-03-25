@@ -2,29 +2,17 @@ import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
-import { PDFDocument } from "pdf-lib";
-import { saveAs } from "file-saver";
-import axios from "axios";
-
 import {
-  selectGlobalColor,
-  selectGlobalWidth,
-  selectGlobalOpacity,
-  pushDrawingDataCurrentPage,
   selectCurrentPage,
   changePageNumber,
   selectDrawingData,
 } from "../feature/editorSlice";
-
-const CANVAS_WIDTH = 594.95996;
-const CANVAS_HEIGHT = 841.91998;
+import { useDrawOnMouseMove, drawByStatus } from "../utils/drawingCanvas";
+import CONSTANT from "../constants/constant";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function Document({ url, pdfDocument }) {
-  const globalColor = useSelector(selectGlobalColor);
-  const globalWidth = useSelector(selectGlobalWidth);
-  const globalOpacity = useSelector(selectGlobalOpacity);
+export default function Document({ pdfDocument }) {
   const currentPage = useSelector(selectCurrentPage);
   const drawingData = useSelector(selectDrawingData)[currentPage];
   const dispatch = useDispatch();
@@ -37,34 +25,12 @@ export default function Document({ url, pdfDocument }) {
       const page = await pdfDocument.getPage(currentPage);
       const viewport = page.getViewport({ scale: 1 });
 
-      const canvas = canvasRef.current;
-      canvas.width = CANVAS_WIDTH;
-      canvas.height = CANVAS_HEIGHT;
-
       const pdfCanvas = pdfRef.current;
       const canvasContext = pdfCanvas.getContext("2d");
-      pdfCanvas.width = CANVAS_WIDTH;
-      pdfCanvas.height = CANVAS_HEIGHT;
+      pdfCanvas.width = CONSTANT.CANVAS_WIDTH;
+      pdfCanvas.height = CONSTANT.CANVAS_HEIGHT;
 
-      if (canvasRef.current) {
-        const context = canvas.getContext("2d");
-
-        context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-        drawingData.forEach((drawing) => {
-          context.beginPath();
-          context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
-          for (let i = 1; i < drawing.length; i += 1) {
-            context.lineJoin = "round";
-            context.lineCap = "round";
-            context.strokeStyle = drawing[i]?.color;
-            context.lineWidth = drawing[i]?.width;
-            context.globalAlpha = drawing[i]?.opacity;
-            context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
-            context.stroke();
-          }
-        });
-      }
+      drawByStatus(canvasRef.current, drawingData);
 
       const renderContext = { canvasContext, viewport };
       page.render(renderContext);
@@ -81,157 +47,27 @@ export default function Document({ url, pdfDocument }) {
     dispatch(changePageNumber("prev"));
   };
 
-  const savePdf = async () => {
-    const response = await axios(url, {
-      method: "GET",
-      withCredentials: true,
-      responseType: "arraybuffer",
-    });
-
-    const selectDocuments = new Uint8Array(response.data);
-
-    const loadPdf = await PDFDocument.load(selectDocuments);
-    const page = loadPdf.getPages([CANVAS_WIDTH, CANVAS_HEIGHT]);
-    const canvas = document.createElement("canvas");
-    const context = canvas.getContext("2d");
-    canvas.width = CANVAS_WIDTH;
-    canvas.height = CANVAS_HEIGHT;
-
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-    drawingData.forEach((drawing) => {
-      context.beginPath();
-      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
-      for (let i = 1; i < drawing.length; i += 1) {
-        context.lineJoin = "round";
-        context.lineCap = "round";
-        context.strokeStyle = drawing[i]?.color;
-        context.lineWidth = drawing[i]?.width;
-        context.globalAlpha = drawing[i]?.opacity;
-        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
-        context.stroke();
-      }
-    });
-
-    const imageData = canvas.toDataURL("image/png");
-    const imageDataBytes = await fetch(imageData).then((res) =>
-      res.arrayBuffer(),
-    );
-
-    const pdfImage = await loadPdf.embedPng(imageDataBytes);
-
-    page[0].drawImage(pdfImage, {
-      width: CANVAS_WIDTH,
-      height: CANVAS_HEIGHT,
-    });
-
-    const pdfBytes = await loadPdf.save();
-    saveAs(new Blob([pdfBytes]), "combined.pdf");
-  };
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    let linePoints = [];
-
-    const drawWhenMouseMove = (event) => {
-      const x = event.offsetX;
-      const y = event.offsetY;
-      context.globalAlpha = globalOpacity;
-      context.strokeStyle = globalColor;
-      context.lineWidth = globalWidth;
-
-      linePoints.push({
-        xPoint: x,
-        yPoint: y,
-        color: globalColor,
-        width: globalWidth,
-        opacity: globalOpacity,
-      });
-
-      context.lineTo(x, y);
-      context.stroke();
-    };
-
-    const handleMouseUp = () => {
-      dispatch(pushDrawingDataCurrentPage(linePoints));
-
-      canvas.removeEventListener("mousemove", drawWhenMouseMove);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    const handleMouseDown = (event) => {
-      const x = event.offsetX;
-      const y = event.offsetY;
-
-      linePoints = [];
-      linePoints.push({
-        xPoint: x,
-        yPoint: y,
-        color: globalColor,
-        width: globalWidth,
-        opacity: globalOpacity,
-      });
-
-      context.beginPath();
-      context.moveTo(x, y);
-
-      canvas.addEventListener("mousemove", drawWhenMouseMove);
-      canvas.addEventListener("mouseup", handleMouseUp);
-    };
-
-    canvas.addEventListener("mousedown", handleMouseDown);
-
-    return () => {
-      canvas.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [dispatch, globalWidth, globalOpacity, globalColor]);
-
-  if (canvasRef.current) {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
-
-    drawingData.forEach((drawing) => {
-      context.beginPath();
-      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
-      for (let i = 1; i < drawing.length; i += 1) {
-        context.lineJoin = "round";
-        context.lineCap = "round";
-        context.strokeStyle = drawing[i]?.color;
-        context.lineWidth = drawing[i]?.width;
-        context.globalAlpha = drawing[i]?.opacity;
-        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
-        context.stroke();
-      }
-    });
-  }
+  useDrawOnMouseMove(canvasRef);
+  drawByStatus(canvasRef.current, drawingData);
 
   return (
-    <>
-      <button type="button" onClick={savePdf}>
-        저장
-      </button>
-      <Background>
-        <ButtonWrapper>
-          <PageButton onClick={setPrevPage} type="button">
-            ⬅️
-          </PageButton>
-        </ButtonWrapper>
-        <PdfWrapper>
-          <CombinedCanvas ref={combinedRef} />
-          <CanvasPage ref={canvasRef} />
-          <PdfPage ref={pdfRef} />
-        </PdfWrapper>
-        <ButtonWrapper>
-          <PageButton onClick={setNextPage} type="button">
-            ➡️
-          </PageButton>
-        </ButtonWrapper>
-      </Background>
-    </>
+    <Background>
+      <ButtonWrapper>
+        <PageButton onClick={setPrevPage} type="button">
+          ⬅️
+        </PageButton>
+      </ButtonWrapper>
+      <PdfWrapper>
+        <CombinedCanvas ref={combinedRef} />
+        <CanvasPage ref={canvasRef} />
+        <PdfPage ref={pdfRef} />
+      </PdfWrapper>
+      <ButtonWrapper>
+        <PageButton onClick={setNextPage} type="button">
+          ➡️
+        </PageButton>
+      </ButtonWrapper>
+    </Background>
   );
 }
 
@@ -254,22 +90,22 @@ const PdfWrapper = styled.div`
 const CanvasPage = styled.canvas`
   position: absolute;
   border: 5px solid brown;
-  width: ${CANVAS_WIDTH};
-  height: ${CANVAS_HEIGHT};
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
   z-index: 2;
 `;
 
 const PdfPage = styled.canvas`
   position: absolute;
   border: 5px solid brown;
-  width: ${CANVAS_WIDTH};
-  height: ${CANVAS_HEIGHT};
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
 `;
 
 const CombinedCanvas = styled.canvas`
   position: absolute;
-  width: ${CANVAS_WIDTH};
-  height: ${CANVAS_HEIGHT};
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
   z-index: 1;
 `;
 
