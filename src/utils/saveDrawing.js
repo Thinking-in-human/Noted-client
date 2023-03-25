@@ -5,7 +5,6 @@ import { drawByStatus } from "./drawingCanvas";
 
 const saveCurrentPdf = async (userId, documentId, allDrawingData, CONSTANT) => {
   const { CANVAS_WIDTH, CANVAS_HEIGHT, API } = CONSTANT;
-
   const response = await axios(
     `${API}/users/${userId}/documents/${documentId}`,
     {
@@ -16,7 +15,6 @@ const saveCurrentPdf = async (userId, documentId, allDrawingData, CONSTANT) => {
   );
 
   const selectDocuments = new Uint8Array(response.data);
-
   const loadPdf = await PDFDocument.load(selectDocuments);
   const page = loadPdf.getPages([CANVAS_WIDTH, CANVAS_HEIGHT]);
   const allDrawingDataArray = Object.values(allDrawingData);
@@ -37,10 +35,20 @@ const saveCurrentPdf = async (userId, documentId, allDrawingData, CONSTANT) => {
       height: CANVAS_HEIGHT,
     });
 
-    const pdfBytes = await loadPdf.save();
-
     if (index === allDrawingDataArray.length - 1) {
-      saveAs(new Blob([pdfBytes]), "combined.pdf");
+      const pdfBytes = await loadPdf.save();
+      const blobForSave = new Blob([pdfBytes], { type: "application/pdf" });
+      const data = new FormData();
+      data.append("file", blobForSave, "newFile");
+
+      await axios.put(`${API}/users/${userId}/documents/${documentId}`, data, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+        withCredentials: true,
+      });
+
+      saveAs(new Blob([pdfBytes]), "newFile.pdf");
     }
   });
 };

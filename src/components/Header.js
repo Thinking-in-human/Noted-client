@@ -55,7 +55,7 @@ export default function Header() {
       <NavWrapper>
         <NavButton onClick={useSavePdf}>save</NavButton>
         <NavButton>
-          <Link to="/">open pdf</Link>
+          <Link to="/openPdf">open pdf</Link>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         <UserProfile src={userImage} alt="userProfile"></UserProfile>

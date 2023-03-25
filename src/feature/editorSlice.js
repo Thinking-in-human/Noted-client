@@ -20,9 +20,6 @@ const initialState = {
     width: 10,
     opacity: 0.03,
   },
-  eraser: {
-    width: 8,
-  },
   postIt: {
     id: null,
     width: "300px",

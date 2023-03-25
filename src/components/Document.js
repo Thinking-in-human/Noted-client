@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
-import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
 import * as pdfjs from "pdfjs-dist";
 import {
   selectCurrentPage,
