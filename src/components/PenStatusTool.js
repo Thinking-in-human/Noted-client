@@ -6,12 +6,13 @@ import { width1Icon, width2Icon, width3Icon } from "../assets/editorIcon";
 import {
   setPencilWidth,
   setPencilColor,
-  selectPencilWidth,
+  selectPencil,
 } from "../feature/editorSlice";
 
 export default function PenStatusTool() {
   const dispatch = useDispatch();
-  const pencilWidth = useSelector(selectPencilWidth);
+  const pencilWidth = useSelector(selectPencil).width;
+  const pencilColor = useSelector(selectPencil).color;
 
   const changeWidth = (width) => {
     dispatch(setPencilWidth(width));
@@ -51,6 +52,7 @@ export default function PenStatusTool() {
       />
       <Color
         onChange={(event) => changeColor(event.target.value)}
+        defaultValue={pencilColor}
         type="color"
       />
     </ToolStatusField>

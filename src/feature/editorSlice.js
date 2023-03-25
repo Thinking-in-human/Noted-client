@@ -11,13 +11,13 @@ const initialState = {
   canvasDrawingArray: [],
   canvasRedoArray: [],
   pencil: {
-    color: "black",
-    width: 3,
+    color: "#000000",
+    width: 4,
     opacity: 1,
   },
   highLightPen: {
-    color: "yellow",
-    width: 10,
+    color: "#FFDC3C",
+    width: 12,
     opacity: 0.03,
   },
   postIt: {
@@ -154,8 +154,8 @@ export const {
 
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
-export const selectPencilWidth = (state) => state.editor.pencil.width;
-export const selectHighlightWidth = (state) => state.editor.highLightPen.width;
+export const selectPencil = (state) => state.editor.pencil;
+export const selectHighlightPen = (state) => state.editor.highLightPen;
 export const selectGlobalColor = (state) => state.editor.globalColor;
 export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;

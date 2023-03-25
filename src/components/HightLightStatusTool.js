@@ -6,12 +6,13 @@ import { width1Icon, width2Icon, width3Icon } from "../assets/editorIcon";
 import {
   setHighLightWidth,
   setHighLightColor,
-  selectHighlightWidth,
+  selectHighlightPen,
 } from "../feature/editorSlice";
 
 export default function HightLightStatusTool() {
   const dispatch = useDispatch();
-  const highLightWidth = useSelector(selectHighlightWidth);
+  const highLightWidth = useSelector(selectHighlightPen).width;
+  const highLightColor = useSelector(selectHighlightPen).color;
 
   const changeWidth = (width) => {
     dispatch(setHighLightWidth(width));
@@ -51,6 +52,7 @@ export default function HightLightStatusTool() {
       />
       <Color
         onChange={(event) => changeColor(event.target.value)}
+        defaultValue={highLightColor}
         type="color"
       />
     </ToolStatusField>

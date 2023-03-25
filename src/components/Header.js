@@ -44,7 +44,11 @@ export default function Header() {
   };
 
   const useSavePdf = () => {
-    saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
+    try {
+      saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
+    } catch (error) {
+      dispatch(setErrorInfo(error.response.data));
+    }
   };
 
   return (
