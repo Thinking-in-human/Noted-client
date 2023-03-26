@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import { selectFontUrl, selectFontName } from "../feature/editorSlice";
+import {
+  selectFontUrl,
+  selectFontName,
+  setDeletePostIt,
+} from "../feature/editorSlice";
 
-export default function PostIt() {
+export default function PostIt({ postItId }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
   const divRef = useRef(null);
@@ -13,6 +17,7 @@ export default function PostIt() {
   const [dragging, setDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const [content, setContent] = useState("");
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const getFont = async () => {
@@ -56,11 +61,13 @@ export default function PostIt() {
 
   const handleDeleteClick = () => {
     divRef.current.remove();
+    dispatch(setDeletePostIt(divRef.current.id));
   };
 
   return (
     <Wrapper>
       <Group
+        id={postItId}
         ref={divRef}
         style={{ left: position.x, top: position.y }}
         onInput={handleInput}
@@ -85,8 +92,8 @@ const Wrapper = styled.div`
 
 const TextBox = styled.div`
   background-color: red;
-  height: 300px;
-  width: 300px;
+  height: 200px;
+  width: 200px;
   background-color: #fff000;
 
   &:focus {
@@ -95,8 +102,19 @@ const TextBox = styled.div`
 `;
 
 const Group = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
   border: 1px solid black;
   border-radius: 5px;
   position: absolute;
   background-color: #fff000;
+
+  button {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 20%;
+    text-align: center;
+    background-color: #fff000;
+  }
 `;

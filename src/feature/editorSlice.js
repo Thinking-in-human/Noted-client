@@ -20,25 +20,23 @@ const initialState = {
   eraser: {
     width: 8,
   },
-  postIt: {
-    id: null,
-    width: "300px",
-    height: "300px",
-    color: "yellow",
-    text: {
+  postIts: {
+    id: {
+      width: "300px",
+      height: "300px",
+      color: "yellow",
       contents: "",
       fontSize: 8,
       bold: false,
       italic: false,
       font: "SerifText-Regular.woff2",
-      color: "black",
+      fontColor: "black",
     },
   },
   currentPostIt: null,
   madePostIts: {},
   fontUrl: "",
   fontName: "",
-  postIts: [],
 };
 
 export const editorSlice = createSlice({
@@ -87,6 +85,7 @@ export const editorSlice = createSlice({
     },
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
+      state.postIts = {};
     },
     setSelectedFontUrl: (state, action) => {
       state.fontUrl = action.payload;
@@ -95,12 +94,18 @@ export const editorSlice = createSlice({
       state.fontName = action.payload;
     },
     setPostIts: (state, action) => {
-      state.postIts = [...state.postIts, action.payload];
+      const postIt = action.payload;
+      state.postIts = { ...state.postIts, ...postIt };
+    },
+    setDeletePostIt: (state, action) => {
+      const postItId = action.payload;
+      delete state.postIts[postItId];
     },
   },
 });
 
 export const {
+  setDeletePostIt,
   setPostIts,
   setEditorTool,
   setPencilWidth,
@@ -117,8 +122,6 @@ export const {
   setSelectedFontName,
 } = editorSlice.actions;
 
-export const selectPostIts = (state) => state.editor.postIts;
-
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
 export const selectPencilWidth = (state) => state.editor.pencil.width;
@@ -131,4 +134,40 @@ export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
+export const selectPostIts = (state) => state.editor.postIts;
+
+export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
+  const selectToolColor = (state) => state.editor[tool].color;
+  const selectToolWidth = (state) => state.editor[tool].width;
+  const selectToolOpacity = (state) => state.editor[tool].opacity;
+
+  const color = selectToolColor(getState());
+  const width = selectToolWidth(getState());
+  const opacity = selectToolOpacity(getState());
+
+  dispatch(setGlobalStyle({ tool, color, width, opacity }));
+};
+
+export const moveDataUndoArray = () => (dispatch, getState) => {
+  const drawingArray = selectDrawingArray(getState());
+
+  if (drawingArray.length) {
+    const poppedData = drawingArray[drawingArray.length - 1];
+    const restDrawingArray = drawingArray.slice(0, drawingArray.length - 1);
+
+    dispatch(setDataUndo({ restDrawingArray, poppedData }));
+  }
+};
+
+export const moveDataRedoArray = () => (dispatch, getState) => {
+  const redoArray = selectRedoArray(getState());
+
+  if (redoArray.length) {
+    const poppedData = redoArray[redoArray.length - 1];
+    const restRedoArray = redoArray.slice(0, redoArray.length - 1);
+
+    dispatch(setDataRedo({ restRedoArray, poppedData }));
+  }
+};
+
 export default editorSlice.reducer;

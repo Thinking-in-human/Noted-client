@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import uuid from "react-uuid";
 
 import PenStatusTool from "./PenStatusTool";
 import EraserStatusTool from "./EraserStatusTool";
@@ -32,7 +33,7 @@ import PostIt from "./PostIt";
 export default function Toolbar() {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
-  const postIts = useSelector(selectPostIts);
+  // const postIts = useSelector(selectPostIts);
 
   const changeEditorTool = (tool) => {
     dispatch(changeGlobalToolOption(tool));
@@ -47,12 +48,21 @@ export default function Toolbar() {
   };
 
   const makeNewPostItStatus = () => {
-    // dispatch(makeNewPostIt());
-    dispatch(
-      setPostIts(
-        <PostIt key={postIts.length} style={{ zIndex: postIts.length }} />,
-      ),
-    );
+    const postItObject = {
+      [uuid()]: {
+        width: "300px",
+        height: "300px",
+        color: "yellow",
+        contents: "",
+        fontSize: 8,
+        bold: false,
+        italic: false,
+        font: "SerifText-Regular.woff2",
+        fontColor: "black",
+      },
+    };
+
+    dispatch(setPostIts(postItObject));
   };
 
   return (
