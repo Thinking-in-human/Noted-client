@@ -1,37 +1,12 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
-import {
-  selectFontUrl,
-  selectFontName,
-  selectTextContent,
-  setTextContent,
-} from "../feature/editorSlice";
+import { selectFontUrl, selectFontName } from "../feature/editorSlice";
 
-export default function PostIt() {
+export default function PostIt({ divRef, onMouseUp }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
-  const content = useSelector(selectTextContent);
-
-  const dispatch = useDispatch();
-  const divRef = useRef(null);
-
-  const replaceCaret = (element) => {
-    if (element.innerText.length === 0) {
-      element.focus();
-    }
-
-    const selection = window.getSelection();
-
-    if (selection !== null) {
-      const newRange = document.createRange();
-      newRange.selectNodeContents(element);
-      newRange.collapse(false);
-      selection.removeAllRanges();
-      selection.addRange(newRange);
-    }
-  };
 
   useEffect(() => {
     const getFont = async () => {
@@ -48,27 +23,10 @@ export default function PostIt() {
     getFont();
   }, [fontUrl]);
 
-  useEffect(() => {
-    replaceCaret(divRef.current);
-  });
-
-  const handleInput = () => {
-    dispatch(setTextContent(divRef.current.innerText));
-    // console.log("div", divRef.current.innerText);
-  };
-
   return (
-    <Wrapper>
-      <TextBox contentEditable ref={divRef} onInput={handleInput}>
-        {content}
-      </TextBox>
-    </Wrapper>
+    <TextBox onMouseUp={onMouseUp} id="text" contentEditable ref={divRef} />
   );
 }
-
-const Wrapper = styled.div`
-  width: 100vw;
-`;
 
 const TextBox = styled.div`
   border: 1px solid black;

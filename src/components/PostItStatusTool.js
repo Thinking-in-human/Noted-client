@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
@@ -7,49 +7,52 @@ import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
   setSelectedFontName,
-  setTextContent,
-  selectTextContent,
+  selectIsBold,
 } from "../feature/editorSlice";
 
-export default function PostItStatusTool() {
+export default function PostItStatusTool({ divRef, isBoldSelected }) {
   const [color, setColor] = useState("");
-  const content = useSelector(selectTextContent);
   const dispatch = useDispatch();
-
-  console.log("content", content);
+  const isBold = useSelector(selectIsBold);
 
   const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
 
-  const htmlFunc = (buttonAtt, selectedText) => {
-    return `<${buttonAtt}>${selectedText}</${buttonAtt}>`;
-  };
   const handleClickBold = () => {
-    // console.log(content);
-    const contentArray = content.split("");
-    console.log("contentArray", contentArray); // 각 단어별로 배열화
-    const selection = document.getSelection();
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const selectedText = range.toString();
-      const selectedTextLength = range.toString().length;
-      console.log("selectedText", selectedText);
-      const result = htmlFunc("b", selectedText);
-      contentArray.splice(range.startOffset, selectedTextLength, result);
-      const htmlString = contentArray.join("");
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const startNode = selection.anchorNode;
+    const firstDivParentNode = startNode.parentNode.closest("div");
 
-      console.log("htmlString", htmlString);
-      console.log("contentArray", contentArray);
-      const element = <div dangerouslySetInnerHTML={{ __html: htmlString }} />;
-      dispatch(setTextContent(element));
+    if (!isBoldSelected()) {
+      const rangeChildNodes = [...range.cloneContents().childNodes];
+      const spanList = rangeChildNodes.filter(
+        (childNode) => childNode.nodeName === "SPAN",
+      );
+
+      if (spanList.length > 0) {
+        const textNode = document.createTextNode(selection.toString());
+        range.deleteContents();
+        range.insertNode(textNode);
+
+        firstDivParentNode.querySelectorAll("span").forEach((span) => {
+          if (span.outerText.length === 0) {
+            firstDivParentNode.removeChild(span);
+          }
+        });
+      }
+
+      const newSpan = document.createElement("span");
+      newSpan.style.fontWeight = "bold";
+
+      range.surroundContents(newSpan);
+      divRef.current.focus();
+    } else {
+      const firstSpanParentNode = startNode.parentNode.closest("span");
+      const textNode = document.createTextNode(selection.anchorNode.data);
+      firstDivParentNode.replaceChild(textNode, firstSpanParentNode);
     }
-  };
 
-  const handleClickItalic = () => {
-    // handleSelection();
-  };
-
-  const handleClickUnderLine = () => {
-    // handleSelection();
+    selection.removeAllRanges();
   };
 
   const handleChangeColor = (event) => {
@@ -92,17 +95,14 @@ export default function PostItStatusTool() {
         })}
       </select>
       <FormatIcon>
-        <Icon src={boldIcon} alt="Bold Button Icon" onClick={handleClickBold} />
         <Icon
-          src={italicIcon}
-          alt="Italic Button Icon"
-          onClick={handleClickItalic}
+          src={boldIcon}
+          alt="Bold Button Icon"
+          isBold={isBold}
+          onClick={handleClickBold}
         />
-        <Icon
-          src={underlineIcon}
-          alt="Underline Button Icon"
-          onClick={handleClickUnderLine}
-        />
+        <Icon src={italicIcon} alt="Italic Button Icon" />
+        <Icon src={underlineIcon} alt="Underline Button Icon" />
       </FormatIcon>
       <FormatColor>
         <Color
@@ -148,6 +148,7 @@ const Icon = styled.img`
   height: 15px;
   padding: 6px;
   border-radius: 10%;
+  background-color: ${({ isBold }) => (isBold ? "#ffc0cb" : "transparent")};
 
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);

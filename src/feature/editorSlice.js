@@ -28,7 +28,7 @@ const initialState = {
     text: {
       contents: "",
       fontSize: 8,
-      bold: false,
+      isBold: false,
       italic: false,
       font: "SerifText-Regular.woff2",
       color: "black",
@@ -93,8 +93,8 @@ export const editorSlice = createSlice({
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
     },
-    setTextContent: (state, action) => {
-      state.postIt.text.contents = action.payload;
+    setBold: (state, action) => {
+      state.postIt.text.isBold = action.payload;
     },
   },
 });
@@ -114,6 +114,7 @@ export const {
   setSelectedFontUrl,
   setSelectedFontName,
   setTextContent,
+  setBold,
 } = editorSlice.actions;
 
 export const selectCurrentEditorTool = (state) =>
@@ -128,7 +129,7 @@ export const selectRedoArray = (state) => state.editor.canvasRedoArray;
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
-export const selectTextContent = (state) => state.editor.postIt.text.contents;
+export const selectIsBold = (state) => state.editor.postIt.text.isBold;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;
