@@ -6,18 +6,26 @@ import {
   selectFontUrl,
   selectFontName,
   setDeletePostIt,
+  selectPostItFontSize,
+  selectPostItPosition,
 } from "../feature/editorSlice";
 
 export default function PostIt({ postItId }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
-  const divRef = useRef(null);
-  const textBoxRef = useRef(null);
-  const [position, setPosition] = useState({ x: 160, y: 190 });
-  const [dragging, setDragging] = useState(false);
+  const fontSize = useSelector(selectPostItFontSize);
+  const postItPositon = useSelector(selectPostItPosition);
+  const [position, setPosition] = useState(postItPositon);
+  const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const [content, setContent] = useState("");
   const dispatch = useDispatch();
+  const divRef = useRef(null);
+  const textBoxRef = useRef(null);
+
+  useEffect(() => {
+    textBoxRef.current.style.fontSize = fontSize;
+  }, [fontSize]);
 
   useEffect(() => {
     const getFont = async () => {
@@ -30,16 +38,15 @@ export default function PostIt({ postItId }) {
         editor.style.fontFamily = `${fontName}`;
       }
     };
-
     getFont();
-  }, [fontUrl]);
+  }, [fontUrl, fontName]);
 
   const handleInput = () => {
     setContent(textBoxRef.current.innerText);
   };
 
   const handleMouseDown = (event) => {
-    setDragging(true);
+    setIsDragging(true);
     setInitialPosition({
       x: event.clientX - position.x,
       y: event.clientY - position.y,
@@ -47,7 +54,7 @@ export default function PostIt({ postItId }) {
   };
 
   const handleMouseMove = (event) => {
-    if (dragging) {
+    if (isDragging) {
       setPosition({
         x: event.clientX - initialPosition.x,
         y: event.clientY - initialPosition.y,
@@ -56,7 +63,7 @@ export default function PostIt({ postItId }) {
   };
 
   const handleMouseUp = () => {
-    setDragging(false);
+    setIsDragging(false);
   };
 
   const handleDeleteClick = () => {
@@ -68,18 +75,21 @@ export default function PostIt({ postItId }) {
     <Wrapper>
       <Group
         id={postItId}
-        ref={divRef}
         style={{ left: position.x, top: position.y }}
         onInput={handleInput}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
+        ref={divRef}
         left={position.x}
         top={position.y}
       >
-        <button type="button" onClick={handleDeleteClick}>
-          X
-        </button>
+        <Header
+          onMouseMove={handleMouseMove}
+          onMouseUp={handleMouseUp}
+          onMouseDown={handleMouseDown}
+        >
+          <Button type="button" onClick={handleDeleteClick}>
+            X
+          </Button>
+        </Header>
         <TextBox contentEditable ref={textBoxRef} />
       </Group>
     </Wrapper>
@@ -92,8 +102,9 @@ const Wrapper = styled.div`
 
 const TextBox = styled.div`
   background-color: red;
-  height: 200px;
+  height: auto;
   width: 200px;
+  flex-grow: 1;
   background-color: #fff000;
 
   &:focus {
@@ -104,17 +115,26 @@ const TextBox = styled.div`
 const Group = styled.div`
   display: flex;
   flex-direction: column;
-  padding: 10px;
+  width: 200px;
+  min-height: 200px;
+  height: auto;
+  padding: 5px;
   border: 1px solid black;
-  border-radius: 5px;
   position: absolute;
   background-color: #fff000;
+`;
 
-  button {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 20%;
-    text-align: center;
-    background-color: #fff000;
-  }
+const Button = styled.button`
+  width: 1.2rem;
+  height: 1.2rem;
+  border-radius: 20%;
+  text-align: center;
+  background-color: #fff000;
+`;
+
+const Header = styled.div`
+  display: flex;
+  width: 200px;
+  height: none;
+  background-color: #fff000;
 `;

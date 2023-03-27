@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import uuid from "react-uuid";
@@ -24,16 +24,12 @@ import {
   changeGlobalToolOption,
   moveDataUndoArray,
   moveDataRedoArray,
-  makeNewPostIt,
   setPostIts,
-  selectPostIts,
 } from "../feature/editorSlice";
-import PostIt from "./PostIt";
 
 export default function Toolbar() {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
-  // const postIts = useSelector(selectPostIts);
 
   const changeEditorTool = (tool) => {
     dispatch(changeGlobalToolOption(tool));
@@ -54,7 +50,6 @@ export default function Toolbar() {
         height: "300px",
         color: "yellow",
         contents: "",
-        fontSize: 8,
         bold: false,
         italic: false,
         font: "SerifText-Regular.woff2",

@@ -7,13 +7,14 @@ import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
   setSelectedFontName,
+  setPostItFontSize,
 } from "../feature/editorSlice";
 
 export default function PostItStatusTool() {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
 
-  const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
+  const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
   const handleSelection = () => {
     const selection = document.getSelection();
@@ -60,6 +61,10 @@ export default function PostItStatusTool() {
     dispatch(setSelectedFontUrl(fontUrl));
   };
 
+  const handleChangeSize = (event) => {
+    dispatch(setPostItFontSize(event.target.value));
+  };
+
   return (
     <ToolStatusField>
       <select onChange={handleChangeFont}>
@@ -70,9 +75,9 @@ export default function PostItStatusTool() {
         <option>Rubik-Regular</option>
         <option>RubikIso-Regular</option>
       </select>
-      <select>
+      <select onChange={handleChangeSize} defaultValue="10px">
         {fontSizeArray.map((size) => {
-          return <option key={size}>{size}</option>;
+          return <option key={size}>{size}px</option>;
         })}
       </select>
       <FormatIcon>
