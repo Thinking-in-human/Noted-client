@@ -48,7 +48,7 @@ export default function PostItStatusTool({ divRef, isBoldSelected }) {
       divRef.current.focus();
     } else {
       const firstSpanParentNode = startNode.parentNode.closest("span");
-      const textNode = document.createTextNode(selection.anchorNode.data);
+      const textNode = document.createTextNode(selection.toString());
       firstDivParentNode.replaceChild(textNode, firstSpanParentNode);
     }
 

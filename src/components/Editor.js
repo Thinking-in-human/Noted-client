@@ -11,7 +11,6 @@ import { setSelectedDocument, setBold } from "../feature/editorSlice";
 import PostIt from "./PostIt";
 
 export default function Editor() {
-  // const [isBold, setIsBold] = useState(false);
   const loginUserId = useSelector(selectUserId);
   const { documentId } = useParams();
   const divRef = useRef(null);
@@ -30,6 +29,13 @@ export default function Editor() {
     }
 
     if (firstSpanParentNode.outerText === range.toString()) {
+      return true;
+    }
+
+    const textList = [...range.cloneContents().childNodes].filter(
+      (childNode) => childNode.nodeName === "#text",
+    );
+    if (textList.map((i) => i.data).toString() === "") {
       return true;
     }
 
