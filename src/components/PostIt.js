@@ -10,7 +10,7 @@ import {
   selectPostItPosition,
 } from "../feature/editorSlice";
 
-export default function PostIt({ postItId }) {
+export default function PostIt({ postItId, divRef, onMouseUp }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
   const fontSize = useSelector(selectPostItFontSize);
@@ -90,15 +90,11 @@ export default function PostIt({ postItId }) {
             X
           </Button>
         </Header>
-        <TextBox contentEditable ref={textBoxRef} />
+        <TextBox onMouseUp={onMouseUp} contentEditable ref={divRef} ref={textBoxRef} />;
       </Group>
     </Wrapper>
   );
 }
-
-const Wrapper = styled.div`
-  width: 100vw;
-`;
 
 const TextBox = styled.div`
   background-color: red;

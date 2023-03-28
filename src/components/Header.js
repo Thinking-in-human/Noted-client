@@ -4,19 +4,27 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
+import { selectDocument, selectDrawingData } from "../feature/editorSlice";
 import {
   changeEditingUser,
   setErrorInfo,
   selectUserImgUrl,
+  selectUserId,
 } from "../feature/userSlice";
+
+import saveCurrentPdf from "../utils/saveDrawing";
+import CONSTANT from "../constants/constant";
 
 export default function Header() {
   const userImage = useSelector(selectUserImgUrl);
+  const documentId = useSelector(selectDocument);
+  const userId = useSelector(selectUserId);
+  const allDrawingData = useSelector(selectDrawingData);
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
     try {
-      const response = await axios("http://localhost:4000/auth/sign-out", {
+      const response = await axios(`${CONSTANT.API}/auth/sign-out`, {
         method: "POST",
         responseType: "json",
         withCredentials: true,
@@ -35,15 +43,23 @@ export default function Header() {
     }
   };
 
+  const handleSavePdf = () => {
+    try {
+      saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
+    } catch (error) {
+      dispatch(setErrorInfo(error.response.data));
+    }
+  };
+
   return (
     <Wrapper>
       <Logo>
         <Link to="/">Noted</Link>
       </Logo>
       <NavWrapper>
-        <NavButton>save</NavButton>
+        <NavButton onClick={handleSavePdf}>save</NavButton>
         <NavButton>
-          <Link to="/">open pdf</Link>
+          <Link to="/open-pdf">open pdf</Link>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         <UserProfile src={userImage} alt="userProfile"></UserProfile>
