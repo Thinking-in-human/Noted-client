@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -7,12 +7,11 @@ import PDFViewer from "./PDFViewer";
 import { selectUserId } from "../feature/userSlice";
 import Toolbar from "./Toolbar";
 import { setSelectedDocument, setBold } from "../feature/editorSlice";
-import PostIt from "./PostIt";
 
 export default function Editor() {
   const loginUserId = useSelector(selectUserId);
   const { documentId } = useParams();
-  const divRef = useRef(null);
+  const textBoxRef = useRef(null);
   const dispatch = useDispatch();
 
   dispatch(setSelectedDocument(documentId));
@@ -47,8 +46,7 @@ export default function Editor() {
 
   return (
     <Wrapper>
-      <Toolbar divRef={divRef} isBoldSelected={isBoldSelected} />
-      <PostIt divRef={divRef} onMouseUp={handleMouseUp} />
+      <Toolbar textBoxRef={textBoxRef} isBoldSelected={isBoldSelected} />
       {loginUserId && documentId && (
         <PDFViewer
           url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}

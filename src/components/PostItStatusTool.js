@@ -11,7 +11,7 @@ import {
   selectIsBold,
 } from "../feature/editorSlice";
 
-export default function PostItStatusTool({ divRef, isBoldSelected }) {
+export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
   const isBold = useSelector(selectIsBold);
@@ -45,7 +45,7 @@ export default function PostItStatusTool({ divRef, isBoldSelected }) {
       newSpan.style.fontWeight = "bold";
 
       range.surroundContents(newSpan);
-      divRef.current.focus();
+      textBoxRef.current.focus();
     } else {
       const firstSpanParentNode = startNode.parentNode.closest("span");
       const textNode = document.createTextNode(selection.toString());
