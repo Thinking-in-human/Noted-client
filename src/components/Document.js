@@ -3,7 +3,9 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import * as pdfjs from "pdfjs-dist";
 
+import PostIt from "./PostIt";
 import {
+  selectPostIts,
   selectCurrentPage,
   changePageNumber,
   selectDrawingData,
@@ -19,6 +21,9 @@ export default function Document({ pdfDocument }) {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
+
+  const postIts = useSelector(selectPostIts);
+  const postItsArray = Object.keys(postIts);
 
   useEffect(() => {
     const renderPdf = async () => {
@@ -52,6 +57,11 @@ export default function Document({ pdfDocument }) {
 
   return (
     <Background>
+      {postItsArray.map((postItId) => {
+        return <PostIt key={postItId} postItId={postItId} />;
+      })}
+      <CanvasPage ref={canvasRef} />
+      <PdfPage ref={pdfRef} />
       <ButtonWrapper>
         <PageButton onClick={handlePrevPage} type="button">
           ⬅️

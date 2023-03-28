@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
 import axios from "axios";
 

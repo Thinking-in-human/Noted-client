@@ -7,6 +7,7 @@ import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
   setSelectedFontName,
+  setPostItFontSize,
   selectIsBold,
 } from "../feature/editorSlice";
 
@@ -14,8 +15,7 @@ export default function PostItStatusTool({ divRef, isBoldSelected }) {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
   const isBold = useSelector(selectIsBold);
-
-  const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
+  const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
   const handleClickBold = () => {
     const selection = window.getSelection();
@@ -79,6 +79,10 @@ export default function PostItStatusTool({ divRef, isBoldSelected }) {
     dispatch(setSelectedFontUrl(fontUrl));
   };
 
+  const handleChangeSize = (event) => {
+    dispatch(setPostItFontSize(event.target.value));
+  };
+
   return (
     <ToolStatusField>
       <select onChange={handleChangeFont}>
@@ -89,9 +93,9 @@ export default function PostItStatusTool({ divRef, isBoldSelected }) {
         <option>Rubik-Regular</option>
         <option>RubikIso-Regular</option>
       </select>
-      <select>
+      <select onChange={handleChangeSize} defaultValue="10px">
         {fontSizeArray.map((size) => {
-          return <option key={size}>{size}</option>;
+          return <option key={size}>{size}px</option>;
         })}
       </select>
       <FormatIcon>

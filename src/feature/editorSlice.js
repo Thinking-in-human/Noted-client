@@ -18,21 +18,25 @@ const initialState = {
     width: 12,
     opacity: 0.03,
   },
-  postIt: {
-    id: null,
-    width: "300px",
-    height: "300px",
-    color: "yellow",
-    text: {
+  postIts: {
+    id: {
+      width: "300px",
+      height: "300px",
+      color: "yellow",
       contents: "",
-      fontSize: 8,
       isBold: false,
-      italic: false,
-      font: "SerifText-Regular.woff2",
-      color: "black",
     },
   },
-  currentPostIt: null,
+  postIt: {
+    text: {
+      isBold: false;
+    }
+  },
+  postItPosition: {
+    x: 160,
+    y: 190,
+  },
+  postItFontSize: 8,
   madePostIts: {},
   fontUrl: "",
   fontName: "",
@@ -100,6 +104,26 @@ export const editorSlice = createSlice({
     },
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
+      state.postIts = {};
+    },
+    setSelectedFontUrl: (state, action) => {
+      state.fontUrl = action.payload;
+    },
+    setSelectedFontName: (state, action) => {
+      state.fontName = action.payload;
+    },
+    setPostIts: (state, action) => {
+      const postIt = action.payload;
+      state.postItPosition.x += 5;
+      state.postItPosition.y += 5;
+      state.postIts = { ...state.postIts, ...postIt };
+    },
+    setDeletePostIt: (state, action) => {
+      const postItId = action.payload;
+      delete state.postIts[postItId];
+    },
+    setPostItFontSize: (state, action) => {
+      state.postItFontSize = action.payload;
     },
     setSelectedFontUrl: (state, action) => {
       state.fontUrl = action.payload;
@@ -108,7 +132,7 @@ export const editorSlice = createSlice({
       state.fontName = action.payload;
     },
     setBold: (state, action) => {
-      state.postIt.text.isBold = action.payload;
+      state.postIts.text.isBold = action.payload;
     },
     goToNextPage: (state) => {
       state.currentPdfPage += 1;
@@ -133,6 +157,9 @@ export const editorSlice = createSlice({
 });
 
 export const {
+  setPostItFontSize,
+  setDeletePostIt,
+  setPostIts,
   setEditorTool,
   setPencilWidth,
   setPencilColor,
@@ -153,6 +180,7 @@ export const {
   setPageData,
 } = editorSlice.actions;
 
+export const selectPostItFontSize = (state) => state.editor.postItFontSize;
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
 export const selectPencil = (state) => state.editor.pencil;
@@ -163,6 +191,8 @@ export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
+export const selectPostIts = (state) => state.editor.postIts;
+export const selectPostItPosition = (state) => state.editor.postItPosition;
 export const selectIsBold = (state) => state.editor.postIt.text.isBold;
 export const selectPdfUnit8Array = (state) => state.editor.pdfUnit8Array;
 export const selectCurrentPage = (state) => state.editor.currentPdfPage;

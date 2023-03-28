@@ -1,6 +1,7 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import uuid from "react-uuid";
 
 import PenStatusTool from "./PenStatusTool";
 import EraserStatusTool from "./EraserStatusTool";
@@ -23,6 +24,7 @@ import {
   changeGlobalToolOption,
   moveDataUndoArray,
   moveDataRedoArray,
+  setPostIts,
 } from "../feature/editorSlice";
 
 export default function Toolbar({ divRef, isBoldSelected }) {
@@ -39,6 +41,23 @@ export default function Toolbar({ divRef, isBoldSelected }) {
 
   const showNextDrawing = () => {
     dispatch(moveDataRedoArray());
+  };
+
+  const makeNewPostItStatus = () => {
+    const postItObject = {
+      [uuid()]: {
+        width: "300px",
+        height: "300px",
+        color: "yellow",
+        contents: "",
+        bold: false,
+        italic: false,
+        font: "SerifText-Regular.woff2",
+        fontColor: "black",
+      },
+    };
+
+    dispatch(setPostIts(postItObject));
   };
 
   return (
