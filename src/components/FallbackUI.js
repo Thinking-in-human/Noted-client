@@ -2,21 +2,23 @@ import React from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
+import Header from "./Header";
+
 export default function FallbackUI({ error, resetErrorBoundary }) {
   const navigate = useNavigate();
   const errorInfo = {
-    title: "잠시 후 다시 시도해주세요",
-    message: "요청을 처리하는데 실패 했습니다.",
+    status: 500,
+    message: "Internal Error",
   };
 
-  if (error.response.status === 401) {
-    errorInfo.title = "접근 권한이 없습니다";
-    errorInfo.message = "로그인을 해주세요";
+  if (error?.response.status === 401) {
+    errorInfo.status = 401;
+    errorInfo.message = "Please Login";
   }
 
-  if (error.response.status === 404) {
-    errorInfo.title = "요청 사항을 확인 할 수 없습니다";
-    errorInfo.message = "요청 사항을 확인 후 다시 시도해 주시기 바랍니다.";
+  if (error?.response.status === 404) {
+    errorInfo.status = 404;
+    errorInfo.message = "Not Found";
   }
 
   const guideUser = () => {
@@ -29,10 +31,13 @@ export default function FallbackUI({ error, resetErrorBoundary }) {
   };
 
   return (
-    <Wrapper>
-      <ErrorCode>{errorInfo.title}</ErrorCode>
-      <ErrorMessage onClick={guideUser}>{errorInfo.message}</ErrorMessage>
-    </Wrapper>
+    <>
+      <Header />
+      <Wrapper>
+        <ErrorCode>{errorInfo.status}</ErrorCode>
+        <ErrorMessage onClick={guideUser}>{errorInfo.message}</ErrorMessage>
+      </Wrapper>
+    </>
   );
 }
 
@@ -44,7 +49,6 @@ const Wrapper = styled.div`
   height: 85vh;
   padding: 10px;
   margin: auto;
-  font-size: 60px;
 `;
 
 const ErrorCode = styled.div`
@@ -55,6 +59,7 @@ const ErrorCode = styled.div`
   height: 80px;
   padding: 10px;
   margin: 10px;
+  font-size: 100px;
   border-bottom: 5px double black;
 `;
 
@@ -67,6 +72,7 @@ const ErrorMessage = styled.div`
   margin: 30px;
   border: 1px solid black;
   background-color: #f9f5f2;
+  font-size: 60px;
 
   &:hover,
   &:focus,

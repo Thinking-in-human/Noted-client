@@ -27,6 +27,8 @@ export default function PDFViewer({ url }) {
         const pdf = await pdfjs.getDocument(selectDocuments).promise;
 
         setPdfDocument(pdf);
+        const { numPages } = pdf;
+        dispatch(setPageData(numPages));
       } catch (error) {
         showBoundary(error);
       }
@@ -36,8 +38,6 @@ export default function PDFViewer({ url }) {
   }, [url]);
 
   if (pdfDocument) {
-    const { numPages } = pdfDocument;
-    dispatch(setPageData(numPages));
     return <Document url={url} pdfDocument={pdfDocument} />;
   }
   return <Loading />;

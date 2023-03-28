@@ -2,6 +2,7 @@ import React, { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
+import { useErrorBoundary } from "react-error-boundary";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
@@ -12,6 +13,7 @@ import {
 export default function PostItStatusTool() {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
+  const { showBoundary } = useErrorBoundary();
 
   const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
 
@@ -41,23 +43,27 @@ export default function PostItStatusTool() {
   };
 
   const handleChangeFont = async (event) => {
-    const selectedFont = event.target.value;
-    dispatch(setSelectedFontName(selectedFont));
-    const response = await axios.get(
-      `http://localhost:4000/fonts/${selectedFont}`,
-      {
-        withCredentials: true,
-        responseType: "arraybuffer",
-      },
-    );
-    const fontBuffer = response.data;
+    try {
+      const selectedFont = event.target.value;
+      dispatch(setSelectedFontName(selectedFont));
+      const response = await axios.get(
+        `http://localhost:4000/fonts/${selectedFont}`,
+        {
+          withCredentials: true,
+          responseType: "arraybuffer",
+        },
+      );
+      const fontBuffer = response.data;
 
-    const fontBlob = new Blob([fontBuffer], {
-      type: "font/woff2",
-    });
-    const fontUrl = URL.createObjectURL(fontBlob);
+      const fontBlob = new Blob([fontBuffer], {
+        type: "font/woff2",
+      });
+      const fontUrl = URL.createObjectURL(fontBlob);
 
-    dispatch(setSelectedFontUrl(fontUrl));
+      dispatch(setSelectedFontUrl(fontUrl));
+    } catch (error) {
+      showBoundary(error);
+    }
   };
 
   return (

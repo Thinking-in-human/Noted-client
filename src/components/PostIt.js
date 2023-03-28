@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
+import { useErrorBoundary } from "react-error-boundary";
 
 import { selectFontUrl, selectFontName } from "../feature/editorSlice";
 
@@ -9,16 +10,21 @@ export default function PostIt() {
   const fontName = useSelector(selectFontName);
   const divRef = useRef(null);
   const [content, setContent] = useState("");
+  const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
     const getFont = async () => {
-      if (fontUrl) {
-        const fontFace = new FontFace(`${fontName}`, `url(${fontUrl})`);
-        await fontFace.load();
-        document.fonts.add(fontFace);
+      try {
+        if (fontUrl) {
+          const fontFace = new FontFace(`${fontName}`, `url(${fontUrl})`);
+          await fontFace.load();
+          document.fonts.add(fontFace);
 
-        const editor = divRef.current;
-        editor.style.fontFamily = `${fontName}`;
+          const editor = divRef.current;
+          editor.style.fontFamily = `${fontName}`;
+        }
+      } catch (error) {
+        showBoundary(error);
       }
     };
 
