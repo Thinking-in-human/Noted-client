@@ -27,7 +27,7 @@ import {
   setPostIts,
 } from "../feature/editorSlice";
 
-export default function Toolbar({ divRef, isBoldSelected }) {
+export default function Toolbar({ textBoxRef, isBoldSelected }) {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
 
@@ -91,6 +91,10 @@ export default function Toolbar({ divRef, isBoldSelected }) {
           alt="Marker Icon"
         />
         <Icon
+          onClick={() => {
+            changeEditorTool("postIt");
+            makeNewPostItStatus();
+          }}
           src={editorTool === "postIt" ? post2Icon : post1Icon}
           alt="PostIt Icon"
         />
@@ -99,7 +103,10 @@ export default function Toolbar({ divRef, isBoldSelected }) {
       {editorTool === "eraser" && <EraserStatusTool />}
       {editorTool === "highLightPen" && <HightLightStatusTool />}
       {editorTool === "postIt" && (
-        <PostItStatusTool divRef={divRef} isBoldSelected={isBoldSelected} />
+        <PostItStatusTool
+          textBoxRef={textBoxRef}
+          isBoldSelected={isBoldSelected}
+        />
       )}
     </EditorTool>
   );

@@ -98,7 +98,6 @@ const PdfWrapper = styled.div`
 
 const CanvasPage = styled.canvas`
   position: absolute;
-  border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
   z-index: 2;
@@ -109,13 +108,6 @@ const PdfPage = styled.canvas`
   border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
-`;
-
-const CombinedCanvas = styled.canvas`
-  position: absolute;
-  width: ${CONSTANT.CANVAS_WIDTH};
-  height: ${CONSTANT.CANVAS_HEIGHT};
-  z-index: 1;
 `;
 
 const PageButton = styled.button`

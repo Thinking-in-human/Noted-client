@@ -10,21 +10,19 @@ import {
   selectPostItPosition,
 } from "../feature/editorSlice";
 
-export default function PostIt({ postItId, divRef, onMouseUp }) {
+export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
   const fontSize = useSelector(selectPostItFontSize);
-  const postItPositon = useSelector(selectPostItPosition);
-  const [position, setPosition] = useState(postItPositon);
+  const postItPosition = useSelector(selectPostItPosition);
+  const [position, setPosition] = useState(postItPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
-  const [content, setContent] = useState("");
   const dispatch = useDispatch();
   const divRef = useRef(null);
-  const textBoxRef = useRef(null);
 
   useEffect(() => {
-    textBoxRef.current.style.fontSize = fontSize;
+    divRef.current.style.fontSize = fontSize;
   }, [fontSize]);
 
   useEffect(() => {
@@ -34,16 +32,12 @@ export default function PostIt({ postItId, divRef, onMouseUp }) {
         await fontFace.load();
         document.fonts.add(fontFace);
 
-        const editor = textBoxRef.current;
+        const editor = divRef.current;
         editor.style.fontFamily = `${fontName}`;
       }
     };
     getFont();
-  }, [fontUrl, fontName]);
-
-  const handleInput = () => {
-    setContent(textBoxRef.current.innerText);
-  };
+  }, [fontUrl, fontName, divRef]);
 
   const handleMouseDown = (event) => {
     setIsDragging(true);
@@ -72,27 +66,24 @@ export default function PostIt({ postItId, divRef, onMouseUp }) {
   };
 
   return (
-    <Wrapper>
-      <Group
-        id={postItId}
-        style={{ left: position.x, top: position.y }}
-        onInput={handleInput}
-        ref={divRef}
-        left={position.x}
-        top={position.y}
+    <Group
+      id={postItId}
+      style={{ left: position.x, top: position.y }}
+      ref={divRef}
+      left={position.x}
+      top={position.y}
+    >
+      <Header
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseDown={handleMouseDown}
       >
-        <Header
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseDown={handleMouseDown}
-        >
-          <Button type="button" onClick={handleDeleteClick}>
-            X
-          </Button>
-        </Header>
-        <TextBox onMouseUp={onMouseUp} contentEditable ref={divRef} ref={textBoxRef} />;
-      </Group>
-    </Wrapper>
+        <Button type="button" onClick={handleDeleteClick}>
+          X
+        </Button>
+      </Header>
+      <TextBox onMouseUp={onMouseUp} contentEditable ref={textBoxRef} />
+    </Group>
   );
 }
 
@@ -118,6 +109,7 @@ const Group = styled.div`
   border: 1px solid black;
   position: absolute;
   background-color: #fff000;
+  z-index: 3;
 `;
 
 const Button = styled.button`
