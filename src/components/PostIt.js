@@ -23,9 +23,7 @@ export default function PostIt({ divRef, onMouseUp }) {
     getFont();
   }, [fontUrl]);
 
-  return (
-    <TextBox onMouseUp={onMouseUp} id="text" contentEditable ref={divRef} />
-  );
+  return <TextBox onMouseUp={onMouseUp} contentEditable ref={divRef} />;
 }
 
 const TextBox = styled.div`

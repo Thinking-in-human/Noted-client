@@ -4,7 +4,7 @@ const initialState = {
   globalColor: "black",
   globalWidth: 3,
   globalOpacity: 1,
-  currentEditorTool: "postIt",
+  currentEditorTool: "pencil",
   canvasDrawingArray: [],
   canvasRedoArray: [],
   pencil: {

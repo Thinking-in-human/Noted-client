@@ -1,5 +1,4 @@
 import React, { useState, useRef } from "react";
-
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
@@ -35,7 +34,8 @@ export default function Editor() {
     const textList = [...range.cloneContents().childNodes].filter(
       (childNode) => childNode.nodeName === "#text",
     );
-    if (textList.map((i) => i.data).toString() === "") {
+
+    if (textList.every((textNode) => textNode.data.toString() === "")) {
       return true;
     }
 
