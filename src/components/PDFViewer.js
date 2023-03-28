@@ -3,9 +3,9 @@ import { useDispatch } from "react-redux";
 import * as pdfjs from "pdfjs-dist";
 import axios from "axios";
 
+import { useErrorBoundary } from "react-error-boundary";
 import Loading from "./Loading";
 import Document from "./Document";
-import { setErrorInfo } from "../feature/userSlice";
 import { setPageData } from "../feature/editorSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
@@ -13,6 +13,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.
 export default function PDFViewer({ url }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
+  const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
     const loadPdf = async () => {
@@ -27,7 +28,7 @@ export default function PDFViewer({ url }) {
 
         setPdfDocument(pdf);
       } catch (error) {
-        dispatch(setErrorInfo(error.response?.data));
+        showBoundary(error);
       }
     };
 
