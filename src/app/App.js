@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-
 import { ErrorBoundary } from "react-error-boundary";
+
 import Login from "../components/Login";
 import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";

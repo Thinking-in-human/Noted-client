@@ -114,15 +114,17 @@ export const editorSlice = createSlice({
       state.currentPdfPage -= 1;
     },
     setPageData: (state, action) => {
+      const { documentId, numPages } = action.payload;
       const drawingData = {};
       const redoData = {};
 
-      for (let i = 1; i <= action.payload; i += 1) {
+      for (let i = 1; i <= numPages; i += 1) {
         drawingData[i] = [];
         redoData[i] = [];
       }
 
-      state.wholePageNum = action.payload;
+      state.selectedPdfId = documentId;
+      state.wholePageNum = numPages;
       state.drawingData = drawingData;
       state.redoData = redoData;
     },

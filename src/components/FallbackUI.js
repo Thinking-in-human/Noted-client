@@ -11,23 +11,19 @@ export default function FallbackUI({ error, resetErrorBoundary }) {
     message: "Internal Error",
   };
 
-  if (error?.response.status === 401) {
+  if (error.response?.status === 401) {
     errorInfo.status = 401;
     errorInfo.message = "Please Login";
   }
 
-  if (error?.response.status === 404) {
+  if (error.response?.status === 404) {
     errorInfo.status = 404;
     errorInfo.message = "Not Found";
   }
 
   const guideUser = () => {
-    if (error.response.status === 401) {
-      navigate("/");
-      resetErrorBoundary();
-    } else {
-      resetErrorBoundary();
-    }
+    resetErrorBoundary();
+    navigate("/");
   };
 
   return (

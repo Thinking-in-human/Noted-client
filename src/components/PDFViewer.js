@@ -10,7 +10,7 @@ import { setPageData } from "../feature/editorSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function PDFViewer({ url }) {
+export default function PDFViewer({ url, documentId }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
@@ -28,7 +28,7 @@ export default function PDFViewer({ url }) {
 
         setPdfDocument(pdf);
         const { numPages } = pdf;
-        dispatch(setPageData(numPages));
+        dispatch(setPageData({ documentId, numPages }));
       } catch (error) {
         showBoundary(error);
       }
