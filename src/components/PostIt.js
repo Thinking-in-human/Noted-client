@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
 import { selectFontUrl, selectFontName } from "../feature/editorSlice";
 
-export default function PostIt() {
+export default function PostIt({ divRef, onMouseUp }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
-  const divRef = useRef(null);
-  const [content, setContent] = useState("");
 
   useEffect(() => {
     const getFont = async () => {
@@ -25,20 +23,8 @@ export default function PostIt() {
     getFont();
   }, [fontUrl]);
 
-  const handleInput = () => {
-    setContent(divRef.current.innerText);
-  };
-
-  return (
-    <Wrapper>
-      <TextBox contentEditable ref={divRef} onInput={handleInput} />
-    </Wrapper>
-  );
+  return <TextBox onMouseUp={onMouseUp} contentEditable ref={divRef} />;
 }
-
-const Wrapper = styled.div`
-  width: 100vw;
-`;
 
 const TextBox = styled.div`
   border: 1px solid black;

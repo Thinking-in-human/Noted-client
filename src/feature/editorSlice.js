@@ -26,7 +26,7 @@ const initialState = {
     text: {
       contents: "",
       fontSize: 8,
-      bold: false,
+      isBold: false,
       italic: false,
       font: "SerifText-Regular.woff2",
       color: "black",
@@ -107,6 +107,9 @@ export const editorSlice = createSlice({
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
     },
+    setBold: (state, action) => {
+      state.postIt.text.isBold = action.payload;
+    },
     goToNextPage: (state) => {
       state.currentPdfPage += 1;
     },
@@ -143,6 +146,7 @@ export const {
   setSelectedDocument,
   setSelectedFontUrl,
   setSelectedFontName,
+  setBold,
   setPdfUnit8Array,
   goToNextPage,
   goToPrevPage,
@@ -159,6 +163,7 @@ export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDocument = (state) => state.editor.selectedPdfId;
 export const selectFontUrl = (state) => state.editor.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
+export const selectIsBold = (state) => state.editor.postIt.text.isBold;
 export const selectPdfUnit8Array = (state) => state.editor.pdfUnit8Array;
 export const selectCurrentPage = (state) => state.editor.currentPdfPage;
 export const selectWholePageNum = (state) => state.editor.wholePageNum;
