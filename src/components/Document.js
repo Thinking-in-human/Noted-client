@@ -1,132 +1,71 @@
 import React, { useRef, useEffect } from "react";
-import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
+import styled from "styled-components";
+import * as pdfjs from "pdfjs-dist";
 
 import {
-  selectGlobalColor,
-  selectGlobalWidth,
-  selectGlobalOpacity,
-  pushDrawingData,
-  selectDrawingArray,
+  selectCurrentPage,
+  changePageNumber,
+  selectDrawingData,
 } from "../feature/editorSlice";
+import { useDrawOnMouseMove, drawByStatus } from "../utils/drawingCanvas";
+import CONSTANT from "../constants/constant";
 
-export default function Document() {
-  const globalColor = useSelector(selectGlobalColor);
-  const globalWidth = useSelector(selectGlobalWidth);
-  const globalOpacity = useSelector(selectGlobalOpacity);
-  const drawingData = useSelector(selectDrawingArray);
+pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
+
+export default function Document({ pdfDocument }) {
+  const currentPage = useSelector(selectCurrentPage);
+  const drawingData = useSelector(selectDrawingData)[currentPage];
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
 
   useEffect(() => {
     const renderPdf = async () => {
-      const pdfJS = await import("pdfjs-dist/build/pdf");
-      pdfJS.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
-      const pdf = await pdfJS.getDocument("example.pdf").promise;
-      const page = await pdf.getPage(1);
+      const page = await pdfDocument.getPage(currentPage);
       const viewport = page.getViewport({ scale: 1 });
-
-      const canvas = canvasRef.current;
-      canvas.width = 700;
-      canvas.height = 990;
 
       const pdfCanvas = pdfRef.current;
       const canvasContext = pdfCanvas.getContext("2d");
-      pdfCanvas.width = 700;
-      pdfCanvas.height = 990;
+      pdfCanvas.width = CONSTANT.CANVAS_WIDTH;
+      pdfCanvas.height = CONSTANT.CANVAS_HEIGHT;
+
+      drawByStatus(canvasRef.current, drawingData);
 
       const renderContext = { canvasContext, viewport };
       page.render(renderContext);
     };
 
     renderPdf();
-  }, []);
+  }, [currentPage]);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
+  const handleNextPage = () => {
+    dispatch(changePageNumber("next"));
+  };
 
-    let linePoints = [];
+  const handlePrevPage = () => {
+    dispatch(changePageNumber("prev"));
+  };
 
-    const drawWhenMouseMove = (event) => {
-      const x = event.offsetX;
-      const y = event.offsetY;
-      context.lineJoin = "round";
-      context.lineCap = "round";
-      context.globalAlpha = globalOpacity;
-      context.strokeStyle = globalColor;
-      context.lineWidth = globalWidth;
-
-      linePoints.push({
-        xPoint: x,
-        yPoint: y,
-        color: globalColor,
-        width: globalWidth,
-        opacity: globalOpacity,
-      });
-
-      context.lineTo(x, y);
-      context.stroke();
-    };
-
-    const handleMouseUp = () => {
-      dispatch(pushDrawingData(linePoints));
-
-      canvas.removeEventListener("mousemove", drawWhenMouseMove);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-    };
-
-    const handleMouseDown = (event) => {
-      const x = event.offsetX;
-      const y = event.offsetY;
-
-      linePoints = [];
-      linePoints.push({
-        xPoint: x,
-        yPoint: y,
-        color: globalColor,
-        width: globalWidth,
-        opacity: globalOpacity,
-      });
-
-      context.beginPath();
-      context.moveTo(x, y);
-
-      canvas.addEventListener("mousemove", drawWhenMouseMove);
-      canvas.addEventListener("mouseup", handleMouseUp);
-    };
-
-    canvas.addEventListener("mousedown", handleMouseDown);
-
-    return () => {
-      canvas.removeEventListener("mousedown", handleMouseDown);
-    };
-  }, [dispatch, globalWidth, globalOpacity, globalColor]);
-
-  if (canvasRef.current) {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-
-    context.clearRect(0, 0, 700, 990);
-
-    drawingData.forEach((drawing) => {
-      context.beginPath();
-      context.moveTo(drawing[0].xPoint, drawing[0].yPoint);
-      for (let i = 1; i < drawing.length; i += 1) {
-        context.strokeStyle = drawing[i].color;
-        context.lineWidth = drawing[i].width;
-        context.globalAlpha = drawing[i].opacity;
-        context.lineTo(drawing[i].xPoint, drawing[i].yPoint);
-        context.stroke();
-      }
-    });
-  }
+  useDrawOnMouseMove(canvasRef);
+  drawByStatus(canvasRef.current, drawingData);
 
   return (
     <Background>
-      <CanvasPage ref={canvasRef} />
-      <PdfPage ref={pdfRef} />
+      <ButtonWrapper>
+        <PageButton onClick={handlePrevPage} type="button">
+          ⬅️
+        </PageButton>
+      </ButtonWrapper>
+      <PdfWrapper>
+        <CanvasPage ref={canvasRef} />
+        <PdfPage ref={pdfRef} />
+      </PdfWrapper>
+      <ButtonWrapper>
+        <PageButton onClick={handleNextPage} type="button">
+          ➡️
+        </PageButton>
+      </ButtonWrapper>
     </Background>
   );
 }
@@ -139,16 +78,51 @@ const Background = styled.div`
   height: 100%;
 `;
 
+const PdfWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  position: relative;
+  width: 60%;
+  height: 100%;
+`;
+
 const CanvasPage = styled.canvas`
   position: absolute;
-  width: 700px;
-  height: 990px;
-  z-index: 1;
+  border: 5px solid brown;
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
+  z-index: 2;
 `;
 
 const PdfPage = styled.canvas`
-  border: 5px solid brown;
   position: absolute;
-  width: 700px;
-  height: 990px;
+  border: 5px solid brown;
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
+`;
+
+const CombinedCanvas = styled.canvas`
+  position: absolute;
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
+  z-index: 1;
+`;
+
+const PageButton = styled.button`
+  width: 60px;
+  height: 60px;
+  font-size: 40px;
+
+  &:hover {
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  margin: auto;
 `;

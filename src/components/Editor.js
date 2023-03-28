@@ -49,9 +49,11 @@ export default function Editor() {
     <Wrapper>
       <Toolbar divRef={divRef} isBoldSelected={isBoldSelected} />
       <PostIt divRef={divRef} onMouseUp={handleMouseUp} />
-      <PDFViewer
-        url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
-      />
+      {loginUserId && documentId && (
+        <PDFViewer
+          url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
+        />
+      )}
     </Wrapper>
   );
 }
