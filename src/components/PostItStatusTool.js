@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
+import { useErrorBoundary } from "react-error-boundary";
 
 import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
@@ -15,7 +16,8 @@ import {
 export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
-  const fontSize = useDispatch(selectPostItFontSize);
+  const fontSize = useSelector(selectPostItFontSize);
+  const { showBoundary } = useErrorBoundary();
   const isBold = useSelector(selectIsBold);
   const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
@@ -47,7 +49,6 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
       newSpan.style.fontWeight = "bold";
 
       range.surroundContents(newSpan);
-      textBoxRef.current.focus();
     } else {
       const firstSpanParentNode = startNode.parentNode.closest("span");
       const textNode = document.createTextNode(selection.toString());
@@ -62,23 +63,27 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   };
 
   const handleChangeFont = async (event) => {
-    const selectedFont = event.target.value;
-    dispatch(setSelectedFontName(selectedFont));
-    const response = await axios.get(
-      `http://localhost:4000/fonts/${selectedFont}`,
-      {
-        withCredentials: true,
-        responseType: "arraybuffer",
-      },
-    );
-    const fontBuffer = response.data;
+    try {
+      const selectedFont = event.target.value;
+      dispatch(setSelectedFontName(selectedFont));
+      const response = await axios.get(
+        `http://localhost:4000/fonts/${selectedFont}`,
+        {
+          withCredentials: true,
+          responseType: "arraybuffer",
+        },
+      );
+      const fontBuffer = response.data;
 
-    const fontBlob = new Blob([fontBuffer], {
-      type: "font/woff2",
-    });
-    const fontUrl = URL.createObjectURL(fontBlob);
+      const fontBlob = new Blob([fontBuffer], {
+        type: "font/woff2",
+      });
+      const fontUrl = URL.createObjectURL(fontBlob);
 
-    dispatch(setSelectedFontUrl(fontUrl));
+      dispatch(setSelectedFontUrl(fontUrl));
+    } catch (error) {
+      showBoundary(error);
+    }
   };
 
   const handleChangeSize = (event) => {
@@ -87,19 +92,6 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
 
   return (
     <ToolStatusField>
-      <select onChange={handleChangeFont}>
-        <option>Fasthand</option>
-        <option>MavenPro</option>
-        <option>PlayfairDisplay</option>
-        <option>Roboto</option>
-        <option>Rubik</option>
-        <option>RubikIso</option>
-      </select>
-      <select onChange={handleChangeSize} defaultValue={fontSize}>
-        {fontSizeArray.map((size) => {
-          return <option key={size}>{size}px</option>;
-        })}
-      </select>
       <FormatIcon>
         <Icon
           src={boldIcon}
@@ -107,31 +99,22 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
           isBold={isBold}
           onClick={handleClickBold}
         />
-        <Icon src={italicIcon} alt="Italic Button Icon" />
-        <Icon src={underlineIcon} alt="Underline Button Icon" />
       </FormatIcon>
-      <FormatColor>
-        <Color
-          type="color"
-          defaultValue="#000000"
-          onChange={handleChangeColor}
-        />
-        <Color
-          type="color"
-          defaultValue="#ff0000"
-          onChange={handleChangeColor}
-        />
-        <Color
-          type="color"
-          defaultValue="#0000FF"
-          onChange={handleChangeColor}
-        />
-        <Color
-          type="color"
-          defaultValue="#808080"
-          onChange={handleChangeColor}
-        />
-      </FormatColor>
+      <select onChange={handleChangeFont}>
+        <option>Fasthand</option>
+        <option>MavenPro</option>
+        <option>PlayfairDisplay</option>
+        <option>Roboto</option>
+        <option>Rubik</option>
+        <option>RubikIso</option>
+        <option>Jamsil</option>
+        <option>KCCChassam</option>
+      </select>
+      <select onChange={handleChangeSize} defaultValue={fontSize}>
+        {fontSizeArray.map((size) => {
+          return <option key={size}>{size}px</option>;
+        })}
+      </select>
     </ToolStatusField>
   );
 }
@@ -139,7 +122,8 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
 const ToolStatusField = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 50px;
   width: 50%;
   border: 1px solid black;
 `;
@@ -154,29 +138,9 @@ const Icon = styled.img`
   height: 15px;
   padding: 6px;
   border-radius: 10%;
+  border: 1px solid gray;
   background-color: ${({ isBold }) => (isBold ? "#ffc0cb" : "transparent")};
 
-  &:hover {
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const FormatColor = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Color = styled.input`
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background-color: transparent;
-  cursor: pointer;
-
-  &::-webkit-color-swatch {
-    border-radius: 50%;
-  }
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }

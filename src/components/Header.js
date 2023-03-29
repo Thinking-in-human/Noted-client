@@ -3,6 +3,7 @@ import styled from "styled-components";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 import {
   selectDocument,
@@ -12,11 +13,9 @@ import {
 } from "../feature/editorSlice";
 import {
   changeEditingUser,
-  setErrorInfo,
   selectUserImgUrl,
   selectUserId,
 } from "../feature/userSlice";
-
 import saveCurrentPdf from "../utils/saveDrawing";
 import CONSTANT from "../constants/constant";
 
@@ -27,6 +26,7 @@ export default function Header() {
   const allDrawingData = useSelector(selectDrawingData);
   const postItPosition = useSelector(selectLastPostItPosition);
   const postItTextInfo = useSelector(selectPostItText);
+  const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
@@ -46,7 +46,7 @@ export default function Header() {
         );
       }
     } catch (error) {
-      dispatch(setErrorInfo(error.response.data));
+      showBoundary(error);
     }
   };
 
@@ -61,19 +61,19 @@ export default function Header() {
         postItTextInfo,
       );
     } catch (error) {
-      dispatch(setErrorInfo(error.response.data));
+      showBoundary(error);
     }
   };
 
   return (
     <Wrapper>
       <Logo>
-        <Link to="/">Noted</Link>
+        <NavLink to="/">Noted</NavLink>
       </Logo>
       <NavWrapper>
         <NavButton onClick={handleSavePdf}>save</NavButton>
         <NavButton>
-          <Link to="/open-pdf">open pdf</Link>
+          <NavLink to="/open-pdf">open pdf</NavLink>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         {userImage ? <UserProfile src={userImage} alt="userProfile" /> : null}
@@ -93,6 +93,7 @@ const Wrapper = styled.div`
   background-color: #fcfaf7;
   font-size: 25px;
   font-weight: bold;
+  text-decoration: none;
 `;
 
 const Logo = styled.div`
@@ -122,4 +123,12 @@ const UserProfile = styled.img`
   height: 30px;
   object-fit: cover;
   border-radius: 50%;
+`;
+
+const NavLink = styled(Link)`
+  text-decoration: none;
+
+  &:visited {
+    color: black;
+  }
 `;

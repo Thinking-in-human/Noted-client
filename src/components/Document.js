@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import * as pdfjs from "pdfjs-dist";
+import { useErrorBoundary } from "react-error-boundary";
 
 import PostIt from "./PostIt";
 import {
@@ -15,9 +16,10 @@ import CONSTANT from "../constants/constant";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function Document({ pdfDocument }) {
+export default function Document({ pdfDocument, textBoxRef, onMouseUp }) {
   const currentPage = useSelector(selectCurrentPage);
   const drawingData = useSelector(selectDrawingData)[currentPage];
+  const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
@@ -26,18 +28,22 @@ export default function Document({ pdfDocument }) {
 
   useEffect(() => {
     const renderPdf = async () => {
-      const page = await pdfDocument.getPage(currentPage);
-      const viewport = page.getViewport({ scale: 1 });
+      try {
+        const page = await pdfDocument.getPage(currentPage);
+        const viewport = page.getViewport({ scale: 1 });
 
-      const pdfCanvas = pdfRef.current;
-      const canvasContext = pdfCanvas.getContext("2d");
-      pdfCanvas.width = CONSTANT.CANVAS_WIDTH;
-      pdfCanvas.height = CONSTANT.CANVAS_HEIGHT;
+        const pdfCanvas = pdfRef.current;
+        const canvasContext = pdfCanvas.getContext("2d");
+        pdfCanvas.width = CONSTANT.CANVAS_WIDTH;
+        pdfCanvas.height = CONSTANT.CANVAS_HEIGHT;
 
-      drawByStatus(canvasRef.current, drawingData);
+        drawByStatus(canvasRef.current, drawingData);
 
-      const renderContext = { canvasContext, viewport };
-      page.render(renderContext);
+        const renderContext = { canvasContext, viewport };
+        page.render(renderContext);
+      } catch (error) {
+        showBoundary(error);
+      }
     };
 
     renderPdf();
@@ -58,19 +64,27 @@ export default function Document({ pdfDocument }) {
     <Background>
       <ButtonWrapper>
         <PageButton onClick={handlePrevPage} type="button">
-          ⬅️
+          &lt;
         </PageButton>
       </ButtonWrapper>
       <PdfWrapper>
         {postItsArray.map((postItId) => {
-          return <PostIt key={postItId} postItId={postItId} />;
+          return (
+            <PostIt
+              key={postItId}
+              postItId={postItId}
+              onMouseUp={onMouseUp}
+              contentEditable
+              textBoxRef={textBoxRef}
+            />
+          );
         })}
         <CanvasPage ref={canvasRef} />
         <PdfPage ref={pdfRef} />
       </PdfWrapper>
       <ButtonWrapper>
         <PageButton onClick={handleNextPage} type="button">
-          ➡️
+          &gt;
         </PageButton>
       </ButtonWrapper>
     </Background>
@@ -80,9 +94,9 @@ export default function Document({ pdfDocument }) {
 const Background = styled.div`
   display: flex;
   justify-content: center;
-  width: 100%;
-  height: 100%;
-  background-color: gray;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
 `;
 
 const PdfWrapper = styled.div`
@@ -102,6 +116,7 @@ const CanvasPage = styled.canvas`
 
 const PdfPage = styled.canvas`
   position: absolute;
+  border: 1px solid gray;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
 `;
@@ -110,8 +125,12 @@ const PageButton = styled.button`
   width: 60px;
   height: 60px;
   font-size: 40px;
+  border: 1px solid gray;
+  border-radius: 50%;
+  background-color: white;
 
   &:hover {
+    background-color: #ffc0cb;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
 `;

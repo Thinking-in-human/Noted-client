@@ -58,7 +58,7 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
 
   return (
     <EditorTool>
-      <ExecuteField>
+      <EditorToolField>
         <Icon
           onClick={showPrevDrawing}
           src={undoIcon}
@@ -69,17 +69,10 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
           src={redoIcon}
           alt="Toggle to Show NextDrawing"
         />
-      </ExecuteField>
-      <EditorToolField>
         <Icon
           onClick={() => changeEditorTool("pencil")}
           src={editorTool === "pencil" ? pen2Icon : pen1Icon}
           alt="Pen Icon"
-        />
-        <Icon
-          onClick={() => changeEditorTool("eraser")}
-          src={editorTool === "eraser" ? eraser2Icon : eraser1Icon}
-          alt="Eraser Icon"
         />
         <Icon
           onClick={() => changeEditorTool("highLightPen")}
@@ -96,7 +89,6 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
         />
       </EditorToolField>
       {editorTool === "pencil" && <PenStatusTool />}
-      {editorTool === "eraser" && <EraserStatusTool />}
       {editorTool === "highLightPen" && <HightLightStatusTool />}
       {editorTool === "postIt" && (
         <PostItStatusTool
@@ -114,19 +106,12 @@ const EditorTool = styled.div`
   height: 35px;
 `;
 
-const ExecuteField = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 15%;
-  border: 1px solid black;
-`;
-
 const EditorToolField = styled.div`
   display: flex;
+  gap: 10px;
   align-items: center;
   justify-content: center;
-  width: 35%;
+  width: 50%;
   border: 1px solid black;
 `;
 
