@@ -22,7 +22,6 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const dispatch = useDispatch();
   const divRef = useRef(null);
-  const [content, setContent] = useState("");
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
@@ -69,7 +68,6 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   };
 
   const handleDeleteClick = () => {
-    divRef.current.remove();
     dispatch(setDeletePostIt(divRef.current.id));
   };
 
@@ -90,7 +88,7 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
           X
         </Button>
       </Header>
-      <TextBox onMouseUp={onMouseUp} contentEditable ref={textBoxRef} />
+      <TextBox onMouseUp={onMouseUp} contentEditable textBoxRef={textBoxRef} />
     </Group>
   );
 }

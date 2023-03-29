@@ -47,7 +47,6 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
       newSpan.style.fontWeight = "bold";
 
       range.surroundContents(newSpan);
-      textBoxRef.current.focus();
     } else {
       const firstSpanParentNode = startNode.parentNode.closest("span");
       const textNode = document.createTextNode(selection.toString());
@@ -91,6 +90,14 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
 
   return (
     <ToolStatusField>
+      <FormatIcon>
+        <Icon
+          src={boldIcon}
+          alt="Bold Button Icon"
+          isBold={isBold}
+          onClick={handleClickBold}
+        />
+      </FormatIcon>
       <select onChange={handleChangeFont}>
         <option>Fasthand</option>
         <option>MavenPro</option>
@@ -106,38 +113,6 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
           return <option key={size}>{size}px</option>;
         })}
       </select>
-      <FormatIcon>
-        <Icon
-          src={boldIcon}
-          alt="Bold Button Icon"
-          isBold={isBold}
-          onClick={handleClickBold}
-        />
-        <Icon src={italicIcon} alt="Italic Button Icon" />
-        <Icon src={underlineIcon} alt="Underline Button Icon" />
-      </FormatIcon>
-      <FormatColor>
-        <Color
-          type="color"
-          defaultValue="#000000"
-          onChange={handleChangeColor}
-        />
-        <Color
-          type="color"
-          defaultValue="#ff0000"
-          onChange={handleChangeColor}
-        />
-        <Color
-          type="color"
-          defaultValue="#0000FF"
-          onChange={handleChangeColor}
-        />
-        <Color
-          type="color"
-          defaultValue="#808080"
-          onChange={handleChangeColor}
-        />
-      </FormatColor>
     </ToolStatusField>
   );
 }
@@ -145,7 +120,8 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
 const ToolStatusField = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 50px;
   width: 50%;
   border: 1px solid black;
 `;
@@ -160,29 +136,9 @@ const Icon = styled.img`
   height: 15px;
   padding: 6px;
   border-radius: 10%;
+  border: 1px solid gray;
   background-color: ${({ isBold }) => (isBold ? "#ffc0cb" : "transparent")};
 
-  &:hover {
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  }
-`;
-
-const FormatColor = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-const Color = styled.input`
-  width: 30px;
-  height: 30px;
-  border: none;
-  border-radius: 50%;
-  background-color: transparent;
-  cursor: pointer;
-
-  &::-webkit-color-swatch {
-    border-radius: 50%;
-  }
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }

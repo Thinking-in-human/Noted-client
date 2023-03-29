@@ -26,7 +26,7 @@ export default function App() {
     <>
       <GlobalStyle />
       <ErrorBoundary FallbackComponent={FallbackUI}>
-        {pathname !== "/login" && <Header />}
+        <Header />
         <Routes>
           <Route path="/open-pdf" element={<OpenPdf />} />
           <Route path="/documents/:documentId" element={<Editor />} />

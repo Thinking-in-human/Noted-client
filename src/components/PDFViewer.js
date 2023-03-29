@@ -10,7 +10,7 @@ import { setPageData } from "../feature/editorSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function PDFViewer({ url, documentId }) {
+export default function PDFViewer({ url, textBoxRef, onMouseUp, documentId }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
@@ -38,7 +38,14 @@ export default function PDFViewer({ url, documentId }) {
   }, [url]);
 
   if (pdfDocument) {
-    return <Document url={url} pdfDocument={pdfDocument} />;
+    return (
+      <Document
+        url={url}
+        pdfDocument={pdfDocument}
+        textBoxRef={textBoxRef}
+        onMouseUp={onMouseUp}
+      />
+    );
   }
   return <Loading />;
 }

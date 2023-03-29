@@ -48,6 +48,8 @@ export default function Editor() {
       {loginUserId && documentId && (
         <PDFViewer
           url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
+          textBoxRef={textBoxRef}
+          onMouseUp={handleMouseUp}
           documentId={documentId}
         />
       )}

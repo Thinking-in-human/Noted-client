@@ -16,7 +16,7 @@ import CONSTANT from "../constants/constant";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function Document({ pdfDocument }) {
+export default function Document({ pdfDocument, textBoxRef, onMouseUp }) {
   const currentPage = useSelector(selectCurrentPage);
   const drawingData = useSelector(selectDrawingData)[currentPage];
   const { showBoundary } = useErrorBoundary();
@@ -64,13 +64,21 @@ export default function Document({ pdfDocument }) {
   return (
     <Background>
       {postItsArray.map((postItId) => {
-        return <PostIt key={postItId} postItId={postItId} />;
+        return (
+          <PostIt
+            key={postItId}
+            postItId={postItId}
+            onMouseUp={onMouseUp}
+            contentEditable
+            textBoxRef={textBoxRef}
+          />
+        );
       })}
       <CanvasPage ref={canvasRef} />
       <PdfPage ref={pdfRef} />
       <ButtonWrapper>
         <PageButton onClick={handlePrevPage} type="button">
-          ⬅️
+          &lt;
         </PageButton>
       </ButtonWrapper>
       <PdfWrapper>
@@ -79,7 +87,7 @@ export default function Document({ pdfDocument }) {
       </PdfWrapper>
       <ButtonWrapper>
         <PageButton onClick={handleNextPage} type="button">
-          ➡️
+          &gt;
         </PageButton>
       </ButtonWrapper>
     </Background>
@@ -90,8 +98,8 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 `;
 
 const PdfWrapper = styled.div`
@@ -111,7 +119,7 @@ const CanvasPage = styled.canvas`
 
 const PdfPage = styled.canvas`
   position: absolute;
-  border: 5px solid brown;
+  border: 1px solid gray;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
 `;
@@ -120,8 +128,12 @@ const PageButton = styled.button`
   width: 60px;
   height: 60px;
   font-size: 40px;
+  border: 1px solid gray;
+  border-radius: 50%;
+  background-color: white;
 
   &:hover {
+    background-color: #ffc0cb;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   }
 `;

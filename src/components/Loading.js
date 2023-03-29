@@ -19,4 +19,5 @@ const Wrapper = styled.div`
   align-items: center;
   width: 100vw;
   height: 90vh;
+  font-size: 50px;
 `;
