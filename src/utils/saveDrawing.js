@@ -1,5 +1,5 @@
 import axios from "axios";
-import { PDFDocument, StandardFonts, opentype, rgb } from "pdf-lib";
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
 import { saveAs } from "file-saver";
 
 import { drawByStatus } from "./drawingCanvas";
