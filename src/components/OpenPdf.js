@@ -3,18 +3,19 @@ import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { useErrorBoundary } from "react-error-boundary";
 
 import documentIcon from "../assets/documentIcon.svg";
 import {
   selectUserId,
   setUserDocuments,
   selectDocuments,
-  setErrorInfo,
 } from "../feature/userSlice";
 
 export default function OpenPdf() {
   const userId = useSelector(selectUserId);
   const dispatch = useDispatch();
+  const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
     const getAllDocumentsOfUser = async () => {
@@ -31,7 +32,7 @@ export default function OpenPdf() {
           dispatch(setUserDocuments(response.data.documents));
         }
       } catch (error) {
-        dispatch(setErrorInfo(error.response?.data));
+        showBoundary(error);
       }
     };
 
@@ -49,23 +50,27 @@ export default function OpenPdf() {
   };
 
   const handleChangeFile = async (event) => {
-    const file = event.target.files[0];
-    const data = new FormData();
-    data.append("file", file);
+    try {
+      const file = event.target.files[0];
+      const data = new FormData();
+      data.append("file", file);
 
-    const response = await axios.post(
-      `http://localhost:4000/users/${userId}/documents/new`,
-      data,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      const response = await axios.post(
+        `http://localhost:4000/users/${userId}/documents/new`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
         },
-        withCredentials: true,
-      },
-    );
-    const documentId = response.data.documents;
+      );
+      const documentId = response.data.documents;
 
-    navigate(`/documents/${documentId}`);
+      navigate(`/documents/${documentId}`);
+    } catch (error) {
+      showBoundary(error);
+    }
   };
 
   return (
@@ -150,7 +155,8 @@ const UploadButton = styled.button`
 
 const DbFileWrapper = styled.div`
   width: 700px;
-  height: 230px;
+  min-height: 230px;
+  height: auto;
   padding: 20px;
   border: 1px solid black;
 `;

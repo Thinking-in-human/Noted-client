@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 import * as pdfjs from "pdfjs-dist";
+import { useErrorBoundary } from "react-error-boundary";
 
 import PostIt from "./PostIt";
 import {
@@ -18,6 +19,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.
 export default function Document({ pdfDocument }) {
   const currentPage = useSelector(selectCurrentPage);
   const drawingData = useSelector(selectDrawingData)[currentPage];
+  const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
@@ -27,18 +29,22 @@ export default function Document({ pdfDocument }) {
 
   useEffect(() => {
     const renderPdf = async () => {
-      const page = await pdfDocument.getPage(currentPage);
-      const viewport = page.getViewport({ scale: 1 });
+      try {
+        const page = await pdfDocument.getPage(currentPage);
+        const viewport = page.getViewport({ scale: 1 });
 
-      const pdfCanvas = pdfRef.current;
-      const canvasContext = pdfCanvas.getContext("2d");
-      pdfCanvas.width = CONSTANT.CANVAS_WIDTH;
-      pdfCanvas.height = CONSTANT.CANVAS_HEIGHT;
+        const pdfCanvas = pdfRef.current;
+        const canvasContext = pdfCanvas.getContext("2d");
+        pdfCanvas.width = CONSTANT.CANVAS_WIDTH;
+        pdfCanvas.height = CONSTANT.CANVAS_HEIGHT;
 
-      drawByStatus(canvasRef.current, drawingData);
+        drawByStatus(canvasRef.current, drawingData);
 
-      const renderContext = { canvasContext, viewport };
-      page.render(renderContext);
+        const renderContext = { canvasContext, viewport };
+        page.render(renderContext);
+      } catch (error) {
+        showBoundary(error);
+      }
     };
 
     renderPdf();

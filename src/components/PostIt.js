@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { useErrorBoundary } from "react-error-boundary";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -20,6 +22,8 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
   const dispatch = useDispatch();
   const divRef = useRef(null);
+  const [content, setContent] = useState("");
+  const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
     divRef.current.style.fontSize = fontSize;
@@ -27,13 +31,17 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
 
   useEffect(() => {
     const getFont = async () => {
-      if (fontUrl) {
-        const fontFace = new FontFace(`${fontName}`, `url(${fontUrl})`);
-        await fontFace.load();
-        document.fonts.add(fontFace);
+      try {
+        if (fontUrl) {
+          const fontFace = new FontFace(`${fontName}`, `url(${fontUrl})`);
+          await fontFace.load();
+          document.fonts.add(fontFace);
 
-        const editor = divRef.current;
-        editor.style.fontFamily = `${fontName}`;
+          const editor = divRef.current;
+          editor.style.fontFamily = `${fontName}`;
+        }
+      } catch (error) {
+        showBoundary(error);
       }
     };
     getFont();

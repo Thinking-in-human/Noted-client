@@ -4,15 +4,17 @@ import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 import pdfImage from "../assets/pdfImage.png";
 import { firebaseAuth } from "../app/firebaseAuth";
-import { changeEditingUser, setErrorInfo } from "../feature/userSlice";
+import { changeEditingUser } from "../feature/userSlice";
 
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const googleProvider = new GoogleAuthProvider();
+  const { showBoundary } = useErrorBoundary();
 
   const signInWithGoogle = async () => {
     try {
@@ -43,7 +45,7 @@ export default function Login() {
 
       navigate("/open-pdf");
     } catch (error) {
-      dispatch(setErrorInfo(error.response.data));
+      showBoundary(error);
     }
   };
 
