@@ -12,7 +12,7 @@ import PostIt from "./PostIt";
 export default function Editor() {
   const loginUserId = useSelector(selectUserId);
   const { documentId } = useParams();
-  const divRef = useRef(null);
+  const textBoxRef = useRef(null);
   const dispatch = useDispatch();
 
   dispatch(setSelectedDocument(documentId));
@@ -47,11 +47,12 @@ export default function Editor() {
 
   return (
     <Wrapper>
-      <Toolbar divRef={divRef} isBoldSelected={isBoldSelected} />
-      <PostIt divRef={divRef} onMouseUp={handleMouseUp} />
+      <Toolbar textBoxRef={textBoxRef} isBoldSelected={isBoldSelected} />
       {loginUserId && documentId && (
         <PDFViewer
           url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
+          textBoxRef={textBoxRef}
+          onMouseUp={handleMouseUp}
         />
       )}
     </Wrapper>

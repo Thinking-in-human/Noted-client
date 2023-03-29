@@ -10,7 +10,7 @@ import { setPageData } from "../feature/editorSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function PDFViewer({ url }) {
+export default function PDFViewer({ url, textBoxRef, onMouseUp }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
 
@@ -37,7 +37,14 @@ export default function PDFViewer({ url }) {
   if (pdfDocument) {
     const { numPages } = pdfDocument;
     dispatch(setPageData(numPages));
-    return <Document url={url} pdfDocument={pdfDocument} />;
+    return (
+      <Document
+        url={url}
+        pdfDocument={pdfDocument}
+        textBoxRef={textBoxRef}
+        onMouseUp={onMouseUp}
+      />
+    );
   }
   return <Loading />;
 }

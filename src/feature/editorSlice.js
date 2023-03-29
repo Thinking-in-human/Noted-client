@@ -29,8 +29,8 @@ const initialState = {
   },
   postIt: {
     text: {
-      isBold: false;
-    }
+      isBold: false,
+    },
   },
   postItPosition: {
     x: 160,
@@ -125,14 +125,8 @@ export const editorSlice = createSlice({
     setPostItFontSize: (state, action) => {
       state.postItFontSize = action.payload;
     },
-    setSelectedFontUrl: (state, action) => {
-      state.fontUrl = action.payload;
-    },
-    setSelectedFontName: (state, action) => {
-      state.fontName = action.payload;
-    },
     setBold: (state, action) => {
-      state.postIts.text.isBold = action.payload;
+      state.postIt.text.isBold = action.payload;
     },
     goToNextPage: (state) => {
       state.currentPdfPage += 1;

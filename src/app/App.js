@@ -23,7 +23,7 @@ export default function App() {
   return (
     <>
       <GlobalStyle />
-      {pathname !== "/login" && <Header />}
+      <Header />
       <Routes>
         <Route path="/open-pdf" element={<OpenPdf />} />
         <Route path="/documents/:documentId" element={<Editor />} />

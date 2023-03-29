@@ -15,7 +15,7 @@ import CONSTANT from "../constants/constant";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function Document({ pdfDocument }) {
+export default function Document({ pdfDocument, textBoxRef, onMouseUp }) {
   const currentPage = useSelector(selectCurrentPage);
   const drawingData = useSelector(selectDrawingData)[currentPage];
   const dispatch = useDispatch();
@@ -58,7 +58,15 @@ export default function Document({ pdfDocument }) {
   return (
     <Background>
       {postItsArray.map((postItId) => {
-        return <PostIt key={postItId} postItId={postItId} />;
+        return (
+          <PostIt
+            key={postItId}
+            postItId={postItId}
+            onMouseUp={onMouseUp}
+            contentEditable
+            textBoxRef={textBoxRef}
+          />
+        );
       })}
       <CanvasPage ref={canvasRef} />
       <PdfPage ref={pdfRef} />
@@ -98,7 +106,6 @@ const PdfWrapper = styled.div`
 
 const CanvasPage = styled.canvas`
   position: absolute;
-  border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
   z-index: 2;
@@ -109,13 +116,6 @@ const PdfPage = styled.canvas`
   border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
-`;
-
-const CombinedCanvas = styled.canvas`
-  position: absolute;
-  width: ${CONSTANT.CANVAS_WIDTH};
-  height: ${CONSTANT.CANVAS_HEIGHT};
-  z-index: 1;
 `;
 
 const PageButton = styled.button`

@@ -54,12 +54,12 @@ export default function Header() {
   return (
     <Wrapper>
       <Logo>
-        <Link to="/">Noted</Link>
+        <NavLink to="/">Noted</NavLink>
       </Logo>
       <NavWrapper>
         <NavButton onClick={handleSavePdf}>save</NavButton>
         <NavButton>
-          <Link to="/open-pdf">open pdf</Link>
+          <NavLink to="/open-pdf">open pdf</NavLink>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         <UserProfile src={userImage} alt="userProfile"></UserProfile>
@@ -78,6 +78,7 @@ const Wrapper = styled.div`
   background-color: #fcfaf7;
   font-size: 25px;
   font-weight: bold;
+  text-decoration: none;
 `;
 
 const Logo = styled.div`
@@ -107,4 +108,12 @@ const UserProfile = styled.img`
   height: 30px;
   object-fit: cover;
   border-radius: 50%;
+`;
+
+const NavLink = styled(Link)`
+  text-decoration: none;
+
+  &:visited {
+    color: black;
+  }
 `;
