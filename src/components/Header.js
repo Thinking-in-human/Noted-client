@@ -3,15 +3,14 @@ import styled from "styled-components";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { useErrorBoundary } from "react-error-boundary";
 
 import { selectDocument, selectDrawingData } from "../feature/editorSlice";
 import {
   changeEditingUser,
-  setErrorInfo,
   selectUserImgUrl,
   selectUserId,
 } from "../feature/userSlice";
-
 import saveCurrentPdf from "../utils/saveDrawing";
 import CONSTANT from "../constants/constant";
 
@@ -20,6 +19,7 @@ export default function Header() {
   const documentId = useSelector(selectDocument);
   const userId = useSelector(selectUserId);
   const allDrawingData = useSelector(selectDrawingData);
+  const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
@@ -39,7 +39,7 @@ export default function Header() {
         );
       }
     } catch (error) {
-      dispatch(setErrorInfo(error.response.data));
+      showBoundary(error);
     }
   };
 
@@ -47,7 +47,7 @@ export default function Header() {
     try {
       saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
     } catch (error) {
-      dispatch(setErrorInfo(error.response.data));
+      showBoundary(error);
     }
   };
 
@@ -62,7 +62,8 @@ export default function Header() {
           <NavLink to="/open-pdf">open pdf</NavLink>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
-        <UserProfile src={userImage} alt="userProfile"></UserProfile>
+        {userImage ? <UserProfile src={userImage} alt="userProfile" /> : null}
+        {/*  <UserProfile src={userImage} alt="userProfile"></UserProfile> */}
       </NavWrapper>
     </Wrapper>
   );

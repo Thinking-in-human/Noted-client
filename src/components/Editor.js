@@ -1,22 +1,19 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import PDFViewer from "./PDFViewer";
 import { selectUserId } from "../feature/userSlice";
+import PDFViewer from "./PDFViewer";
 import Toolbar from "./Toolbar";
 import { setSelectedDocument, setBold } from "../feature/editorSlice";
-import PostIt from "./PostIt";
 
 export default function Editor() {
   const loginUserId = useSelector(selectUserId);
   const { documentId } = useParams();
   const textBoxRef = useRef(null);
   const dispatch = useDispatch();
-
-  dispatch(setSelectedDocument(documentId));
-
+  
   const isBoldSelected = () => {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
@@ -53,6 +50,7 @@ export default function Editor() {
           url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
           textBoxRef={textBoxRef}
           onMouseUp={handleMouseUp}
+          documentId={documentId}
         />
       )}
     </Wrapper>
