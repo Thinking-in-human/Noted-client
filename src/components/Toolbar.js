@@ -25,11 +25,13 @@ import {
   moveDataUndoArray,
   moveDataRedoArray,
   setPostIts,
+  selectCurrentPage,
 } from "../feature/editorSlice";
 
 export default function Toolbar({ textBoxRef, isBoldSelected }) {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
+  const currentPage = useSelector(selectCurrentPage);
 
   const changeEditorTool = (tool) => {
     dispatch(changeGlobalToolOption(tool));
@@ -46,18 +48,14 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
   const makeNewPostItStatus = () => {
     const postItObject = {
       [uuid()]: {
-        width: "300px",
-        height: "300px",
-        color: "yellow",
         contents: "",
-        bold: false,
-        italic: false,
-        font: "SerifText-Regular.woff2",
-        fontColor: "black",
+        isBold: false,
+        fontSize: "10px",
+        fontUrl: "",
       },
     };
 
-    dispatch(setPostIts(postItObject));
+    dispatch(setPostIts({ postItObject, currentPage }));
   };
 
   return (

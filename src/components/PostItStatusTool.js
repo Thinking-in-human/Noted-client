@@ -86,12 +86,12 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   return (
     <ToolStatusField>
       <select onChange={handleChangeFont}>
-        <option>Fasthand-Regular</option>
-        <option>MavenPro-Regular</option>
-        <option>PlayfairDisplay-Regular</option>
-        <option>Roboto-Regular</option>
-        <option>Rubik-Regular</option>
-        <option>RubikIso-Regular</option>
+        <option>Fasthand</option>
+        <option>MavenPro</option>
+        <option>PlayfairDisplay</option>
+        <option>Roboto</option>
+        <option>Rubik</option>
+        <option>RubikIso</option>
       </select>
       <select onChange={handleChangeSize} defaultValue="10px">
         {fontSizeArray.map((size) => {

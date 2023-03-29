@@ -18,25 +18,19 @@ const initialState = {
     width: 12,
     opacity: 0.03,
   },
-  postIts: {
-    id: {
-      width: "300px",
-      height: "300px",
-      color: "yellow",
-      contents: "",
-      isBold: false,
-    },
-  },
   postIt: {
     text: {
+      contents: "",
       isBold: false,
+      fontSize: "10px",
+      fontUrl: "",
     },
   },
   postItPosition: {
     x: 160,
     y: 190,
   },
-  postItFontSize: 8,
+  postItFontSize: 10,
   madePostIts: {},
   fontUrl: "",
   fontName: "",
@@ -45,6 +39,13 @@ const initialState = {
   },
   redoData: {
     1: [],
+  },
+  postIts: {
+    1: {},
+  },
+  lastPostItPosition: {
+    x: 160,
+    y: 190,
   },
 };
 
@@ -104,29 +105,35 @@ export const editorSlice = createSlice({
     },
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
-      state.postIts = {};
+      state.postIts = {
+        1: {},
+      };
     },
     setSelectedFontUrl: (state, action) => {
-      state.fontUrl = action.payload;
+      state.postIt.text.fontUrl = action.payload;
     },
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
     },
     setPostIts: (state, action) => {
-      const postIt = action.payload;
+      const { postItObject, currentPage } = action.payload;
       state.postItPosition.x += 5;
       state.postItPosition.y += 5;
-      state.postIts = { ...state.postIts, ...postIt };
+      state.postIts[currentPage] = { ...state.postIts, ...postItObject };
     },
     setDeletePostIt: (state, action) => {
-      const postItId = action.payload;
-      delete state.postIts[postItId];
+      const { id, page } = action.payload;
+      delete state.postIts[page][id];
     },
     setPostItFontSize: (state, action) => {
-      state.postItFontSize = action.payload;
+      state.postIt.text.fontSize = action.payload;
     },
     setBold: (state, action) => {
       state.postIt.text.isBold = action.payload;
+    },
+    changeContents: (state, action) => {
+      const {text, page} = action.payload;
+      state.postIt.text.contents = action.payload;
     },
     goToNextPage: (state) => {
       state.currentPdfPage += 1;
@@ -137,15 +144,21 @@ export const editorSlice = createSlice({
     setPageData: (state, action) => {
       const drawingData = {};
       const redoData = {};
+      const postItData = {};
 
       for (let i = 1; i <= action.payload; i += 1) {
         drawingData[i] = [];
         redoData[i] = [];
+        postItData[i] = {};
       }
 
       state.wholePageNum = action.payload;
       state.drawingData = drawingData;
       state.redoData = redoData;
+      state.postIts = postItData;
+    },
+    setLastPostItPosition: (state, action) => {
+      state.lastPostItPosition = action.payload;
     },
   },
 });
@@ -172,9 +185,12 @@ export const {
   goToNextPage,
   goToPrevPage,
   setPageData,
+  setLastPostItPosition,
+  changeContents,
 } = editorSlice.actions;
 
-export const selectPostItFontSize = (state) => state.editor.postItFontSize;
+export const selectPostItFontSize = (state) =>
+  state.editor.postIt.text.fontSize;
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
 export const selectPencil = (state) => state.editor.pencil;
@@ -183,7 +199,7 @@ export const selectGlobalColor = (state) => state.editor.globalColor;
 export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDocument = (state) => state.editor.selectedPdfId;
-export const selectFontUrl = (state) => state.editor.fontUrl;
+export const selectFontUrl = (state) => state.editor.postIt.text.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
 export const selectPostIts = (state) => state.editor.postIts;
 export const selectPostItPosition = (state) => state.editor.postItPosition;
@@ -193,6 +209,11 @@ export const selectCurrentPage = (state) => state.editor.currentPdfPage;
 export const selectWholePageNum = (state) => state.editor.wholePageNum;
 export const selectDrawingData = (state) => state.editor.drawingData;
 export const selectRedoData = (state) => state.editor.redoData;
+export const selectLastPostItPosition = (state) =>
+  state.editor.lastPostItPosition;
+export const selectPostItContents = (state) =>
+  state.editor.postIt.text.contents;
+export const selectPostItText = (state) => state.editor.postIt.text;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;

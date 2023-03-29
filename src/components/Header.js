@@ -4,7 +4,12 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
-import { selectDocument, selectDrawingData } from "../feature/editorSlice";
+import {
+  selectDocument,
+  selectDrawingData,
+  selectLastPostItPosition,
+  selectPostItText,
+} from "../feature/editorSlice";
 import {
   changeEditingUser,
   setErrorInfo,
@@ -20,6 +25,8 @@ export default function Header() {
   const documentId = useSelector(selectDocument);
   const userId = useSelector(selectUserId);
   const allDrawingData = useSelector(selectDrawingData);
+  const postItPosition = useSelector(selectLastPostItPosition);
+  const postItTextInfo = useSelector(selectPostItText);
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
@@ -45,7 +52,14 @@ export default function Header() {
 
   const handleSavePdf = () => {
     try {
-      saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
+      saveCurrentPdf(
+        userId,
+        documentId,
+        allDrawingData,
+        CONSTANT,
+        postItPosition,
+        postItTextInfo,
+      );
     } catch (error) {
       dispatch(setErrorInfo(error.response.data));
     }

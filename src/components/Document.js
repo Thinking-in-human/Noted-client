@@ -21,8 +21,7 @@ export default function Document({ pdfDocument }) {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
-
-  const postIts = useSelector(selectPostIts);
+  const postIts = useSelector(selectPostIts)[currentPage];
   const postItsArray = Object.keys(postIts);
 
   useEffect(() => {
@@ -57,17 +56,15 @@ export default function Document({ pdfDocument }) {
 
   return (
     <Background>
-      {postItsArray.map((postItId) => {
-        return <PostIt key={postItId} postItId={postItId} />;
-      })}
-      <CanvasPage ref={canvasRef} />
-      <PdfPage ref={pdfRef} />
       <ButtonWrapper>
         <PageButton onClick={handlePrevPage} type="button">
           ⬅️
         </PageButton>
       </ButtonWrapper>
       <PdfWrapper>
+        {postItsArray.map((postItId) => {
+          return <PostIt key={postItId} postItId={postItId} />;
+        })}
         <CanvasPage ref={canvasRef} />
         <PdfPage ref={pdfRef} />
       </PdfWrapper>
@@ -83,17 +80,17 @@ export default function Document({ pdfDocument }) {
 const Background = styled.div`
   display: flex;
   justify-content: center;
-  position: relative;
   width: 100%;
   height: 100%;
+  background-color: gray;
 `;
 
 const PdfWrapper = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
-  width: 60%;
-  height: 100%;
+  width: ${CONSTANT.CANVAS_WIDTH};
+  height: ${CONSTANT.CANVAS_HEIGHT};
 `;
 
 const CanvasPage = styled.canvas`
@@ -105,7 +102,6 @@ const CanvasPage = styled.canvas`
 
 const PdfPage = styled.canvas`
   position: absolute;
-  border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
 `;
@@ -123,8 +119,10 @@ const PageButton = styled.button`
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  position: relative;
   justify-content: center;
   align-items: center;
   height: 90vh;
   margin: auto;
+  width: calc(50% - 247.5px);
 `;
