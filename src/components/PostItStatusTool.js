@@ -9,11 +9,13 @@ import {
   setSelectedFontName,
   setPostItFontSize,
   selectIsBold,
+  selectPostItFontSize,
 } from "../feature/editorSlice";
 
 export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
+  const fontSize = useDispatch(selectPostItFontSize);
   const isBold = useSelector(selectIsBold);
   const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
@@ -93,7 +95,7 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
         <option>Rubik</option>
         <option>RubikIso</option>
       </select>
-      <select onChange={handleChangeSize} defaultValue="10px">
+      <select onChange={handleChangeSize} defaultValue={fontSize}>
         {fontSizeArray.map((size) => {
           return <option key={size}>{size}px</option>;
         })}

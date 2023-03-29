@@ -21,7 +21,7 @@ export default function Document({ pdfDocument }) {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
-  const postIts = useSelector(selectPostIts)[currentPage];
+  const postIts = useSelector(selectPostIts);
   const postItsArray = Object.keys(postIts);
 
   useEffect(() => {

@@ -16,8 +16,9 @@ const initialState = {
   highLightPen: {
     color: "#FFDC3C",
     width: 12,
-    opacity: 0.03,
+    opacity: 0.02,
   },
+  postIts: {},
   postIt: {
     text: {
       contents: "",
@@ -39,9 +40,6 @@ const initialState = {
   },
   redoData: {
     1: [],
-  },
-  postIts: {
-    1: {},
   },
   lastPostItPosition: {
     x: 160,
@@ -105,9 +103,7 @@ export const editorSlice = createSlice({
     },
     setSelectedDocument: (state, action) => {
       state.selectedPdfId = action.payload;
-      state.postIts = {
-        1: {},
-      };
+      state.postIts = {};
     },
     setSelectedFontUrl: (state, action) => {
       state.postIt.text.fontUrl = action.payload;
@@ -116,14 +112,14 @@ export const editorSlice = createSlice({
       state.fontName = action.payload;
     },
     setPostIts: (state, action) => {
-      const { postItObject, currentPage } = action.payload;
+      const postIt = action.payload;
       state.postItPosition.x += 5;
       state.postItPosition.y += 5;
-      state.postIts[currentPage] = { ...state.postIts, ...postItObject };
+      state.postIts = { ...state.postIts, ...postIt };
     },
     setDeletePostIt: (state, action) => {
-      const { id, page } = action.payload;
-      delete state.postIts[page][id];
+      const postItId = action.payload;
+      delete state.postIts[postItId];
     },
     setPostItFontSize: (state, action) => {
       state.postIt.text.fontSize = action.payload;
@@ -132,7 +128,6 @@ export const editorSlice = createSlice({
       state.postIt.text.isBold = action.payload;
     },
     changeContents: (state, action) => {
-      const {text, page} = action.payload;
       state.postIt.text.contents = action.payload;
     },
     goToNextPage: (state) => {
@@ -144,18 +139,15 @@ export const editorSlice = createSlice({
     setPageData: (state, action) => {
       const drawingData = {};
       const redoData = {};
-      const postItData = {};
 
       for (let i = 1; i <= action.payload; i += 1) {
         drawingData[i] = [];
         redoData[i] = [];
-        postItData[i] = {};
       }
 
       state.wholePageNum = action.payload;
       state.drawingData = drawingData;
       state.redoData = redoData;
-      state.postIts = postItData;
     },
     setLastPostItPosition: (state, action) => {
       state.lastPostItPosition = action.payload;

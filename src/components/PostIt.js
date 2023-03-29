@@ -11,7 +11,6 @@ import {
   selectPostItPosition,
   setLastPostItPosition,
   changeContents,
-  selectCurrentPage,
 } from "../feature/editorSlice";
 
 export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
@@ -19,7 +18,6 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   const fontName = useSelector(selectFontName);
   const fontSize = useSelector(selectPostItFontSize);
   const postItPosition = useSelector(selectPostItPosition);
-  const currentPage = useSelector(selectCurrentPage);
   const [position, setPosition] = useState(postItPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
@@ -64,21 +62,11 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
 
   const handleDeleteClick = (event) => {
     event.stopPropagation();
-    dispatch(
-      setDeletePostIt({
-        id: divRef.current.id,
-        page: currentPage,
-      }),
-    );
+    dispatch(setDeletePostIt(divRef.current.id));
   };
 
   const setInputContents = (event) => {
-    dispatch(
-      changeContents({
-        text: event.target.textContent,
-        page: currentPage,
-      }),
-    );
+    dispatch(changeContents(event.target.textContent));
   };
 
   return (
@@ -136,6 +124,7 @@ const Group = styled.div`
   font-size: ${(props) => props.fontSize};
   background-color: #fff000;
   z-index: 3;
+  opacity: 0.9;
 `;
 
 const Button = styled.button`
