@@ -4,12 +4,15 @@ import { useSelector } from "react-redux";
 import { useErrorBoundary } from "react-error-boundary";
 import { useDispatch, useSelector } from "react-redux";
 
+import CONSTANT from "../constants/constant";
 import {
   selectFontUrl,
   selectFontName,
   setDeletePostIt,
   selectPostItFontSize,
   selectPostItPosition,
+  setLastPostItPosition,
+  changeContents,
 } from "../feature/editorSlice";
 
 export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
@@ -23,10 +26,6 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   const dispatch = useDispatch();
   const divRef = useRef(null);
   const { showBoundary } = useErrorBoundary();
-
-  useEffect(() => {
-    divRef.current.style.fontSize = fontSize;
-  }, [fontSize]);
 
   useEffect(() => {
     const getFont = async () => {
@@ -65,10 +64,15 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
+    dispatch(setLastPostItPosition(position));
   };
 
   const handleDeleteClick = () => {
     dispatch(setDeletePostIt(divRef.current.id));
+  };
+
+  const setInputContents = (event) => {
+    dispatch(changeContents(event.target.textContent));
   };
 
   return (
@@ -78,6 +82,7 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
       ref={divRef}
       left={position.x}
       top={position.y}
+      fontSize={fontSize}
     >
       <Header
         onMouseMove={handleMouseMove}
@@ -88,7 +93,15 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
           X
         </Button>
       </Header>
-      <TextBox onMouseUp={onMouseUp} contentEditable textBoxRef={textBoxRef} />
+      <TextBox
+        onInput={(event) => {
+          setInputContents(event);
+        }}
+        type="text"
+        onMouseUp={onMouseUp}
+        contentEditable
+        textBoxRef={textBoxRef}
+      />
     </Group>
   );
 }
@@ -96,7 +109,7 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
 const TextBox = styled.div`
   background-color: red;
   height: auto;
-  width: 200px;
+  width: ${CONSTANT.POST_IT_SIZE};
   flex-grow: 1;
   background-color: #fff000;
 
@@ -108,27 +121,31 @@ const TextBox = styled.div`
 const Group = styled.div`
   display: flex;
   flex-direction: column;
-  width: 200px;
-  min-height: 200px;
+  width: ${CONSTANT.POST_IT_SIZE}px;
+  min-height: ${CONSTANT.POST_IT_SIZE}px;
   height: auto;
   padding: 5px;
   border: 1px solid black;
   position: absolute;
+  font-size: ${(props) => props.fontSize};
   background-color: #fff000;
   z-index: 3;
+  opacity: 0.9;
 `;
 
 const Button = styled.button`
-  width: 1.2rem;
-  height: 1.2rem;
-  border-radius: 20%;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: ${CONSTANT.POST_IT_CLOSE_BOX_SIZE}px;
+  height: ${CONSTANT.POST_IT_CLOSE_BOX_SIZE}px;
+  font-size: ${CONSTANT.POST_IT_CLOSE_TEXT_SIZE}px;
   background-color: #fff000;
 `;
 
 const Header = styled.div`
   display: flex;
-  width: 200px;
+  width: ${CONSTANT.POST_IT_SIZE}px;
   height: none;
   background-color: #fff000;
 `;

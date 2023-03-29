@@ -5,7 +5,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { selectDocument, selectDrawingData } from "../feature/editorSlice";
+import {
+  selectDocument,
+  selectDrawingData,
+  selectLastPostItPosition,
+  selectPostItText,
+} from "../feature/editorSlice";
 import {
   changeEditingUser,
   selectUserImgUrl,
@@ -19,6 +24,8 @@ export default function Header() {
   const documentId = useSelector(selectDocument);
   const userId = useSelector(selectUserId);
   const allDrawingData = useSelector(selectDrawingData);
+  const postItPosition = useSelector(selectLastPostItPosition);
+  const postItTextInfo = useSelector(selectPostItText);
   const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
 
@@ -45,7 +52,14 @@ export default function Header() {
 
   const handleSavePdf = () => {
     try {
-      saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT);
+      saveCurrentPdf(
+        userId,
+        documentId,
+        allDrawingData,
+        CONSTANT,
+        postItPosition,
+        postItTextInfo,
+      );
     } catch (error) {
       showBoundary(error);
     }

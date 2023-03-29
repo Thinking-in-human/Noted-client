@@ -16,27 +16,22 @@ const initialState = {
   highLightPen: {
     color: "#FFDC3C",
     width: 12,
-    opacity: 0.03,
+    opacity: 0.02,
   },
-  postIts: {
-    id: {
-      width: "300px",
-      height: "300px",
-      color: "yellow",
-      contents: "",
-      isBold: false,
-    },
-  },
+  postIts: {},
   postIt: {
     text: {
+      contents: "",
       isBold: false,
+      fontSize: "10px",
+      fontUrl: "",
     },
   },
   postItPosition: {
     x: 160,
     y: 190,
   },
-  postItFontSize: 8,
+  postItFontSize: 10,
   madePostIts: {},
   fontUrl: "",
   fontName: "",
@@ -45,6 +40,10 @@ const initialState = {
   },
   redoData: {
     1: [],
+  },
+  lastPostItPosition: {
+    x: 160,
+    y: 190,
   },
 };
 
@@ -107,7 +106,7 @@ export const editorSlice = createSlice({
       state.postIts = {};
     },
     setSelectedFontUrl: (state, action) => {
-      state.fontUrl = action.payload;
+      state.postIt.text.fontUrl = action.payload;
     },
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
@@ -123,10 +122,13 @@ export const editorSlice = createSlice({
       delete state.postIts[postItId];
     },
     setPostItFontSize: (state, action) => {
-      state.postItFontSize = action.payload;
+      state.postIt.text.fontSize = action.payload;
     },
     setBold: (state, action) => {
       state.postIt.text.isBold = action.payload;
+    },
+    changeContents: (state, action) => {
+      state.postIt.text.contents = action.payload;
     },
     goToNextPage: (state) => {
       state.currentPdfPage += 1;
@@ -148,6 +150,9 @@ export const editorSlice = createSlice({
       state.wholePageNum = numPages;
       state.drawingData = drawingData;
       state.redoData = redoData;
+    },
+    setLastPostItPosition: (state, action) => {
+      state.lastPostItPosition = action.payload;
     },
   },
 });
@@ -174,9 +179,12 @@ export const {
   goToNextPage,
   goToPrevPage,
   setPageData,
+  setLastPostItPosition,
+  changeContents,
 } = editorSlice.actions;
 
-export const selectPostItFontSize = (state) => state.editor.postItFontSize;
+export const selectPostItFontSize = (state) =>
+  state.editor.postIt.text.fontSize;
 export const selectCurrentEditorTool = (state) =>
   state.editor.currentEditorTool;
 export const selectPencil = (state) => state.editor.pencil;
@@ -185,7 +193,7 @@ export const selectGlobalColor = (state) => state.editor.globalColor;
 export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDocument = (state) => state.editor.selectedPdfId;
-export const selectFontUrl = (state) => state.editor.fontUrl;
+export const selectFontUrl = (state) => state.editor.postIt.text.fontUrl;
 export const selectFontName = (state) => state.editor.fontName;
 export const selectPostIts = (state) => state.editor.postIts;
 export const selectPostItPosition = (state) => state.editor.postItPosition;
@@ -195,6 +203,11 @@ export const selectCurrentPage = (state) => state.editor.currentPdfPage;
 export const selectWholePageNum = (state) => state.editor.wholePageNum;
 export const selectDrawingData = (state) => state.editor.drawingData;
 export const selectRedoData = (state) => state.editor.redoData;
+export const selectLastPostItPosition = (state) =>
+  state.editor.lastPostItPosition;
+export const selectPostItContents = (state) =>
+  state.editor.postIt.text.contents;
+export const selectPostItText = (state) => state.editor.postIt.text;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;
