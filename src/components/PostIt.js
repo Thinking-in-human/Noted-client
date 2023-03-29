@@ -61,7 +61,6 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   };
 
   const handleDeleteClick = () => {
-    divRef.current.remove();
     dispatch(setDeletePostIt(divRef.current.id));
   };
 
