@@ -1,5 +1,5 @@
-import React, { useState, useRef } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
 import { useErrorBoundary } from "react-error-boundary";
@@ -8,34 +8,53 @@ import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
   setSelectedFontName,
+  setPostItFontSize,
+  selectIsBold,
 } from "../feature/editorSlice";
 
-export default function PostItStatusTool() {
+export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   const [color, setColor] = useState("");
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
-
-  const fontSizeArray = Array.from({ length: 100 }, (v, i) => i + 1);
-
-  const handleSelection = () => {
-    const selection = document.getSelection();
-
-    if (selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      const selectedText = range.toString();
-    }
-  };
+  const isBold = useSelector(selectIsBold);
+  const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
   const handleClickBold = () => {
-    handleSelection();
-  };
+    const selection = window.getSelection();
+    const range = selection.getRangeAt(0);
+    const startNode = selection.anchorNode;
+    const firstDivParentNode = startNode.parentNode.closest("div");
 
-  const handleClickItalic = () => {
-    handleSelection();
-  };
+    if (!isBoldSelected()) {
+      const rangeChildNodes = [...range.cloneContents().childNodes];
+      const spanList = rangeChildNodes.filter(
+        (childNode) => childNode.nodeName === "SPAN",
+      );
 
-  const handleClickUnderLine = () => {
-    handleSelection();
+      if (spanList.length > 0) {
+        const textNode = document.createTextNode(selection.toString());
+        range.deleteContents();
+        range.insertNode(textNode);
+
+        firstDivParentNode.querySelectorAll("span").forEach((span) => {
+          if (span.outerText.length === 0) {
+            firstDivParentNode.removeChild(span);
+          }
+        });
+      }
+
+      const newSpan = document.createElement("span");
+      newSpan.style.fontWeight = "bold";
+
+      range.surroundContents(newSpan);
+      textBoxRef.current.focus();
+    } else {
+      const firstSpanParentNode = startNode.parentNode.closest("span");
+      const textNode = document.createTextNode(selection.toString());
+      firstDivParentNode.replaceChild(textNode, firstSpanParentNode);
+    }
+
+    selection.removeAllRanges();
   };
 
   const handleChangeColor = (event) => {
@@ -66,6 +85,10 @@ export default function PostItStatusTool() {
     }
   };
 
+  const handleChangeSize = (event) => {
+    dispatch(setPostItFontSize(event.target.value));
+  };
+
   return (
     <ToolStatusField>
       <select onChange={handleChangeFont}>
@@ -76,23 +99,20 @@ export default function PostItStatusTool() {
         <option>Rubik-Regular</option>
         <option>RubikIso-Regular</option>
       </select>
-      <select>
+      <select onChange={handleChangeSize} defaultValue="10px">
         {fontSizeArray.map((size) => {
-          return <option key={size}>{size}</option>;
+          return <option key={size}>{size}px</option>;
         })}
       </select>
       <FormatIcon>
-        <Icon src={boldIcon} alt="Bold Button Icon" onClick={handleClickBold} />
         <Icon
-          src={italicIcon}
-          alt="Italic Button Icon"
-          onClick={handleClickItalic}
+          src={boldIcon}
+          alt="Bold Button Icon"
+          isBold={isBold}
+          onClick={handleClickBold}
         />
-        <Icon
-          src={underlineIcon}
-          alt="Underline Button Icon"
-          onClick={handleClickUnderLine}
-        />
+        <Icon src={italicIcon} alt="Italic Button Icon" />
+        <Icon src={underlineIcon} alt="Underline Button Icon" />
       </FormatIcon>
       <FormatColor>
         <Color
@@ -138,6 +158,7 @@ const Icon = styled.img`
   height: 15px;
   padding: 6px;
   border-radius: 10%;
+  background-color: ${({ isBold }) => (isBold ? "#ffc0cb" : "transparent")};
 
   &:hover {
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);

@@ -62,7 +62,8 @@ export default function Header() {
           <Link to="/open-pdf">open pdf</Link>
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
-        <UserProfile src={userImage} alt="userProfile"></UserProfile>
+        {userImage ? <UserProfile src={userImage} alt="userProfile" /> : null}
+        {/*  <UserProfile src={userImage} alt="userProfile"></UserProfile> */}
       </NavWrapper>
     </Wrapper>
   );

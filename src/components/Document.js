@@ -4,7 +4,9 @@ import styled from "styled-components";
 import * as pdfjs from "pdfjs-dist";
 import { useErrorBoundary } from "react-error-boundary";
 
+import PostIt from "./PostIt";
 import {
+  selectPostIts,
   selectCurrentPage,
   changePageNumber,
   selectDrawingData,
@@ -21,6 +23,9 @@ export default function Document({ pdfDocument }) {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
+
+  const postIts = useSelector(selectPostIts);
+  const postItsArray = Object.keys(postIts);
 
   useEffect(() => {
     const renderPdf = async () => {
@@ -58,6 +63,11 @@ export default function Document({ pdfDocument }) {
 
   return (
     <Background>
+      {postItsArray.map((postItId) => {
+        return <PostIt key={postItId} postItId={postItId} />;
+      })}
+      <CanvasPage ref={canvasRef} />
+      <PdfPage ref={pdfRef} />
       <ButtonWrapper>
         <PageButton onClick={handlePrevPage} type="button">
           ⬅️
@@ -94,7 +104,6 @@ const PdfWrapper = styled.div`
 
 const CanvasPage = styled.canvas`
   position: absolute;
-  border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
   z-index: 2;
@@ -105,13 +114,6 @@ const PdfPage = styled.canvas`
   border: 5px solid brown;
   width: ${CONSTANT.CANVAS_WIDTH};
   height: ${CONSTANT.CANVAS_HEIGHT};
-`;
-
-const CombinedCanvas = styled.canvas`
-  position: absolute;
-  width: ${CONSTANT.CANVAS_WIDTH};
-  height: ${CONSTANT.CANVAS_HEIGHT};
-  z-index: 1;
 `;
 
 const PageButton = styled.button`
