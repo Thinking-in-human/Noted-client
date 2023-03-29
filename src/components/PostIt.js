@@ -60,8 +60,7 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
     dispatch(setLastPostItPosition(position));
   };
 
-  const handleDeleteClick = (event) => {
-    event.stopPropagation();
+  const handleDeleteClick = () => {
     dispatch(setDeletePostIt(divRef.current.id));
   };
 
@@ -131,9 +130,9 @@ const Button = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  width: ${CONSTANT.POST_IT_X_BOX_SIZE}px;
-  height: ${CONSTANT.POST_IT_X_BOX_SIZE}px;
-  font-size: ${CONSTANT.POST_IT_X_TEXT_SIZE}px;
+  width: ${CONSTANT.POST_IT_CLOSE_BOX_SIZE}px;
+  height: ${CONSTANT.POST_IT_CLOSE_BOX_SIZE}px;
+  font-size: ${CONSTANT.POST_IT_CLOSE_TEXT_SIZE}px;
   background-color: #fff000;
 `;
 

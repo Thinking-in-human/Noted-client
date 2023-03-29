@@ -16,8 +16,8 @@ const saveCurrentPdf = async (
     CANVAS_WIDTH,
     CANVAS_HEIGHT,
     POST_IT_SIZE,
-    POST_IT_X_TEXT_SIZE,
-    POST_IT_X_BOX_SIZE,
+    POST_IT_CLOSE_TEXT_SIZE,
+    POST_IT_CLOSE_BOX_SIZE,
     POST_IT_PADDING,
     POST_IT_BORDER,
     API,
@@ -77,9 +77,9 @@ const saveCurrentPdf = async (
 
     page[0].drawRectangle({
       x: postItX + POST_IT_PADDING + POST_IT_BORDER + CANVAS_WIDTH / 2,
-      y: CANVAS_HEIGHT - postItY - POST_IT_X_BOX_SIZE,
-      width: POST_IT_X_BOX_SIZE,
-      height: POST_IT_X_BOX_SIZE,
+      y: CANVAS_HEIGHT - postItY - POST_IT_CLOSE_BOX_SIZE,
+      width: POST_IT_CLOSE_BOX_SIZE,
+      height: POST_IT_CLOSE_BOX_SIZE,
       color: yellow,
       borderWidth: POST_IT_BORDER,
       opacity: 0.4,
@@ -87,8 +87,8 @@ const saveCurrentPdf = async (
 
     page[0].drawText("X", {
       x: postItX + POST_IT_PADDING + POST_IT_BORDER + 5 + CANVAS_WIDTH / 2,
-      y: CANVAS_HEIGHT - POST_IT_BORDER - postItY - POST_IT_X_BOX_SIZE + 5,
-      size: POST_IT_X_TEXT_SIZE,
+      y: CANVAS_HEIGHT - POST_IT_BORDER - postItY - POST_IT_CLOSE_BOX_SIZE + 5,
+      size: POST_IT_CLOSE_TEXT_SIZE,
       lineHeight: 10,
       color: black,
       font: standardFont,
@@ -104,7 +104,7 @@ const saveCurrentPdf = async (
           text,
           Number(fontSize.split("px")[0]),
         );
-        if (textWidth > POST_IT_SIZE - (POST_IT_BORDER + POST_IT_PADDING) * 2) {
+        if (textWidth > POST_IT_SIZE) {
           result.push(text);
           text = "";
         }
@@ -122,7 +122,7 @@ const saveCurrentPdf = async (
           POST_IT_BORDER -
           POST_IT_PADDING -
           postItY -
-          POST_IT_X_BOX_SIZE -
+          POST_IT_CLOSE_BOX_SIZE -
           (textIndex + 1) * Number(fontSize.split("px")[0]) +
           5,
         size: Number(fontSize.split("px")[0]),
