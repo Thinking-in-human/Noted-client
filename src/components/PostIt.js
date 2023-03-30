@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useSelector } from "react-redux";
 import { useErrorBoundary } from "react-error-boundary";
 import { useDispatch, useSelector } from "react-redux";
 

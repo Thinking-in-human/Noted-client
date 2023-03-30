@@ -103,13 +103,14 @@ const Logo = styled.div`
 const NavWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 300px;
+  width: 400px;
 `;
 
 const NavButton = styled.button`
   border: none;
   background: none;
-  font-size: 10px;
+  font-size: 18px;
+  font-weight: bold;
   text-transform: uppercase;
   cursor: pointer;
 

@@ -1,6 +1,6 @@
 import React, { useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import { selectUserId } from "../feature/userSlice";
@@ -13,7 +13,7 @@ export default function Editor() {
   const { documentId } = useParams();
   const textBoxRef = useRef(null);
   const dispatch = useDispatch();
-  
+
   const isBoldSelected = () => {
     const selection = window.getSelection();
     const range = selection.getRangeAt(0);
