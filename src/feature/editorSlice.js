@@ -28,7 +28,7 @@ const initialState = {
     },
   },
   postItPosition: {
-    x: 160,
+    x: 60,
     y: 190,
   },
   postItFontSize: 10,
@@ -42,7 +42,7 @@ const initialState = {
     1: [],
   },
   lastPostItPosition: {
-    x: 160,
+    x: 60,
     y: 190,
   },
 };
@@ -150,6 +150,7 @@ export const editorSlice = createSlice({
       state.wholePageNum = numPages;
       state.drawingData = drawingData;
       state.redoData = redoData;
+      state.postIts = {};
     },
     setLastPostItPosition: (state, action) => {
       state.lastPostItPosition = action.payload;

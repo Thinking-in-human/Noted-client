@@ -74,7 +74,6 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
         },
       );
       const fontBuffer = response.data;
-
       const fontBlob = new Blob([fontBuffer], {
         type: "font/woff2",
       });

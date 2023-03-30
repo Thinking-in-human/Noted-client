@@ -95,6 +95,7 @@ const Background = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
+  gap: 25px;
   width: 100vw;
   height: 100vh;
 `;
@@ -103,22 +104,22 @@ const PdfWrapper = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
-  width: ${CONSTANT.CANVAS_WIDTH};
-  height: ${CONSTANT.CANVAS_HEIGHT};
+  width: ${CONSTANT.CANVAS_WIDTH}px;
+  height: ${CONSTANT.CANVAS_HEIGHT}px;
 `;
 
 const CanvasPage = styled.canvas`
   position: absolute;
-  width: ${CONSTANT.CANVAS_WIDTH};
-  height: ${CONSTANT.CANVAS_HEIGHT};
+  width: ${CONSTANT.CANVAS_WIDTH}px;
+  height: ${CONSTANT.CANVAS_HEIGHT}px;
   z-index: 2;
 `;
 
 const PdfPage = styled.canvas`
   position: absolute;
   border: 1px solid gray;
-  width: ${CONSTANT.CANVAS_WIDTH};
-  height: ${CONSTANT.CANVAS_HEIGHT};
+  width: ${CONSTANT.CANVAS_WIDTH}px;
+  height: ${CONSTANT.CANVAS_HEIGHT}px;
 `;
 
 const PageButton = styled.button`
@@ -137,11 +138,6 @@ const PageButton = styled.button`
 
 const ButtonWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  position: relative;
   justify-content: center;
   align-items: center;
-  height: 90vh;
-  margin: auto;
-  width: calc(50% - 247.5px);
 `;
