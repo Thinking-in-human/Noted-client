@@ -11,6 +11,8 @@ import {
   setPostItFontSize,
   selectIsBold,
   selectPostItFontSize,
+  selectCurrentPage,
+  selectCurrentPostIt,
 } from "../feature/editorSlice";
 
 export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
@@ -19,6 +21,8 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   const fontSize = useSelector(selectPostItFontSize);
   const { showBoundary } = useErrorBoundary();
   const isBold = useSelector(selectIsBold);
+  const currentPage = useSelector(selectCurrentPage);
+  const currentPostIt = useSelector(selectCurrentPostIt);
   const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
   const handleClickBold = () => {
@@ -86,7 +90,8 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   };
 
   const handleChangeSize = (event) => {
-    dispatch(setPostItFontSize(event.target.value));
+    const changedSize = event.target.value;
+    dispatch(setPostItFontSize({ currentPage, changedSize, currentPostIt }));
   };
 
   return (

@@ -25,11 +25,15 @@ import {
   moveDataUndoArray,
   moveDataRedoArray,
   setPostIts,
+  selectCurrentPage,
+  selectPostItPosition,
 } from "../feature/editorSlice";
 
 export default function Toolbar({ textBoxRef, isBoldSelected }) {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
+  const currentPage = useSelector(selectCurrentPage);
+  const postItInitialPosition = useSelector(selectPostItPosition);
 
   const changeEditorTool = (tool) => {
     dispatch(changeGlobalToolOption(tool));
@@ -50,10 +54,11 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
         isBold: false,
         fontSize: "10px",
         fontUrl: "",
+        position: postItInitialPosition,
       },
     };
 
-    dispatch(setPostIts(postItObject));
+    dispatch(setPostIts({ currentPage, postItObject }));
   };
 
   return (

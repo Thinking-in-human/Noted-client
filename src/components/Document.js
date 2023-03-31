@@ -23,7 +23,7 @@ export default function Document({ pdfDocument, textBoxRef, onMouseUp }) {
   const dispatch = useDispatch();
   const canvasRef = useRef(null);
   const pdfRef = useRef(null);
-  const postIts = useSelector(selectPostIts);
+  const postIts = useSelector(selectPostIts)[currentPage];
   const postItsArray = Object.keys(postIts);
 
   useEffect(() => {

@@ -10,8 +10,12 @@ import {
   setDeletePostIt,
   selectPostItFontSize,
   selectPostItPosition,
-  setLastPostItPosition,
+  setPostItPosition,
   changeContents,
+  selectCurrentPage,
+  selectCurrentPostIt,
+  setCurrentPostIt,
+  selectPostIts,
 } from "../feature/editorSlice";
 
 export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
@@ -19,9 +23,12 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
   const fontName = useSelector(selectFontName);
   const fontSize = useSelector(selectPostItFontSize);
   const postItPosition = useSelector(selectPostItPosition);
+  const currentPage = useSelector(selectCurrentPage);
   const [position, setPosition] = useState(postItPosition);
   const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
+  const currentPostIt = useSelector(selectCurrentPostIt);
+  const postItInfo = useSelector(selectPostIts)[currentPage][postItId];
   const dispatch = useDispatch();
   const divRef = useRef(null);
   const { showBoundary } = useErrorBoundary();
@@ -63,15 +70,20 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    dispatch(setLastPostItPosition(position));
+    dispatch(setPostItPosition({ currentPage, currentPostIt, position }));
   };
 
   const handleDeleteClick = () => {
-    dispatch(setDeletePostIt(divRef.current.id));
+    dispatch(setDeletePostIt({ currentPostIt, currentPage }));
   };
 
   const setInputContents = (event) => {
-    dispatch(changeContents(event.target.textContent));
+    const contents = event.target.textContent;
+    dispatch(changeContents({ currentPage, currentPostIt, contents }));
+  };
+
+  const handleCurrentPostIt = () => {
+    dispatch(setCurrentPostIt(divRef.current.id));
   };
 
   return (
@@ -81,7 +93,8 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
       ref={divRef}
       left={position.x}
       top={position.y}
-      fontSize={fontSize}
+      fontSize={postItInfo.fontSize}
+      onMouseDown={handleCurrentPostIt}
     >
       <Header
         onMouseMove={handleMouseMove}
@@ -99,6 +112,7 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
         type="text"
         onMouseUp={onMouseUp}
         contentEditable
+        onMouseDown={handleCurrentPostIt}
         textBoxRef={textBoxRef}
       />
     </Group>
