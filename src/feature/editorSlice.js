@@ -45,6 +45,7 @@ const initialState = {
     x: 60,
     y: 190,
   },
+  currentPostIt: "",
 };
 
 export const editorSlice = createSlice({
@@ -106,29 +107,39 @@ export const editorSlice = createSlice({
       state.postIts = {};
     },
     setSelectedFontUrl: (state, action) => {
-      state.postIt.text.fontUrl = action.payload;
+      const { currentPage, currentPostIt, fontUrl, selectedFont } =
+        action.payload;
+      state.postIts[currentPage][currentPostIt].fontUrl = fontUrl;
+      state.postIts[currentPage][currentPostIt].fontName = selectedFont;
     },
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
     },
     setPostIts: (state, action) => {
-      const postIt = action.payload;
+      const { currentPage, postItObject } = action.payload;
+      const [postItId] = Object.keys(postItObject);
+      state.currentPostIt = postItId;
       state.postItPosition.x += 5;
       state.postItPosition.y += 5;
-      state.postIts = { ...state.postIts, ...postIt };
+      state.postIts[currentPage] = {
+        ...state.postIts[currentPage],
+        ...postItObject,
+      };
     },
     setDeletePostIt: (state, action) => {
-      const postItId = action.payload;
-      delete state.postIts[postItId];
+      const { currentPostIt, currentPage } = action.payload;
+      delete state.postIts[currentPage][currentPostIt];
     },
     setPostItFontSize: (state, action) => {
-      state.postIt.text.fontSize = action.payload;
+      const { currentPage, changedSize, currentPostIt } = action.payload;
+      state.postIts[currentPage][currentPostIt].fontSize = changedSize;
     },
     setBold: (state, action) => {
       state.postIt.text.isBold = action.payload;
     },
     changeContents: (state, action) => {
-      state.postIt.text.contents = action.payload;
+      const { currentPage, currentPostIt, contents } = action.payload;
+      state.postIts[currentPage][currentPostIt].contents = contents;
     },
     goToNextPage: (state) => {
       state.currentPdfPage += 1;
@@ -140,20 +151,36 @@ export const editorSlice = createSlice({
       const { documentId, numPages } = action.payload;
       const drawingData = {};
       const redoData = {};
+      const postIts = {};
 
       for (let i = 1; i <= numPages; i += 1) {
         drawingData[i] = [];
         redoData[i] = [];
+        postIts[i] = {};
       }
 
       state.selectedPdfId = documentId;
       state.wholePageNum = numPages;
       state.drawingData = drawingData;
       state.redoData = redoData;
-      state.postIts = {};
+      state.postIts = postIts;
     },
-    setLastPostItPosition: (state, action) => {
-      state.lastPostItPosition = action.payload;
+    setPostItPosition: (state, action) => {
+      const { currentPage, currentPostIt, position } = action.payload;
+      state.postIts[currentPage][currentPostIt].position = position;
+    },
+    setPostItFont: (state, action) => {
+      const { currentPage, currentPostIt, fontName } = action.payload;
+      state.postIts[currentPage][currentPostIt].fontName = fontName;
+    },
+    setCurrentPostIt: (state, action) => {
+      state.currentPostIt = action.payload;
+    },
+    resetCurrentPage: (state, action) => {
+      const currentPage = action.payload;
+      state.drawingData[currentPage] = [];
+      state.redoData[currentPage] = [];
+      state.postIts[currentPage] = {};
     },
   },
 });
@@ -180,8 +207,11 @@ export const {
   goToNextPage,
   goToPrevPage,
   setPageData,
-  setLastPostItPosition,
+  setPostItPosition,
   changeContents,
+  setCurrentPostIt,
+  setPostItFont,
+  resetCurrentPage,
 } = editorSlice.actions;
 
 export const selectPostItFontSize = (state) =>
@@ -209,6 +239,7 @@ export const selectLastPostItPosition = (state) =>
 export const selectPostItContents = (state) =>
   state.editor.postIt.text.contents;
 export const selectPostItText = (state) => state.editor.postIt.text;
+export const selectCurrentPostIt = (state) => state.editor.currentPostIt;
 
 export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
   const selectToolColor = (state) => state.editor[tool].color;

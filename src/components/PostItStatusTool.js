@@ -7,17 +7,20 @@ import { useErrorBoundary } from "react-error-boundary";
 import { boldIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
-  setSelectedFontName,
   setPostItFontSize,
   selectIsBold,
   selectPostItFontSize,
+  selectCurrentPage,
+  selectCurrentPostIt,
 } from "../feature/editorSlice";
 
-export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
+export default function PostItStatusTool({ isBoldSelected }) {
   const dispatch = useDispatch();
   const fontSize = useSelector(selectPostItFontSize);
   const { showBoundary } = useErrorBoundary();
   const isBold = useSelector(selectIsBold);
+  const currentPage = useSelector(selectCurrentPage);
+  const currentPostIt = useSelector(selectCurrentPostIt);
   const fontSizeArray = Array.from({ length: 21 }, (v, i) => i + 10);
 
   const handleClickBold = () => {
@@ -60,7 +63,6 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
   const handleChangeFont = async (event) => {
     try {
       const selectedFont = event.target.value;
-      dispatch(setSelectedFontName(selectedFont));
       const response = await axios.get(
         `${process.env.REACT_APP_NOTED_API_SERVER}/fonts/${selectedFont}`,
         {
@@ -74,14 +76,22 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
       });
       const fontUrl = URL.createObjectURL(fontBlob);
 
-      dispatch(setSelectedFontUrl(fontUrl));
+      dispatch(
+        setSelectedFontUrl({
+          currentPage,
+          currentPostIt,
+          fontUrl,
+          selectedFont,
+        }),
+      );
     } catch (error) {
       showBoundary(error);
     }
   };
 
   const handleChangeSize = (event) => {
-    dispatch(setPostItFontSize(event.target.value));
+    const changedSize = event.target.value;
+    dispatch(setPostItFontSize({ currentPage, changedSize, currentPostIt }));
   };
 
   return (

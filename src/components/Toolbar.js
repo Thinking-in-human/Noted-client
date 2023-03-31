@@ -15,6 +15,7 @@ import {
   post2Icon,
   undoIcon,
   redoIcon,
+  eraser1Icon,
 } from "../assets/editorIcon";
 import {
   selectCurrentEditorTool,
@@ -22,11 +23,16 @@ import {
   moveDataUndoArray,
   moveDataRedoArray,
   setPostIts,
+  selectCurrentPage,
+  selectPostItPosition,
+  resetCurrentPage,
 } from "../feature/editorSlice";
 
-export default function Toolbar({ textBoxRef, isBoldSelected }) {
+export default function Toolbar({ isBoldSelected }) {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
+  const currentPage = useSelector(selectCurrentPage);
+  const postItInitialPosition = useSelector(selectPostItPosition);
 
   const changeEditorTool = (tool) => {
     dispatch(changeGlobalToolOption(tool));
@@ -40,17 +46,23 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
     dispatch(moveDataRedoArray());
   };
 
+  const handleResetPage = () => {
+    dispatch(resetCurrentPage(currentPage));
+  };
+
   const makeNewPostItStatus = () => {
     const postItObject = {
       [uuid()]: {
         contents: "",
         isBold: false,
         fontSize: "10px",
-        fontUrl: "",
+        fontUrl: "/fonts/DMSerifText-Regular.ttf",
+        fontName: "DMSerifText-Regular",
+        position: postItInitialPosition,
       },
     };
 
-    dispatch(setPostIts(postItObject));
+    dispatch(setPostIts({ currentPage, postItObject }));
   };
 
   return (
@@ -66,6 +78,7 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
           src={redoIcon}
           alt="Toggle to Show NextDrawing"
         />
+        <Icon onClick={handleResetPage} src={eraser1Icon} alt="Eraser Icon" />
         <Icon
           onClick={() => changeEditorTool("pencil")}
           src={editorTool === "pencil" ? pen2Icon : pen1Icon}
@@ -88,10 +101,7 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
       {editorTool === "pencil" && <PenStatusTool />}
       {editorTool === "highLightPen" && <HightLightStatusTool />}
       {editorTool === "postIt" && (
-        <PostItStatusTool
-          textBoxRef={textBoxRef}
-          isBoldSelected={isBoldSelected}
-        />
+        <PostItStatusTool isBoldSelected={isBoldSelected} />
       )}
     </EditorTool>
   );

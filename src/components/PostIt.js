@@ -8,41 +8,47 @@ import {
   selectFontUrl,
   selectFontName,
   setDeletePostIt,
-  selectPostItFontSize,
-  selectPostItPosition,
-  setLastPostItPosition,
+  setPostItPosition,
   changeContents,
+  selectCurrentPage,
+  selectCurrentPostIt,
+  setCurrentPostIt,
+  selectPostIts,
+  setPostItFont,
 } from "../feature/editorSlice";
 
-export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
+export default function PostIt({ postItId, onMouseUp }) {
   const fontUrl = useSelector(selectFontUrl);
   const fontName = useSelector(selectFontName);
-  const fontSize = useSelector(selectPostItFontSize);
-  const postItPosition = useSelector(selectPostItPosition);
-  const [position, setPosition] = useState(postItPosition);
+  const currentPage = useSelector(selectCurrentPage);
   const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
+  const currentPostIt = useSelector(selectCurrentPostIt);
+  const postItInfo = useSelector(selectPostIts)[currentPage][postItId];
+  const [position, setPosition] = useState(postItInfo.position);
   const dispatch = useDispatch();
   const divRef = useRef(null);
-  const { showBoundary } = useErrorBoundary();
+  const textBoxRef = useRef(null);
+
+  const replaceCaret = (element) => {
+    if (element.innerText.length === 0) {
+      element.focus();
+    }
+
+    const selection = window.getSelection();
+
+    if (selection !== null) {
+      const newRange = document.createRange();
+      newRange.selectNodeContents(element);
+      newRange.collapse(false);
+      selection.removeAllRanges();
+      selection.addRange(newRange);
+    }
+  };
 
   useEffect(() => {
-    const getFont = async () => {
-      try {
-        if (fontUrl) {
-          const fontFace = new FontFace(`${fontName}`, `url(${fontUrl})`);
-          await fontFace.load();
-          document.fonts.add(fontFace);
-
-          const editor = divRef.current;
-          editor.style.fontFamily = `${fontName}`;
-        }
-      } catch (error) {
-        showBoundary(error);
-      }
-    };
-    getFont();
-  }, [fontUrl, fontName, divRef]);
+    replaceCaret(textBoxRef.current);
+  }, [postItInfo.contents]);
 
   const handleMouseDown = (event) => {
     setIsDragging(true);
@@ -63,15 +69,20 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
 
   const handleMouseUp = () => {
     setIsDragging(false);
-    dispatch(setLastPostItPosition(position));
+    dispatch(setPostItPosition({ currentPage, currentPostIt, position }));
   };
 
   const handleDeleteClick = () => {
-    dispatch(setDeletePostIt(divRef.current.id));
+    dispatch(setDeletePostIt({ currentPostIt, currentPage }));
   };
 
   const setInputContents = (event) => {
-    dispatch(changeContents(event.target.textContent));
+    const contents = event.target.innerText;
+    dispatch(changeContents({ currentPage, currentPostIt, contents }));
+  };
+
+  const handleCurrentPostIt = () => {
+    dispatch(setCurrentPostIt(divRef.current.id));
   };
 
   return (
@@ -81,7 +92,10 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
       ref={divRef}
       left={position.x}
       top={position.y}
-      fontSize={fontSize}
+      fontSize={postItInfo.fontSize}
+      fontName={postItInfo.fontName}
+      fontUrl={postItInfo.fontUrl}
+      onMouseDown={handleCurrentPostIt}
     >
       <Header
         onMouseMove={handleMouseMove}
@@ -93,13 +107,14 @@ export default function PostIt({ postItId, textBoxRef, onMouseUp }) {
         </Button>
       </Header>
       <TextBox
+        contentEditable
         onInput={(event) => {
           setInputContents(event);
         }}
-        type="text"
         onMouseUp={onMouseUp}
-        contentEditable
-        textBoxRef={textBoxRef}
+        onMouseDown={handleCurrentPostIt}
+        ref={textBoxRef}
+        dangerouslySetInnerHTML={{ __html: postItInfo.contents }}
       />
     </Group>
   );
@@ -127,6 +142,15 @@ const Group = styled.div`
   border: 1px solid black;
   position: absolute;
   font-size: ${(props) => props.fontSize};
+  @font-face {
+    font-family: ${(props) => `${props.fontName}`};
+    src: url(${(props) => props.fontUrl}) format("truetype");
+  }
+  body {
+    font-family: ${(props) => `${props.fontName}`};
+    margin: 0;
+  }
+  font-family: ${(props) => `${props.fontName}`};
   background-color: #fff000;
   z-index: 3;
   opacity: 0.9;

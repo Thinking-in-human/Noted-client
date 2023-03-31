@@ -9,7 +9,7 @@ import {
   selectDocument,
   selectDrawingData,
   selectLastPostItPosition,
-  selectPostItText,
+  selectPostIts,
 } from "../feature/editorSlice";
 import {
   changeEditingUser,
@@ -25,7 +25,7 @@ export default function Header() {
   const userId = useSelector(selectUserId);
   const allDrawingData = useSelector(selectDrawingData);
   const postItPosition = useSelector(selectLastPostItPosition);
-  const postItTextInfo = useSelector(selectPostItText);
+  const postItInfo = useSelector(selectPostIts);
   const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
 
@@ -55,14 +55,7 @@ export default function Header() {
 
   const handleSavePdf = () => {
     try {
-      saveCurrentPdf(
-        userId,
-        documentId,
-        allDrawingData,
-        CONSTANT,
-        postItPosition,
-        postItTextInfo,
-      );
+      saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT, postItInfo);
     } catch (error) {
       showBoundary(error);
     }
