@@ -26,13 +26,16 @@ export default function Login() {
         avatarImgURL: user.photoURL,
       };
 
-      const response = await axios("http://localhost:4000/auth/sign-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        responseType: "json",
-        data: customedUserObject,
-        withCredentials: true,
-      });
+      const response = await axios(
+        `${process.env.REACT_APP_NOTED_API_SERVER}/auth/sign-in`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          responseType: "json",
+          data: customedUserObject,
+          withCredentials: true,
+        },
+      );
 
       if (response) {
         dispatch(

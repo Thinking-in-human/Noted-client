@@ -20,13 +20,12 @@ const saveCurrentPdf = async (
     POST_IT_CLOSE_BOX_SIZE,
     POST_IT_PADDING,
     POST_IT_BORDER,
-    API,
   } = CONSTANT;
 
   const { contents, fontSize } = postItTextInfo;
 
   const response = await axios(
-    `${API}/users/${userId}/documents/${documentId}`,
+    `${process.env.REACT_APP_NOTED_API_SERVER}/users/${userId}/documents/${documentId}`,
     {
       method: "GET",
       withCredentials: true,
@@ -61,7 +60,7 @@ const saveCurrentPdf = async (
     });
 
     page[0].drawRectangle({
-      x: postItX + POST_IT_BORDER + CANVAS_WIDTH / 2,
+      x: postItX + POST_IT_BORDER,
       y:
         CANVAS_HEIGHT -
         postItY -
@@ -76,7 +75,7 @@ const saveCurrentPdf = async (
     });
 
     page[0].drawRectangle({
-      x: postItX + POST_IT_PADDING + POST_IT_BORDER + CANVAS_WIDTH / 2,
+      x: postItX + POST_IT_PADDING + POST_IT_BORDER,
       y: CANVAS_HEIGHT - postItY - POST_IT_CLOSE_BOX_SIZE,
       width: POST_IT_CLOSE_BOX_SIZE,
       height: POST_IT_CLOSE_BOX_SIZE,
@@ -86,7 +85,7 @@ const saveCurrentPdf = async (
     });
 
     page[0].drawText("X", {
-      x: postItX + POST_IT_PADDING + POST_IT_BORDER + 5 + CANVAS_WIDTH / 2,
+      x: postItX + POST_IT_PADDING + POST_IT_BORDER + 5,
       y: CANVAS_HEIGHT - POST_IT_BORDER - postItY - POST_IT_CLOSE_BOX_SIZE + 5,
       size: POST_IT_CLOSE_TEXT_SIZE,
       lineHeight: 10,
@@ -116,7 +115,7 @@ const saveCurrentPdf = async (
 
     result.forEach((text, textIndex) => {
       page[0].drawText(text, {
-        x: postItX + POST_IT_PADDING + POST_IT_BORDER + 5 + CANVAS_WIDTH / 2,
+        x: postItX + POST_IT_PADDING + POST_IT_BORDER + 5,
         y:
           CANVAS_HEIGHT -
           POST_IT_BORDER -
@@ -140,12 +139,16 @@ const saveCurrentPdf = async (
       const data = new FormData();
       data.append("file", blobForSave, "newFile");
 
-      await axios.put(`${API}/users/${userId}/documents/${documentId}`, data, {
-        headers: {
-          "Content-Type": "multipart/form-data",
+      await axios.put(
+        `${process.env.REACT_APP_NOTED_API_SERVER}/users/${userId}/documents/${documentId}`,
+        data,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
         },
-        withCredentials: true,
-      });
+      );
 
       saveAs(new Blob([pdfBytes]), "newFile.pdf");
     }

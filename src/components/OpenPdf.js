@@ -21,7 +21,7 @@ export default function OpenPdf() {
     const getAllDocumentsOfUser = async () => {
       try {
         const response = await axios(
-          `http://localhost:4000/users/${userId}/documents`,
+          `${process.env.REACT_APP_NOTED_API_SERVER}/users/${userId}/documents`,
           {
             method: "GET",
             withCredentials: true,
@@ -56,7 +56,7 @@ export default function OpenPdf() {
       data.append("file", file);
 
       const response = await axios.post(
-        `http://localhost:4000/users/${userId}/documents/new`,
+        `${process.env.REACT_APP_NOTED_API_SERVER}/users/${userId}/documents/new`,
         data,
         {
           headers: {

@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 import axios from "axios";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { boldIcon, italicIcon, underlineIcon } from "../assets/editorIcon";
+import { boldIcon } from "../assets/editorIcon";
 import {
   setSelectedFontUrl,
   setSelectedFontName,
@@ -14,7 +14,6 @@ import {
 } from "../feature/editorSlice";
 
 export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
-  const [color, setColor] = useState("");
   const dispatch = useDispatch();
   const fontSize = useSelector(selectPostItFontSize);
   const { showBoundary } = useErrorBoundary();
@@ -58,16 +57,12 @@ export default function PostItStatusTool({ textBoxRef, isBoldSelected }) {
     selection.removeAllRanges();
   };
 
-  const handleChangeColor = (event) => {
-    setColor(event.target.value);
-  };
-
   const handleChangeFont = async (event) => {
     try {
       const selectedFont = event.target.value;
       dispatch(setSelectedFontName(selectedFont));
       const response = await axios.get(
-        `http://localhost:4000/fonts/${selectedFont}`,
+        `${process.env.REACT_APP_NOTED_API_SERVER}/fonts/${selectedFont}`,
         {
           withCredentials: true,
           responseType: "arraybuffer",

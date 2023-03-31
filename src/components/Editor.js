@@ -6,7 +6,7 @@ import styled from "styled-components";
 import { selectUserId } from "../feature/userSlice";
 import PDFViewer from "./PDFViewer";
 import Toolbar from "./Toolbar";
-import { setSelectedDocument, setBold } from "../feature/editorSlice";
+import { setBold } from "../feature/editorSlice";
 
 export default function Editor() {
   const loginUserId = useSelector(selectUserId);
@@ -47,7 +47,7 @@ export default function Editor() {
       <Toolbar textBoxRef={textBoxRef} isBoldSelected={isBoldSelected} />
       {loginUserId && documentId && (
         <PDFViewer
-          url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
+          url={`${process.env.REACT_APP_NOTED_API_SERVER}/users/${loginUserId}/documents/${documentId}`}
           textBoxRef={textBoxRef}
           onMouseUp={handleMouseUp}
           documentId={documentId}

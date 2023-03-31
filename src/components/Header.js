@@ -31,11 +31,14 @@ export default function Header() {
 
   const requestLogout = async () => {
     try {
-      const response = await axios(`${CONSTANT.API}/auth/sign-out`, {
-        method: "POST",
-        responseType: "json",
-        withCredentials: true,
-      });
+      const response = await axios(
+        `${process.env.REACT_APP_NOTED_API_SERVER}/auth/sign-out`,
+        {
+          method: "POST",
+          responseType: "json",
+          withCredentials: true,
+        },
+      );
 
       if (response) {
         dispatch(
@@ -77,7 +80,6 @@ export default function Header() {
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         {userImage ? <UserProfile src={userImage} alt="userProfile" /> : null}
-        {/*  <UserProfile src={userImage} alt="userProfile"></UserProfile> */}
       </NavWrapper>
     </Wrapper>
   );
