@@ -14,7 +14,6 @@ import FallbackUI from "../components/FallbackUI";
 export default function App() {
   const loginUserId = useSelector(selectUserId);
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   useEffect(() => {
     if (!loginUserId) {

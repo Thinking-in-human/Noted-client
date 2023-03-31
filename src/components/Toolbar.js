@@ -1,17 +1,14 @@
-import React, { useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import uuid from "react-uuid";
 
 import PenStatusTool from "./PenStatusTool";
-import EraserStatusTool from "./EraserStatusTool";
 import HightLightStatusTool from "./HightLightStatusTool";
 import PostItStatusTool from "./PostItStatusTool";
 import {
   pen1Icon,
   pen2Icon,
-  eraser1Icon,
-  eraser2Icon,
   highLight1Icon,
   highLight2Icon,
   post1Icon,
