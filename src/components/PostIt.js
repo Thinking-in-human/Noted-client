@@ -29,27 +29,6 @@ export default function PostIt({ postItId, onMouseUp }) {
   const dispatch = useDispatch();
   const divRef = useRef(null);
   const textBoxRef = useRef(null);
-  const { showBoundary } = useErrorBoundary();
-
-  useEffect(() => {
-    const getFont = async () => {
-      try {
-        if (fontUrl) {
-          const fontFace = new FontFace(
-            `${postItInfo.fontName}`,
-            `url(${postItInfo.fontUrl})`,
-          );
-          await fontFace.load();
-          document.fonts.add(fontFace);
-
-          dispatch(setPostItFont({ currentPage, currentPostIt, fontName }));
-        }
-      } catch (error) {
-        showBoundary(error);
-      }
-    };
-    getFont();
-  }, [fontUrl, postItInfo.fontName, divRef]);
 
   const replaceCaret = (element) => {
     if (element.innerText.length === 0) {
