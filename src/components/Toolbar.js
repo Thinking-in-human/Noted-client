@@ -1,23 +1,21 @@
-import React, { useRef } from "react";
+import React from "react";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import uuid from "react-uuid";
 
 import PenStatusTool from "./PenStatusTool";
-import EraserStatusTool from "./EraserStatusTool";
 import HightLightStatusTool from "./HightLightStatusTool";
 import PostItStatusTool from "./PostItStatusTool";
 import {
   pen1Icon,
   pen2Icon,
-  eraser1Icon,
-  eraser2Icon,
   highLight1Icon,
   highLight2Icon,
   post1Icon,
   post2Icon,
   undoIcon,
   redoIcon,
+  eraser1Icon,
 } from "../assets/editorIcon";
 import {
   selectCurrentEditorTool,
@@ -27,9 +25,10 @@ import {
   setPostIts,
   selectCurrentPage,
   selectPostItPosition,
+  resetCurrentPage,
 } from "../feature/editorSlice";
 
-export default function Toolbar({ textBoxRef, isBoldSelected }) {
+export default function Toolbar({ isBoldSelected }) {
   const dispatch = useDispatch();
   const editorTool = useSelector(selectCurrentEditorTool);
   const currentPage = useSelector(selectCurrentPage);
@@ -47,13 +46,18 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
     dispatch(moveDataRedoArray());
   };
 
+  const handleResetPage = () => {
+    dispatch(resetCurrentPage(currentPage));
+  };
+
   const makeNewPostItStatus = () => {
     const postItObject = {
       [uuid()]: {
         contents: "",
         isBold: false,
         fontSize: "10px",
-        fontUrl: "",
+        fontUrl: "/fonts/DMSerifText-Regular.ttf",
+        fontName: "DMSerifText-Regular",
         position: postItInitialPosition,
       },
     };
@@ -74,6 +78,7 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
           src={redoIcon}
           alt="Toggle to Show NextDrawing"
         />
+        <Icon onClick={handleResetPage} src={eraser1Icon} alt="Eraser Icon" />
         <Icon
           onClick={() => changeEditorTool("pencil")}
           src={editorTool === "pencil" ? pen2Icon : pen1Icon}
@@ -96,10 +101,7 @@ export default function Toolbar({ textBoxRef, isBoldSelected }) {
       {editorTool === "pencil" && <PenStatusTool />}
       {editorTool === "highLightPen" && <HightLightStatusTool />}
       {editorTool === "postIt" && (
-        <PostItStatusTool
-          textBoxRef={textBoxRef}
-          isBoldSelected={isBoldSelected}
-        />
+        <PostItStatusTool isBoldSelected={isBoldSelected} />
       )}
     </EditorTool>
   );

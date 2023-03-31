@@ -16,7 +16,7 @@ import CONSTANT from "../constants/constant";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function Document({ pdfDocument, textBoxRef, onMouseUp }) {
+export default function Document({ pdfDocument, onMouseUp }) {
   const currentPage = useSelector(selectCurrentPage);
   const drawingData = useSelector(selectDrawingData)[currentPage];
   const { showBoundary } = useErrorBoundary();
@@ -75,7 +75,6 @@ export default function Document({ pdfDocument, textBoxRef, onMouseUp }) {
               postItId={postItId}
               onMouseUp={onMouseUp}
               contentEditable
-              textBoxRef={textBoxRef}
             />
           );
         })}

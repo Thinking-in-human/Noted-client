@@ -6,12 +6,11 @@ import styled from "styled-components";
 import { selectUserId } from "../feature/userSlice";
 import PDFViewer from "./PDFViewer";
 import Toolbar from "./Toolbar";
-import { setSelectedDocument, setBold } from "../feature/editorSlice";
+import { setBold } from "../feature/editorSlice";
 
 export default function Editor() {
   const loginUserId = useSelector(selectUserId);
   const { documentId } = useParams();
-  const textBoxRef = useRef(null);
   const dispatch = useDispatch();
 
   const isBoldSelected = () => {
@@ -44,11 +43,10 @@ export default function Editor() {
 
   return (
     <Wrapper>
-      <Toolbar textBoxRef={textBoxRef} isBoldSelected={isBoldSelected} />
+      <Toolbar isBoldSelected={isBoldSelected} />
       {loginUserId && documentId && (
         <PDFViewer
-          url={`http://localhost:4000/users/${loginUserId}/documents/${documentId}`}
-          textBoxRef={textBoxRef}
+          url={`${process.env.REACT_APP_NOTED_API_SERVER}/users/${loginUserId}/documents/${documentId}`}
           onMouseUp={handleMouseUp}
           documentId={documentId}
         />

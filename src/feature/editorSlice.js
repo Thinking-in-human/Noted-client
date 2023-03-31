@@ -107,7 +107,10 @@ export const editorSlice = createSlice({
       state.postIts = {};
     },
     setSelectedFontUrl: (state, action) => {
-      state.postIt.text.fontUrl = action.payload;
+      const { currentPage, currentPostIt, fontUrl, selectedFont } =
+        action.payload;
+      state.postIts[currentPage][currentPostIt].fontUrl = fontUrl;
+      state.postIts[currentPage][currentPostIt].fontName = selectedFont;
     },
     setSelectedFontName: (state, action) => {
       state.fontName = action.payload;
@@ -129,7 +132,6 @@ export const editorSlice = createSlice({
     },
     setPostItFontSize: (state, action) => {
       const { currentPage, changedSize, currentPostIt } = action.payload;
-      console.log(action.payload);
       state.postIts[currentPage][currentPostIt].fontSize = changedSize;
     },
     setBold: (state, action) => {
@@ -167,8 +169,18 @@ export const editorSlice = createSlice({
       const { currentPage, currentPostIt, position } = action.payload;
       state.postIts[currentPage][currentPostIt].position = position;
     },
+    setPostItFont: (state, action) => {
+      const { currentPage, currentPostIt, fontName } = action.payload;
+      state.postIts[currentPage][currentPostIt].fontName = fontName;
+    },
     setCurrentPostIt: (state, action) => {
       state.currentPostIt = action.payload;
+    },
+    resetCurrentPage: (state, action) => {
+      const currentPage = action.payload;
+      state.drawingData[currentPage] = [];
+      state.redoData[currentPage] = [];
+      state.postIts[currentPage] = {};
     },
   },
 });
@@ -198,6 +210,8 @@ export const {
   setPostItPosition,
   changeContents,
   setCurrentPostIt,
+  setPostItFont,
+  resetCurrentPage,
 } = editorSlice.actions;
 
 export const selectPostItFontSize = (state) =>

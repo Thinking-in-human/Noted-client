@@ -6,14 +6,20 @@ import axios from "axios";
 import { useErrorBoundary } from "react-error-boundary";
 import Loading from "./Loading";
 import Document from "./Document";
-import { setPageData } from "../feature/editorSlice";
+import {
+  setPageData,
+  selectCurrentPage,
+  selectPostIts,
+} from "../feature/editorSlice";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `${window.location.origin}/pdf.worker.min.js`;
 
-export default function PDFViewer({ url, textBoxRef, onMouseUp, documentId }) {
+export default function PDFViewer({ url, onMouseUp, documentId }) {
   const [pdfDocument, setPdfDocument] = useState(null);
   const dispatch = useDispatch();
   const { showBoundary } = useErrorBoundary();
+  const currentPage = useSelector(selectCurrentPage);
+  const postIts = useSelector(selectPostIts)[currentPage];
 
   useEffect(() => {
     const loadPdf = async () => {
@@ -37,14 +43,9 @@ export default function PDFViewer({ url, textBoxRef, onMouseUp, documentId }) {
     loadPdf();
   }, [url]);
 
-  if (pdfDocument) {
+  if (pdfDocument && postIts) {
     return (
-      <Document
-        url={url}
-        pdfDocument={pdfDocument}
-        textBoxRef={textBoxRef}
-        onMouseUp={onMouseUp}
-      />
+      <Document url={url} pdfDocument={pdfDocument} onMouseUp={onMouseUp} />
     );
   }
   return <Loading />;

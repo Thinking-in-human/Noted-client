@@ -9,7 +9,7 @@ import {
   selectDocument,
   selectDrawingData,
   selectLastPostItPosition,
-  selectPostItText,
+  selectPostIts,
 } from "../feature/editorSlice";
 import {
   changeEditingUser,
@@ -25,17 +25,20 @@ export default function Header() {
   const userId = useSelector(selectUserId);
   const allDrawingData = useSelector(selectDrawingData);
   const postItPosition = useSelector(selectLastPostItPosition);
-  const postItTextInfo = useSelector(selectPostItText);
+  const postItInfo = useSelector(selectPostIts);
   const { showBoundary } = useErrorBoundary();
   const dispatch = useDispatch();
 
   const requestLogout = async () => {
     try {
-      const response = await axios(`${CONSTANT.API}/auth/sign-out`, {
-        method: "POST",
-        responseType: "json",
-        withCredentials: true,
-      });
+      const response = await axios(
+        `${process.env.REACT_APP_NOTED_API_SERVER}/auth/sign-out`,
+        {
+          method: "POST",
+          responseType: "json",
+          withCredentials: true,
+        },
+      );
 
       if (response) {
         dispatch(
@@ -52,14 +55,7 @@ export default function Header() {
 
   const handleSavePdf = () => {
     try {
-      saveCurrentPdf(
-        userId,
-        documentId,
-        allDrawingData,
-        CONSTANT,
-        postItPosition,
-        postItTextInfo,
-      );
+      saveCurrentPdf(userId, documentId, allDrawingData, CONSTANT, postItInfo);
     } catch (error) {
       showBoundary(error);
     }
@@ -77,7 +73,6 @@ export default function Header() {
         </NavButton>
         <NavButton onClick={requestLogout}>logout →</NavButton>
         {userImage ? <UserProfile src={userImage} alt="userProfile" /> : null}
-        {/*  <UserProfile src={userImage} alt="userProfile"></UserProfile> */}
       </NavWrapper>
     </Wrapper>
   );
