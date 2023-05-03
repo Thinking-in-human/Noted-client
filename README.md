@@ -6,20 +6,19 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
 ## 𝌞 CONTENTS
   * [🎬 Preview](#-preview)
   * [📌 Introduction](#-introduction)
-  * [🌍 Service Architecture](#-service-architecture)
   * [🌋 Challenges](#-challenges)
     * [Login](login)
-    * [1)로그인 인증 관리를 어떻게 효율적으로 관리할 수 있을까?](로그인-인증-관리를-어떻게-효율적으로-관리할-수-있을까?)
-    * [2)토큰이 탈취당할 위험에 대처하는 방법](토큰이-탈취당할-위험에-대처하는-방법)
+      * [1)로그인 인증 관리를 어떻게 효율적으로 관리할 수 있을까?](로그인-인증-관리를-어떻게-효율적으로-관리할-수-있을까?)
+      * [2)토큰이 탈취당할 위험에 대처하는 방법](토큰이-탈취당할-위험에-대처하는-방법)
     * [PDF](pdf)
-    * [1) PDF를 어떻게 불러올까?](PDF를-어떻게-불러올까?)
-    * [2) 불러온 PDF를 어떻게 화면에 보여줄 수 있을까?](불러온-PDF를-어떻게-화면에-보여줄-수-을까?)
-    * [3) 어떻게 저장할까?](어떻게-저장할까?)
+      * [1) PDF를 어떻게 불러올까?](PDF를-어떻게-불러올까?)
+      * [2) 불러온 PDF를 어떻게 화면에 보여줄 수 있을까?](불러온-PDF를-어떻게-화면에-보여줄-수-을까?)
+      * [3) 어떻게 저장할까?](어떻게-저장할까?)
     * [Editor](editor)
-    * [1) Canvas API를 통해서 undo/redo를 어떻게 구현할까?](Canvas-API를-통해서-undo/redo를-어떻게-구현할까?)
-    * [2) 캔버스에 원하는 크기대로 지울 수 있는가?](캔버스에-원하는-크기대로-지울-수-있는가?)
-    * [3) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?](S3에-저장된-글꼴-파일을-텍스트에-어떻게-적용할-수-있을까?)
-    * [4) bold 적용하기](bold-적용하기)
+      * [1) Canvas API를 통해서 undo/redo를 어떻게 구현할까?](Canvas-API를-통해서-undo/redo를-어떻게-구현할까?)
+      * [2) 캔버스에 원하는 크기대로 지울 수 있는가?](캔버스에-원하는-크기대로-지울-수-있는가?)
+      * [3) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?](S3에-저장된-글꼴-파일을-텍스트에-어떻게-적용할-수-있을까?)
+      * [4) bold 적용하기](bold-적용하기)
   * [🌐 Tech Stacks](#-tech-stacks)
   * [🔗 Repository Link](#repository-link)
   * [👨‍💻 Member](#member)
@@ -69,10 +68,6 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
 
 </div>
 </details>
-
-<br/>
-
-## 🌍 Service Architecture
 
 <br/>
 
@@ -150,7 +145,7 @@ PDFjs의 공식문서를 보면 pdfjsLib에서 getDocument 메소드를 호출�
 [PDFjs-example](https://mozilla.github.io/pdf.js/examples/)
 
 ```jsx
-var loadingTask = pdfjsLib.getDocument('helloworld.pdf');
+const loadingTask = pdfjsLib.getDocument('helloworld.pdf');
 loadingTask.promise.then(function(pdf) {
   // you can now use *pdf* here
 });
@@ -189,12 +184,8 @@ function getDocument(src) {
 
 ### 3) 어떻게 저장할까?
 
- 처음에는 puppeteer로 저장하는 방식을 생각했었다.  puppeteer를 활용하면 가상 브라우저를 통해 원하는 URL의 sanapshot을 찍어 pdf로 만들 수 있기 때문이다. 하지만 puppeteer로 우리 브라우저에 접근한다면 몇가지 문제가 있었다.
-
-1. 우리 브라우저에 접근하기 위해서는 유저의 아이디와 비밀번호를 puppeteer에 넘겨주어야 했다. 우선, 우리는 구글 auth를 이용한 로그인 방식을 이용하고 있기에, 유저의 비밀번호를 취득할 수 없었다. 그렇다고 저장을 puppeteer가 접근 할 수 있는 별도의 로그인 로직을 만든다는건, 비효율적이며 저장 로직의 본질을 벗어난 것이라 생각했다.
-2. 로그인에 성공한다 하더라도, 현재 유저가 작업한 상태는 puppeteer가 접근했을 때 반영되지 않는다. 현재 작업 영역의 상태를 반영시키기 위해서는, 현재 유저가 작업한 모든 내용을 puppeteer가 모두 똑같이 수행해야 하는 과정이 필요했다.
-3. 모든 상태를 그린다 하더라도, 현재 페이지에 렌더링된 PDF의 각 요소(텍스트, 이미지, 링크 등)를 puppeteer는 구분하지 못할 것이었다. 왜냐하면, 우리가 페이지에 보여주고 있는 PDF는 `canvas API`로 작업을 하기 위해 `canvas` 태그로 렌더링 되어있었고, 원본 PDF의 요소(텍스트, 이미지, 링크 등)
-
+ 처음에는 puppeteer로 저장하는 방식을 생각했습니다.  puppeteer를 활용하면 가상 브라우저를 통해 원하는 URL의 sanapshot을 찍어 pdf로 만들 수 있기 때문입니다. 하지만 puppeteer로 우리 브라우저에 접근한다면 몇가지 문제가 있었습니다.
+ 
 ```jsx
 // 처음 구상했던 puppeteer를 활용한 PDF 저장 방식
 const browser = await puppeteer.launch({ headless: true });
@@ -218,6 +209,147 @@ router.get("/save-pdf", async function (req, res, next) {
 });
 ```
 
+- 우리 브라우저에 접근하기 위해서는 유저의 아이디와 비밀번호를 puppeteer에 넘겨주어야 했습니다. 하지만, 우리는 구글 auth를 이용한 로그인 방식을 이용하고 있기에, 유저의 비밀번호를 취득할 수 없었습니다. 그렇다고 저장을 puppeteer가 접근 할 수 있는 별도의 로그인 로직을 만든다는건, 비효율적이며 저장 로직의 본질을 벗어난 것이라 생각했습니다.
+- 유저의 아이디를 넘겨주거나, 별도의 로직으로 puppeteer가 로그인에 성공한다 하더라도, 현재 유저가 작업한 상태는 puppeteer가 접근했을 때 반영되지 않습니다. 현재 작업 영역의 상태를 반영시키기 위해서는, 현재 유저가 작업한 모든 내용을 puppeteer가 모두 똑같이 수행해야 하는 과정이 필요했습니다.
+- 모든 상태를 그린다 하더라도, puppeteer 현재 페이지에 렌더링된 원본 PDF의 각 요소(텍스트, 이미지, 링크 등)를 puppeteer는 구분하지 못할 것이었습니다. 왜냐하면, 우리가 페이지에 보여주고 있는 PDF는 `canvas API`로 작업을 하기 위해 `canvas` 태그로 렌더링 되어있었고, 원본 PDF의 요소(텍스트, 이미지, 링크 등)를 모두 무시한채 이미지 파일로 저장 될 것이었기 때문입니다. 우리의 프로젝트는 PDF 에디터 였으므로, PDF의 요소를 훼손시킨다면 PDF에디터의 의미가 퇴색될 것이라 생각했습니다.
+
+결국 단순히 snapshot을 찍어 PDF를 저장하는 방식이 아니라, 상태에 기반하여 그림요소와 텍스트 요소를 만들어 새로운 PDF를 생성하는 방식을 선택했습니다. 이를 위해 선택한 라이브러리가 PDF-LIB이었습니다. 
+- PDF-LIB은 오픈소스 라이브러리 랭킹 플랫폼인 openbase에서 상위권에 위치한 만큼 많은 사용자가 있어 정보를 얻기 수월할 것이라 생각했습니다.
+- 우리가 필요로 했던, 원본 PDF에 이미지와 텍스트를 삽입할 수 있는 기능이 있었습니다.
+
+```jsx
+// 간단한 PDF저장 예시
+const pdfDoc = await PDFDocument.load(...)
+const pages = pdfDoc.getPages()
+
+const pngImageBytes = await fetch(pngUrl).then((res) => res.arrayBuffer())
+const pngImage = await pdfDoc.embedPng(pngImageBytes)
+
+firstPage.drawText('This text was added with JavaScript!', {
+  x: 5,
+  y: height / 2 + 300,
+  size: 50,
+  font: helveticaFont,
+  color: rgb(0.95, 0.1, 0.1),
+})
+page.drawImage(pngImage, {
+    x: page.getWidth() / 2 - jpgDims.width / 2,
+    y: page.getHeight() / 2 - jpgDims.height / 2 + 250,
+    width: jpgDims.width,
+    height: jpgDims.height,
+  })
+
+const pdfBytes = await pdfDoc.save();
+```
+ 다만 PDF에 추가될 이미지와 텍스트의 모든 속성값(좌표, 텍스트, 색상, 크기, 폰트)을 상태로 보관 할 필요가 있었고, 해당 좌표를 저장 시 PDF페이지 내에 정확히 반영해주기 위한 작업을 수반해야 했습니다.
+ 
+ 1. 그림요소의 경우 상태에 저장된 데이터(좌표, 색상, 투명도, 두께)를 빈 저장 할 PDF의 크기와  동일한 캔버스에 그려 해당 캔버스를 PNG로 저장했습니다.
+ 
+ ```jsx
+ const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width = CONSTANT.CANVAS_WIDTH;
+    canvas.height = CONSTANT.CANVAS_HEIGHT;
+
+    drawingData.forEach((drawing) => {
+      context.beginPath();
+      context.moveTo(drawing[0]?.xPoint, drawing[0]?.yPoint);
+      for (let i = 1; i < drawing.length; i += 1) {
+        context.lineJoin = "round";
+        context.lineCap = "round";
+        context.strokeStyle = drawing[i]?.color;
+        context.lineWidth = drawing[i]?.width;
+        context.globalAlpha = drawing[i]?.opacity;
+        context.lineTo(drawing[i]?.xPoint, drawing[i]?.yPoint);
+        context.stroke();
+      }
+    });
+
+    const imageData = canvas.toDataURL("image/png"); 
+    // 상태값이 그려진 캔버스를 png로 저장
+    const imageDataBytes = await fetch(imageData).then((res) =>
+      res.arrayBuffer(),
+    );
+    const pdfImage = await loadPdf.embedPng(imageDataBytes);
+    // arrayBuffer형식의 png파일을 pdf-lib의 메소드의 인자로 전달
+    page[index].drawImage(pdfImage, {
+      width: CANVAS_WIDTH,
+      height: CANVAS_HEIGHT,
+    });
+    // 상태에 해당하는 페이지에 저장
+ ```
+
+2. 이미지 요소는 PDF와 동일한 크기에 상태를 토대로 그림을 그려 저장했기에 크게 어려움이 없었습니다. 반면, 포스트잇(포스트잇 박스, 텍스트)의 경우 캔버스에 그릴 수 없어, PDF에 직접 좌표를 지정하며 삽입해야 했습니다. 우리가 상태에 저장했던 x,y좌표는 canvas의 left-top이 0,0을 가리켰지만, PDF-LIB에서 left-bottom위치가 x,y의 0,0좌표를 나타냈습니다. Y축을 반전하여 생각할 필요가 있었습니다. 또한 포스트잇 박스를 그릴 때에는 해당 지정한 y축을 기점으로 top방향이 아닌, bottom방향으로 도형이 그려지기에 위치를 잡을 때 다소 번거로움이 있었습니다. 결국 아래와 같이 이해하기 힘든 코드를 작성하게 되었습니다. 
+
+```jsx
+// 포스트잇 네모 박스를 그리는 과정
+  page[index].drawRectangle({
+    x: postItX + POST_IT_BORDER,
+    y:
+      CANVAS_HEIGHT - // 캔버스의 높이
+      postItY -  // 포스트잇의 Y축
+      POST_IT_SIZE - // 포스트잇의 사이즈
+      POST_IT_PADDING - // 포스트잇의 패딩
+      POST_IT_BORDER,  // 보스트잇의 border
+    width: POST_IT_SIZE + POST_IT_PADDING * 2,
+    height: POST_IT_SIZE + POST_IT_PADDING * 2,
+    color: yellow,
+    borderWidth: POST_IT_BORDER,
+    opacity: 0.6,
+  });
+```
+
+3. 위의 포스트잇 박스 뿐만 아니라, 포스트잇의 close버튼, close버튼 안에 있는 x 문자, 포스트잇의 텍스트를 그리는 데에도 위와 같이 직접 좌표를 지정하며 하나하나 그려야 했기에 가독성이 나빠질 수 밖에 없었습니다. 하지만, 포스트잇의 특성 중 하나인 텍스트를 살리기 위해서는 위와 같이 직접 그려야만 했습니다.
+
+4. 포스트잇에 작성된 텍스트가 한줄이 넘어갔을 때는 또 다른 문제가 발생했습니다. 에디터 내에서 작업할 때에는 텍스트가 포스트잇의 넓이를 넘어갔을 때, 자동으로 개행이 되었습니다. 하지만, 우리 프로젝트는 별도의 텍스트 박스를 사용하는게 아니라, 텍스트 박스라는 그림요소 위에 텍스트를 작성하는 것이었기에, 넓이를 측정하여 별도의 개행을 해주었습니다. 다행히 `widthOfTextAtSize`라는 PDF-LIB의 메소드에 텍스트와 폰트 사이즈를 인자로 넣어주면, 작성된 텍스트의 넓이를 구할 수 있었습니다. 텍스트의 넓이를 구하며, 우리 포스트잇의 넓이보다 넓어졌을 때, 텍스트의 폰트 사이즈만큼 좌표를 옮겨서 텍스트를 입히는 로직을 작성할 수 있었습니다.
+
+```jsx
+  const splitText = (wholeText) => {
+    let text = "";
+    const result = [];
+    for (let i = 0; i < wholeText.length; i += 1) {
+      text += wholeText[i];
+      const textWidth = standardFont.widthOfTextAtSize(
+        text,
+        Number(fontSize.split("px")[0]),
+      );
+      if (textWidth > POST_IT_SIZE) {
+        result.push(text);
+        text = "";
+      }
+    }
+    result.push(text);
+    return result;
+  };
+
+  const result = splitText(contents);
+
+  result.forEach((text, textIndex) => {
+    page[index].drawText(text, {
+      x: postItX + POST_IT_PADDING + POST_IT_BORDER + 5,
+      y:
+        CANVAS_HEIGHT -
+        POST_IT_BORDER -
+        POST_IT_PADDING -
+        postItY -
+        POST_IT_CLOSE_BOX_SIZE -
+        (textIndex + 1) * Number(fontSize.split("px")[0]) +
+        5,
+      size: Number(fontSize.split("px")[0]),
+      lineHeight: Number(fontSize.split("px")[0]),
+      color: black,
+      font: standardFont,
+      maxWidth: POST_IT_SIZE - POST_IT_PADDING * 2,
+      opacity: 1,
+    });
+  });
+```
+
+5. 하지만 위의 로직에도 이따금씩 1,2번째 개행이 겹쳐서 그려지는 경우가 발생하였습니다. wordbreak기능을 고려하던가 알고리즘을 수정하고 싶었으나, 현재 프로젝트의 기간이 종료되어 향후 보완할 점으로 남겨두고 프린트 기능은 마무리 하도록 했습니다.
+
+6. 다소 아쉽게 PDF저장 기능이 완료 되었으나 우리가 작성한 폰트, 이미지, 그리고 기존 문서의 Link 기능까지 모두 해치지 않는 PDF저장을 구현할 수 있게 되었습니다. 
+
+
 ## 3. Editor
 
 ### 1) Canvas API를 통해서 undo/redo를 어떻게 구현할까? 
@@ -226,25 +358,109 @@ router.get("/save-pdf", async function (req, res, next) {
 
 Canvas를 사용하는 이유는 JavaScript를 사용하여 웹 페이지에서 그래픽을 조작하고 그릴 수 있는 방법을 제공하기 때문입니다. pdf.js 라이브러리를 사용하여 PDF 파일을 구문 분석하고 이미지 데이터를 추출하게 되면 PDF 페이지를 이미지로 렌더링을 할 수 있습니다.
 
-- **Canvas API 기본 원리**
+- **Canvas API로 그림을 그리는 원리**
 
-PDF 페이지와 동일한 크기로 Canvas를 만들고 getContext('2d') 메서드를 사용하여 캔버스에 대한 2D 렌더링 컨텍스트를 가져옵니다. 그런 다음 page.render 메서드를 사용하여 PDF 페이지를 캔버스에 그립니다.
+PDF 페이지와 동일한 크기로 생성한 Canvas 태그를 useRef로 불러오고 getContext(”2d”) 메서드를 사용하여 캔버스에 대한 2D 렌더링 컨텍스트를 가져옵니다. 그리고 mousedown, mousemove 이벤트의 콜백 함수로 그림을 그리는 함수를 호출하며, mouseup 이벤트가 발생했을 때 이벤트 리스너를 제거하여, 더이상 그림이 그려지지 않도록 합니다.
 
-- **Stack 구조로 undo/redo 구현**
+```jsx
+    
+    const handleMouseDown = (event) => {
+      const x = event.offsetX;
+      const y = event.offsetY;
 
-### 2) 캔버스에 원하는 크기대로 지울 수 있는가?
+      context.beginPath(); // 드로잉 시 새로운 path가 시작함을 인식
+      context.moveTo(x, y); // 드로잉 시 그려질 요소의 시작점을 인식
 
-어찌어찌 하다가 잘 되지 않아 전체를 지우는 방법으로 구현하였다…
+      canvas.addEventListener("mousemove", drawWhenMouseMove);
+      canvas.addEventListener("mouseup", handleMouseUp);
+    };
 
-### 3) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?
+    const drawWhenMouseMove = (event) => {
+      const x = event.offsetX;
+      const y = event.offsetY;
+      context.lineJoin = "round";
+      context.lineCap = "round";
+      context.globalAlpha = globalOpacity;
+      context.strokeStyle = globalColor;
+      context.lineWidth = globalWidth;
+      // 그려질 선에 대한 스타일로, 글로벌 상태에 기반한다.
+
+      context.lineTo(x, y); // moveTo로부터 선이 이어질 다음 좌표 - 움직일때 마다 갱신
+      context.stroke();  // moveTo의 좌료포부터 lineTo까지 선을 그어준다.
+    };
+
+    const handleMouseUp = () => {
+      dispatch(pushDrawingDataCurrentPage(linePoints));
+
+      canvas.removeEventListener("mousemove", drawWhenMouseMove);
+      canvas.removeEventListener("mouseup", handleMouseUp);
+    };
+
+```
+
+- **에디터 툴을 활용한 그림의 상태 관리**
+
+위 예시의 drawWhenMouseMove 함수에서 확인 가능한 대로, 그려지는 그림의 스타일은 상태에 기반합니다. globalOpacity, globalColor, globalWidth 은 툴바의 작업도구와 작업 도구의 스타일을 선택함에 따라 리덕스의 글로벌 상태관리에 반영됩니다. 
+
+<img width="626" alt="image" src="https://user-images.githubusercontent.com/110869913/235928308-284aca91-5256-4885-8fc8-980efcf390b9.png">
+
+ 펜을 클릭 하면 펜의 default 색상, 두께, 투명도가 적용되며, 형광펜을 선택하면 형광펜의 default 색상, 두께, 투명도가 적용됩니다. 펜과 형광펜을 각각 선택할 때 마다 선택한 작업 도구의 스타일을 선택 할 수 있는 툴바가 렌더링 되며, 선택한 스타일은 상태로 반영됩니다.
+ 이렇게 반영된 상태는 유저가 다른 작업도구(ex 형광펜)를 선택하다 기존 작업 도구(ex 볼펜)를 다시 선택하더라도, 유저가 선택한 최신의 상태가 반영되며, 유저가 기존 작업 도구를 다시 쓸 때 연속성 있는 경험을 느낄 수 있도록 하였습니다. 
+ 
+ ```jsx
+   export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
+    const selectToolColor = (state) => state.editor[tool].color; 
+    const selectToolWidth = (state) => state.editor[tool].width;
+    const selectToolOpacity = (state) => state.editor[tool].opacity;
+
+    const color = selectToolColor(getState());
+    const width = selectToolWidth(getState());
+    const opacity = selectToolOpacity(getState());
+    // 유저가 클릭한 작업도구(ex. "pencil", "highlight pen")의 최신 style을 열람
+
+    dispatch(setGlobalStyle({ tool, color, width, opacity }));
+    // 최신 스타일을 글로벌 style로 반영하는 reducer 함수를 dispatch
+  };
+ ```
+해당 기능은 custom thunk를 활용해서 구현했습니다. UI 컴포넌트에서 현재 작업도구에 대한 상태를 구독하여 현재 작업도구의 최신 상태를 반영 할 수 도 있었지만, custom thunk를 사용하여 불필요하게 현재 작업도구에 대한 상태를 빼줄 필요가 없고, UI 컴포넌트를 가볍게 할 수 있었습니다. 현재 그림을 그리는 커스텀 훅은 작업도구에 대한 상태를 구독할 필요 없이 globalColor, globalWidth, globalOpacity 만을 구독합니다.
+
+```jsx
+  const globalColor = useSelector(selectGlobalColor);
+  const globalWidth = useSelector(selectGlobalWidth);
+  const globalOpacity = useSelector(selectGlobalOpacity);
+```
+- ** 두개의 Stack 구조로 UNDO/REDO 구현**
+UNDO/REDO 기능은 두개의 Stack구조 데이터를 활용해서 구현했습니다. UNDO 버튼을 클릭하면, 상태에 보관된 해당 페이지의 DrawingData의 마지막 그림요소(lineData)를 제거하여 RedoData에 반영해줍니다. 반대로 REDO 버튼을 클릭하면, RedoData의 마지막 그림요소(lineData)를 제거하여 DrawingData에 반영해줍니다. 그리고, DrawingData 상태가 변환되면 호출되는 그리기 함수는 현재의 DrawingData 상태에 반영된 lineData들을 그려줍니다.
+
+<img width="624" alt="image" src="https://user-images.githubusercontent.com/110869913/235928760-2d04e856-fea4-472c-b966-fdf0d17edbfa.png">
+
+해당 기능은 custom thunk로 구현했습니다. 현재 페이지에 대한 상태와 DrawingData, RedoData에 대한 상태 구독이 필요했고, 해당 상태 구독을 리듀서 내에서 수행하여 UI컴포턴트를 가볍게 가져가고 싶었기 때문입니다.
+
+```jsx
+export const moveDataUndoArray = () => (dispatch, getState) => {
+  const currentPage = selectCurrentPage(getState()); 
+  const drawingArray = selectDrawingData(getState())[currentPage];
+  // 현재페이지와, 현재 페이지의 drawingData 상태 확인
+
+  if (drawingArray.length) {
+    const poppedData = drawingArray[drawingArray.length - 1];
+    const restDrawingArray = drawingArray.slice(0, drawingArray.length - 1);
+  // RedoData에 반영할 DrawingData의 마지막 그림요소(lineData)를 선택 
+  // & 마지막 그림요소(lineData)가 제거된 새로운 DrawingData를 생성
+    dispatch(setDataUndo({ currentPage, restDrawingArray, poppedData }));
+  }
+  // 위의 가공된 정보를 인자로 상태반영
+};
+```
+
+
+### 2) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?
 
 저희는 S3에서 저장된 글꼴 파일을 받아와 텍스트에 적용하면 바로 적용이 되는 줄 알았습니다. 하지만 S3가 건네준 데이터는 스트림(데이터)을 읽을 수 있는 객체인 readableStream이였고 텍스트에 글꼴을 적용하기 위해서는 readableStream을 url로 변환해야했습니다.
 
 찾아본 결과 Blob이라는 객체를 통해서  source(src)를 속성으로 가지는 모든 HTML 태그와 CSS 속성에서 사용 가능한 url로 변환할 수 있는 것을 확인하였습니다. Blob은 주로 텍스트, 이미지, 사운드, 비디오와 같은 대다수 용량이 큰 데이터를 객체 형태로 저장할 수 있는 객체입니다.
 
 readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 후에 Blob객체를 만들고 그 Blob객체를 url로 변환하였습니다. 이 url을 font-face에 src로 넣어주어 저희가 지정한 폰트명으로 해당 경로의 파일을 로드하여 글꼴을 적용하였습니다.
-
-### 4) bold 적용하기
 
 
 <br/>
@@ -280,10 +496,8 @@ readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 �
 
 ### Github Repositories
 
-(깃헙 링크 걸기)
-
-- FrontEnd Repo
-- BackEnd Repo
+- [FrontEnd Repo](https://github.com/Thinking-in-human/Noted-client)
+- [BackEnd Repo](https://github.com/Thinking-in-human/Noted-server)
 
 <br/>
 
@@ -291,7 +505,7 @@ readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 �
 
 (이름에 깃헙 링크 걸기)
 
-신휘재 : 
+신휘재 : hwejae25@gmail.com
 
 이지숙 : leejisook0718@gmail.com
 
