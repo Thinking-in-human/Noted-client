@@ -112,6 +112,10 @@ const NavButton = styled.button`
   &:active {
     color: #ffc0cb;
   }
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const UserProfile = styled.img`

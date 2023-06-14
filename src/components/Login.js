@@ -55,6 +55,12 @@ export default function Login() {
   return (
     <Wrapper>
       <BackgoundColorPage />
+      <MobileTitle>Sorry,</MobileTitle>
+      <MobileText>
+        We do not support mobile service.
+        <br />
+        please try on PC or laptop.
+      </MobileText>
       <MainImage src={pdfImage} alt="Main Page" />
       <FirstLineTitle>Find your creativity by</FirstLineTitle>
       <SecondLineTitle>pdf editor, Noted</SecondLineTitle>
@@ -83,6 +89,12 @@ const FirstLineTitle = styled.div`
   top: 30%;
   left: 45%;
   font-size: 400%;
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+  @media screen and (max-width: 1200px) {
+    font-size: 5vw;
+  }
 `;
 
 const SecondLineTitle = styled.div`
@@ -90,14 +102,20 @@ const SecondLineTitle = styled.div`
   top: 41%;
   left: 60%;
   font-size: 400%;
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+  @media screen and (max-width: 1200px) {
+    font-size: 5vw;
+  }
 `;
 
 const MainImage = styled.img`
   position: absolute;
   left: 5%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
 `;
 
 const LoginButton = styled.div`
@@ -112,5 +130,38 @@ const LoginButton = styled.div`
 
   &:active {
     color: #ffc0cb;
+  }
+
+  @media screen and (max-width: 768px) {
+    display: none;
+  }
+  @media screen and (max-width: 1200px) {
+    font-size: 2.5vw;
+  }
+`;
+
+const MobileTitle = styled.p`
+  position: absolute;
+  top: 15%;
+  left: 10%;
+  z-index: 1;
+  font-size: 40px;
+  font-weight: 800;
+  display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
+  }
+`;
+
+const MobileText = styled.p`
+  position: absolute;
+  top: 30%;
+  left: 10%;
+  z-index: 1;
+  font-size: 18px;
+  font-weight: 800;
+  display: none;
+  @media screen and (max-width: 768px) {
+    display: block;
   }
 `;
