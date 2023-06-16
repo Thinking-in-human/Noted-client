@@ -3,7 +3,7 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
 
 <br/>
 
-## 𝌞 CONTENTS
+# 𝌞 CONTENTS
   * [🎬 Preview](#-preview)
   * [📌 Introduction](#-introduction)
   * [🌋 Challenges](#-challenges)
@@ -20,22 +20,24 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
       * [3) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?](S3에-저장된-글꼴-파일을-텍스트에-어떻게-적용할-수-있을까?)
       * [4) bold 적용하기](bold-적용하기)
   * [🌐 Tech Stacks](#-tech-stacks)
+  * [📔 Feature](#-feature)
+  * [🧩 Contribution](#-contribution)
   * [🔗 Repository Link](#repository-link)
   * [👨‍💻 Member](#member)
 
 <br/>
 
-## 🎬 Preview
+# 🎬 Preview
 
 (시연 동영상)
 
 <br/>
 
-## 📌 Introduction
+# 📌 Introduction
 
-### Motivation
+## Motivation
 
-평소에 E-book을 읽을때마다 “나의 생각을 옆에 메모할 수 있으면 좋겠다.”라는 생각을 했습니다. 그렇게 시중에 제공되고 있는 서비스들을 찾아보니 태블릿 사용자를 위한 서비스는 많았으나 웹기반으로 된 PDF 에디터는 동시수정 등 다양한 기능들을 제공하는 대신, 유료인 것들이 많았습니다. 
+평소에 E-book을 읽을때마다 “나의 생각을 옆에 메모할 수 있으면 좋겠다.”라는 생각을 했습니다. 그렇게 시중에 제공되고 있는 서비스들을 찾아보니 태블릿 사용자를 위한 서비스는 많았으나 웹기반으로 된 PDF 에디터는 동시수정 등 다양한 기능들을 제공하는 대신, 유료인 것들이 많았습니다.
 
 따라서, 저희가 배운 MERN 스택을 이용하여 필기 및 간단한 텍스트 입력이 가능한 PDF 에디터를 구현해볼 수 있지 않을까? 라는 생각에 개발을 시작하게 되었습니다.
 
@@ -71,7 +73,7 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
 
 <br/>
 
-## 🌋 Challenges
+# 🌋 Challenges
 
 개발을 진행하면서 많은 시행착오들이 있었지만, 그 중 제일 핵심적인 것들은 크게 3가지 였습니다. 
 
@@ -128,17 +130,17 @@ JWT는 토큰을 탈취 당하면 대처가 어렵기 때문에 위험성이 있
 
 또한,  많은 사용자가 파일에 액세스하거나 대용량 파일인 경우, S3에서 직접 파일을 가져오면 S3 버킷에 과부하가 걸리고 성능에 영향을 미칠 수 있습니다. 
 
+<br>
+
 ### 2) 불러온 PDF를 어떻게 화면에 보여줄 수 있을까?
 
  초기에는 PDF 랜더링을 직접 구현하려고 하였으나, 2주라는 제한된 시간을 적절히 사용하는 것도 중요한 요소 중 하나이기 때문에 ‘에디터’라는 메인 기능에 집중하기 위하여 라이러리를 사용하기로 하였습니다. 
 
- PDF를 랜더링하는 라이브러리에는 대표적으로 PDF.js, react-PDF, PDFkit 등이 있는데 PDF.js는 HTML5, CSS3, JavaScript와 같은 웹 표준 기술만으로 PDF 파일을 렌더링하기 때문에 특정 플러그인이나 소프트웨어가 필요하지 않다는 장점이 있습니다. 
+ PDF를 랜더링하는 라이브러리에는 대표적으로 PDF.js, react-PDF, PDFkit 등이 있는데 PDF.js는 HTML5, CSS3, JavaScript와 같은 웹 표준 기술만으로 PDF 파일을 렌더링하기 때문에 특정 플러그인이나 소프트웨어가 필요하지 않다는 장점이 있습니다.
 
  그리고 React-PDF는 문서, 페이지, 텍스트와 같이 미리 빌드된 여러 컴포넌트를 제공하기 때문에 React 환경에서 PDF 파일을 쉽게 렌더링할 수 있고 가볍다는 장점이 있습니다. 하지만, React-PDF는 내부에서 PDF.js를 사용하여 PDF 파일을 렌더링하는 high level API이기 때문에, 저희가 직접 PDF.js를 사용해보는 취지로 PDF.js를 선택하게 되었습니다.
 
-~~(React와 PDF.js를 기반으로 한 라이브러리로 이기 때문에 저희가 직접 PDF.js를 사용해보는 취지로 PDF.js를 선택하게 되었습니다.)~~
-
-하지만 라이브러리를 사용하는 것 또한 내장 메서드들이 어떻게 동작하는지 파악하기 위해 API 문서와 github open source 코드들을 이해해야 했습니다.  
+하지만 라이브러리를 사용하는 것 또한 내장 메서드들이 어떻게 동작하는지 파악하기 위해 API 문서와 github open source 코드들을 이해해야 했습니다.
 
 PDFjs의 공식문서를 보면 pdfjsLib에서 getDocument 메소드를 호출하여 PDF를 불러옵니다.
 
@@ -182,10 +184,13 @@ function getDocument(src) {
 
 [PDFDocumentLoadingTask](https://mozilla.github.io/pdf.js/api/draft/module-pdfjsLib-PDFDocumentLoadingTask.html)
 
+<br>
+
 ### 3) 어떻게 저장할까?
+---
 
  처음에는 puppeteer로 저장하는 방식을 생각했습니다.  puppeteer를 활용하면 가상 브라우저를 통해 원하는 URL의 sanapshot을 찍어 pdf로 만들 수 있기 때문입니다. 하지만 puppeteer로 우리 브라우저에 접근한다면 몇가지 문제가 있었습니다.
- 
+
 ```jsx
 // 처음 구상했던 puppeteer를 활용한 PDF 저장 방식
 const browser = await puppeteer.launch({ headless: true });
@@ -209,11 +214,22 @@ router.get("/save-pdf", async function (req, res, next) {
 });
 ```
 
+<br>
+
+### 3.1 문제: puppeteer 저장방식의 한계
+---
+
 - 우리 브라우저에 접근하기 위해서는 유저의 아이디와 비밀번호를 puppeteer에 넘겨주어야 했습니다. 하지만, 우리는 구글 auth를 이용한 로그인 방식을 이용하고 있기에, 유저의 비밀번호를 취득할 수 없었습니다. 그렇다고 저장을 puppeteer가 접근 할 수 있는 별도의 로그인 로직을 만든다는건, 비효율적이며 저장 로직의 본질을 벗어난 것이라 생각했습니다.
 - 유저의 아이디를 넘겨주거나, 별도의 로직으로 puppeteer가 로그인에 성공한다 하더라도, 현재 유저가 작업한 상태는 puppeteer가 접근했을 때 반영되지 않습니다. 현재 작업 영역의 상태를 반영시키기 위해서는, 현재 유저가 작업한 모든 내용을 puppeteer가 모두 똑같이 수행해야 하는 과정이 필요했습니다.
 - 모든 상태를 그린다 하더라도, puppeteer 현재 페이지에 렌더링된 원본 PDF의 각 요소(텍스트, 이미지, 링크 등)를 puppeteer는 구분하지 못할 것이었습니다. 왜냐하면, 우리가 페이지에 보여주고 있는 PDF는 `canvas API`로 작업을 하기 위해 `canvas` 태그로 렌더링 되어있었고, 원본 PDF의 요소(텍스트, 이미지, 링크 등)를 모두 무시한채 이미지 파일로 저장 될 것이었기 때문입니다. 우리의 프로젝트는 PDF 에디터 였으므로, PDF의 요소를 훼손시킨다면 PDF에디터의 의미가 퇴색될 것이라 생각했습니다.
 
-결국 단순히 snapshot을 찍어 PDF를 저장하는 방식이 아니라, 상태에 기반하여 그림요소와 텍스트 요소를 만들어 새로운 PDF를 생성하는 방식을 선택했습니다. 이를 위해 선택한 라이브러리가 PDF-LIB이었습니다. 
+결국 단순히 snapshot을 찍어 PDF를 저장하는 방식이 아니라, 상태에 기반하여 그림요소와 텍스트 요소를 만들어 새로운 PDF를 생성하는 방식을 선택했습니다. 이를 위해 선택한 라이브러리가 PDF-LIB이었습니다.
+
+<br>
+
+### 3.2 해결방안: PDF-LIB 라이브러리를 활용
+---
+
 - PDF-LIB은 오픈소스 라이브러리 랭킹 플랫폼인 openbase에서 상위권에 위치한 만큼 많은 사용자가 있어 정보를 얻기 수월할 것이라 생각했습니다.
 - 우리가 필요로 했던, 원본 PDF에 이미지와 텍스트를 삽입할 수 있는 기능이 있었습니다.
 
@@ -242,9 +258,15 @@ page.drawImage(pngImage, {
 const pdfBytes = await pdfDoc.save();
 ```
  다만 PDF에 추가될 이미지와 텍스트의 모든 속성값(좌표, 텍스트, 색상, 크기, 폰트)을 상태로 보관 할 필요가 있었고, 해당 좌표를 저장 시 PDF페이지 내에 정확히 반영해주기 위한 작업을 수반해야 했습니다.
- 
- 1. 그림요소의 경우 상태에 저장된 데이터(좌표, 색상, 투명도, 두께)를 빈 저장 할 PDF의 크기와  동일한 캔버스에 그려 해당 캔버스를 PNG로 저장했습니다.
- 
+
+### 3.3 해결과정: 상태 데이터를 PDF 요소로 저장
+---
+
+<br>
+
+### 가. 이미지 저장
+ 이미지 요소의 경우 상태에 저장된 데이터(좌표, 색상, 투명도, 두께)를 빈 저장 할 PDF의 크기와  동일한 캔버스에 그려 해당 캔버스를 PNG로 저장했습니다.
+
  ```jsx
  const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
@@ -265,7 +287,7 @@ const pdfBytes = await pdfDoc.save();
       }
     });
 
-    const imageData = canvas.toDataURL("image/png"); 
+    const imageData = canvas.toDataURL("image/png");
     // 상태값이 그려진 캔버스를 png로 저장
     const imageDataBytes = await fetch(imageData).then((res) =>
       res.arrayBuffer(),
@@ -279,7 +301,11 @@ const pdfBytes = await pdfDoc.save();
     // 상태에 해당하는 페이지에 저장
  ```
 
-2. 이미지 요소는 PDF와 동일한 크기에 상태를 토대로 그림을 그려 저장했기에 크게 어려움이 없었습니다. 반면, 포스트잇(포스트잇 박스, 텍스트)의 경우 캔버스에 그릴 수 없어, PDF에 직접 좌표를 지정하며 삽입해야 했습니다. 우리가 상태에 저장했던 x,y좌표는 canvas의 left-top이 0,0을 가리켰지만, PDF-LIB에서 left-bottom위치가 x,y의 0,0좌표를 나타냈습니다. Y축을 반전하여 생각할 필요가 있었습니다. 또한 포스트잇 박스를 그릴 때에는 해당 지정한 y축을 기점으로 top방향이 아닌, bottom방향으로 도형이 그려지기에 위치를 잡을 때 다소 번거로움이 있었습니다. 결국 아래와 같이 이해하기 힘든 코드를 작성하게 되었습니다. 
+<br>
+
+### 나. 포스트잇 & 텍스트 저장
+
+이미지 요소는 PDF와 동일한 크기에 상태를 토대로 그림을 그려 저장했기에 크게 어려움이 없었습니다. 반면, 포스트잇(포스트잇 박스, 텍스트)의 경우 캔버스에 그릴 수 없어, PDF에 직접 좌표를 지정하며 삽입해야 했습니다. 우리가 상태에 저장했던 x,y좌표는 canvas의 left-top이 0,0을 가리켰지만, PDF-LIB에서 left-bottom위치가 x,y의 0,0좌표를 나타냈습니다. Y축을 반전하여 생각할 필요가 있었습니다. 또한 포스트잇 박스를 그릴 때에는 해당 지정한 y축을 기점으로 top방향이 아닌, bottom방향으로 도형이 그려지기에 위치를 잡을 때 다소 번거로움이 있었습니다. 결국 아래와 같이 이해하기 힘든 코드를 작성하게 되었습니다.
 
 ```jsx
 // 포스트잇 네모 박스를 그리는 과정
@@ -299,9 +325,9 @@ const pdfBytes = await pdfDoc.save();
   });
 ```
 
-3. 위의 포스트잇 박스 뿐만 아니라, 포스트잇의 close버튼, close버튼 안에 있는 x 문자, 포스트잇의 텍스트를 그리는 데에도 위와 같이 직접 좌표를 지정하며 하나하나 그려야 했기에 가독성이 나빠질 수 밖에 없었습니다. 하지만, 포스트잇의 특성 중 하나인 텍스트를 살리기 위해서는 위와 같이 직접 그려야만 했습니다.
+1. 위의 포스트잇 박스 뿐만 아니라, 포스트잇의 close버튼, close버튼 안에 있는 x 문자, 포스트잇의 텍스트를 그리는 데에도 위와 같이 직접 좌표를 지정하며 하나하나 그려야 했기에 가독성이 나빠질 수 밖에 없었습니다. 하지만, PDF의 특성 중 하나인 텍스트를 살리기 위해서는 위와 같이 직접 그려야만 했습니다.
 
-4. 포스트잇에 작성된 텍스트가 한줄이 넘어갔을 때는 또 다른 문제가 발생했습니다. 에디터 내에서 작업할 때에는 텍스트가 포스트잇의 넓이를 넘어갔을 때, 자동으로 개행이 되었습니다. 하지만, 우리 프로젝트는 별도의 텍스트 박스를 사용하는게 아니라, 텍스트 박스라는 그림요소 위에 텍스트를 작성하는 것이었기에, 넓이를 측정하여 별도의 개행을 해주었습니다. 다행히 `widthOfTextAtSize`라는 PDF-LIB의 메소드에 텍스트와 폰트 사이즈를 인자로 넣어주면, 작성된 텍스트의 넓이를 구할 수 있었습니다. 텍스트의 넓이를 구하며, 우리 포스트잇의 넓이보다 넓어졌을 때, 텍스트의 폰트 사이즈만큼 좌표를 옮겨서 텍스트를 입히는 로직을 작성할 수 있었습니다.
+2. 포스트잇에 작성된 텍스트가 한줄이 넘어갔을 때는 또 다른 문제가 발생했습니다. 에디터 내에서 작업할 때에는 텍스트가 포스트잇의 넓이를 넘어갔을 때, 자동으로 개행이 되었습니다. 하지만 우리 프로젝트는 별도의 텍스트 박스를 사용하는게 아니라, 텍스트 박스라는 그림요소 위에 텍스트를 작성하는 것이었기에, 넓이를 측정하여 별도의 개행을 해주어야 했습니다. `widthOfTextAtSize` 라는 PDF-LIB의 메소드를 사용하여 텍스트의 넓이를 구했습니다. 텍스트의 넓이가 포스트잇보다 넓어졌을 때, 텍스트의 폰트 사이즈만큼 개행을 하여 저장 로직을 작성할 수 있었습니다.
 
 ```jsx
   const splitText = (wholeText) => {
@@ -345,25 +371,46 @@ const pdfBytes = await pdfDoc.save();
   });
 ```
 
-5. 하지만 위의 로직에도 이따금씩 1,2번째 개행이 겹쳐서 그려지는 경우가 발생하였습니다. wordbreak기능을 고려하던가 알고리즘을 수정하고 싶었으나, 현재 프로젝트의 기간이 종료되어 향후 보완할 점으로 남겨두고 프린트 기능은 마무리 하도록 했습니다.
+### 결과
+---
 
-6. 다소 아쉽게 PDF저장 기능이 완료 되었으나 우리가 작성한 폰트, 이미지, 그리고 기존 문서의 Link 기능까지 모두 해치지 않는 PDF저장을 구현할 수 있게 되었습니다. 
+유저가 작업 작성한 폰트, 이미지, 그리고 기존 문서의 Link 기능까지 모두 해치지 않는 PDF저장을 구현할 수 있게 되었습니다.
 
+<저장된 PDF의 텍스트 요소>
+
+  <img width="626px" src="https://github.com/Thinking-in-human/Noted-client/assets/106131005/11edc320-1142-43b6-b6a6-3d60b1205045"/>
+
+<저장된 PDF의 링크 요소>
+
+  <img width="626px" src="https://github.com/Thinking-in-human/Noted-client/assets/106131005/b7e81f28-0e3d-4f5b-a9f7-3861ebf17c1c"/>
+
+### 향후 과제
+---
+
+ 하지만 텍스트 저장 시 이따금씩 1,2번째 개행이 겹쳐서 그려지는 경우가 발생하였습니다. wordbreak기능을 고려하던가 알고리즘을 수정하고 싶었으나, 현재 프로젝트의 기간이 종료되어 향후 보완할 점으로 남겨두고 프린트 기능은 마무리 하도록 했습니다.
+
+<br>
 
 ## 3. Editor
 
-### 1) Canvas API를 통해서 undo/redo를 어떻게 구현할까? 
+### 1) Canvas API를 통해서 undo/redo를 어떻게 구현할까?
+---
 
-- **Canvas API 선택 이유?**
+<br>
+
+### 1.1 Canvas API 선택 이유
+---
 
 Canvas를 사용하는 이유는 JavaScript를 사용하여 웹 페이지에서 그래픽을 조작하고 그릴 수 있는 방법을 제공하기 때문입니다. pdf.js 라이브러리를 사용하여 PDF 파일을 구문 분석하고 이미지 데이터를 추출하게 되면 PDF 페이지를 이미지로 렌더링을 할 수 있습니다.
 
-- **Canvas API로 그림을 그리는 원리**
+<br>
+
+### 1.2 Canvas API로 그림을 그리는 원리
+---
 
 PDF 페이지와 동일한 크기로 생성한 Canvas 태그를 useRef로 불러오고 getContext(”2d”) 메서드를 사용하여 캔버스에 대한 2D 렌더링 컨텍스트를 가져옵니다. 그리고 mousedown, mousemove 이벤트의 콜백 함수로 그림을 그리는 함수를 호출하며, mouseup 이벤트가 발생했을 때 이벤트 리스너를 제거하여, 더이상 그림이 그려지지 않도록 합니다.
 
 ```jsx
-    
     const handleMouseDown = (event) => {
       const x = event.offsetX;
       const y = event.offsetY;
@@ -398,15 +445,18 @@ PDF 페이지와 동일한 크기로 생성한 Canvas 태그를 useRef로 불러
 
 ```
 
-- **에디터 툴을 활용한 그림의 상태 관리**
+<br>
+
+### 1.3 에디터 툴을 활용한 그림의 상태 관리
+---
 
 위 예시의 drawWhenMouseMove 함수에서 확인 가능한 대로, 그려지는 그림의 스타일은 상태에 기반합니다. globalOpacity, globalColor, globalWidth 은 툴바의 작업도구와 작업 도구의 스타일을 선택함에 따라 리덕스의 글로벌 상태관리에 반영됩니다. 
 
 <img width="626" alt="image" src="https://user-images.githubusercontent.com/110869913/235928308-284aca91-5256-4885-8fc8-980efcf390b9.png">
 
  펜을 클릭 하면 펜의 default 색상, 두께, 투명도가 적용되며, 형광펜을 선택하면 형광펜의 default 색상, 두께, 투명도가 적용됩니다. 펜과 형광펜을 각각 선택할 때 마다 선택한 작업 도구의 스타일을 선택 할 수 있는 툴바가 렌더링 되며, 선택한 스타일은 상태로 반영됩니다.
- 이렇게 반영된 상태는 유저가 다른 작업도구(ex 형광펜)를 선택하다 기존 작업 도구(ex 볼펜)를 다시 선택하더라도, 유저가 선택한 최신의 상태가 반영되며, 유저가 기존 작업 도구를 다시 쓸 때 연속성 있는 경험을 느낄 수 있도록 하였습니다. 
- 
+ 이렇게 반영된 상태는 유저가 다른 작업도구(ex 형광펜)를 선택하다 기존 작업 도구(ex 볼펜)를 다시 선택하더라도, 유저가 선택한 최신의 상태가 반영되며, 유저가 기존 작업 도구를 다시 쓸 때 연속성 있는 경험을 느낄 수 있도록 하였습니다.
+
  ```jsx
    export const changeGlobalToolOption = (tool) => (dispatch, getState) => {
     const selectToolColor = (state) => state.editor[tool].color; 
@@ -429,7 +479,11 @@ PDF 페이지와 동일한 크기로 생성한 Canvas 태그를 useRef로 불러
   const globalWidth = useSelector(selectGlobalWidth);
   const globalOpacity = useSelector(selectGlobalOpacity);
 ```
-- ** 두개의 Stack 구조로 UNDO/REDO 구현**
+
+<br>
+
+### 1.4 두개의 Stack 구조로 UNDO/REDO 구현
+---
 UNDO/REDO 기능은 두개의 Stack구조 데이터를 활용해서 구현했습니다. UNDO 버튼을 클릭하면, 상태에 보관된 해당 페이지의 DrawingData의 마지막 그림요소(lineData)를 제거하여 RedoData에 반영해줍니다. 반대로 REDO 버튼을 클릭하면, RedoData의 마지막 그림요소(lineData)를 제거하여 DrawingData에 반영해줍니다. 그리고, DrawingData 상태가 변환되면 호출되는 그리기 함수는 현재의 DrawingData 상태에 반영된 lineData들을 그려줍니다.
 
 <img width="624" alt="image" src="https://user-images.githubusercontent.com/110869913/235928760-2d04e856-fea4-472c-b966-fdf0d17edbfa.png">
@@ -445,7 +499,7 @@ export const moveDataUndoArray = () => (dispatch, getState) => {
   if (drawingArray.length) {
     const poppedData = drawingArray[drawingArray.length - 1];
     const restDrawingArray = drawingArray.slice(0, drawingArray.length - 1);
-  // RedoData에 반영할 DrawingData의 마지막 그림요소(lineData)를 선택 
+  // RedoData에 반영할 DrawingData의 마지막 그림요소(lineData)를 선택
   // & 마지막 그림요소(lineData)가 제거된 새로운 DrawingData를 생성
     dispatch(setDataUndo({ currentPage, restDrawingArray, poppedData }));
   }
@@ -453,8 +507,10 @@ export const moveDataUndoArray = () => (dispatch, getState) => {
 };
 ```
 
+<br>
 
 ### 2) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?
+---
 
 저희는 S3에서 저장된 글꼴 파일을 받아와 텍스트에 적용하면 바로 적용이 되는 줄 알았습니다. 하지만 S3가 건네준 데이터는 스트림(데이터)을 읽을 수 있는 객체인 readableStream이였고 텍스트에 글꼴을 적용하기 위해서는 readableStream을 url로 변환해야했습니다.
 
@@ -462,6 +518,83 @@ export const moveDataUndoArray = () => (dispatch, getState) => {
 
 readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 후에 Blob객체를 만들고 그 Blob객체를 url로 변환하였습니다. 이 url을 font-face에 src로 넣어주어 저희가 지정한 폰트명으로 해당 경로의 파일을 로드하여 글꼴을 적용하였습니다.
 
+
+<br/>
+
+
+## 📔 Feature
+- Access-Token, Refresh-Token 기반 로그인 관리
+- 클라우드 기반 서비스
+  + MongoDB를 활용한 유저 정보 DB 관리
+  + AWS S3를 활용한 대용량 파일 관리
+- PDF 불러오기
+  + 유저가 선택한 로컬 PDF의 클라우드 동기화
+  + DB의 유저 정보를 기반으로 S3 storage의 PDF 불러오기
+- PDF 작업 저장
+  + PDF의 요소(텍스트, 이미지, 링크)를 보존하여 저장
+  + 저장 시 유저의 로컬과 클라우드의 작업내용 동기화
+- PDF 에디터
+  + PDF 렌더링
+  + 작업도구 및 도구 스타일 선택
+  + 포스트잇 메모 에디터
+    * 포스트잇 별 폰트 적용
+    * 포스트잇 별 텍스트 스타일 적용
+  + PDF 그림 에디터(펜, 형광펜)
+  + UNDO-REDO
+  + PDF 페이지 별 작업내용 별도 관리
+- 서비스 배포
+
+<br>
+
+## 🧩 Contribution
+<br>
+
+### 신휘재
+
+  **Single development**
+  + [FE]PDF 그림 에디터
+  + [FE]그림 상태 전역 관리
+  + [FE]PDF 저장
+  + [FE]PDF 에디터 UNDO-REDO
+  + [FE]에러 바운더리
+
+  **Cooperation**
+  + [BE]RESTful API 설계
+    - 신휘재: 70%, 장예진: 30%
+  + [FE]AWS S3 데이터 전송
+    - 신휘재: 70%, 이지숙: 20%, 장예진: 10%
+
+### 이지숙
+
+  **Single development**
+  + [FE]Static Markup
+  + [FE]Firebase OAuth
+  + [FE]PDF 렌더링
+  + [FE]PDF 불러오기
+  + [FE]텍스트 파싱 및 스타일 적용
+
+  **Cooperation**
+  - [BE]DB 스키마 & 데이터 전송
+    + 이지숙: 50%, 신휘재: 30%, 장예진: 20%
+  - 서비스 배포(AWS ElasticBeanstalk)
+    + 이지숙: 50%, 신휘재: 30%, 장예진: 20%
+
+### 장예진
+
+  **Single development**
+  + [FE]포스트잇 생성 및 드래그 기능
+  + [FE]텍스트 글꼴 적용
+  + [BE]Access-Token, Refresh-Token 관리
+  + [BE]API 요청 권한 확인
+  + [BE]Architecture 설계
+
+  **Cooperation**
+  + [FE]Toolbar 구현 및 상태 관리
+    - 장예진: 50%, 신휘재: 30%, 이지숙 20%
+  + [FE]포스트잇 상태 전역 관리
+    - 장예진: 60%, 신휘재: 40%
+  + [BE]로그인
+    - 장예진: 60%, 이지숙: 40%
 
 <br/>
 
@@ -483,7 +616,6 @@ readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 �
 
 `Netlify, AWS Elastic Beanstalk`
 
-
 <br/>
 
 ## 🔗 Repository Link
@@ -491,8 +623,6 @@ readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 �
 ### Deploy
 
 (배포 후 링크 걸기)
-
-- Noted
 
 ### Github Repositories
 
