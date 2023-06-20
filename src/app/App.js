@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useNavigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 
+import GlobalFonts from "../fonts/fonts";
 import Login from "../components/Login";
 import Header from "../components/Header";
 import OpenPdf from "../components/OpenPdf";
@@ -23,6 +24,7 @@ export default function App() {
 
   return (
     <>
+      <GlobalFonts />
       <GlobalStyle />
       <ErrorBoundary FallbackComponent={FallbackUI}>
         <Header />
@@ -37,12 +39,8 @@ export default function App() {
 }
 
 const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: "DMSerifText-Regular";
-    src: url("/fonts/DMSerifText-Regular.ttf") format("truetype");
-  }
   body {
-    font-family: "DMSerifText-Regular";
+    font-family: "DMSerifText";
     margin: 0;
   }
 `;

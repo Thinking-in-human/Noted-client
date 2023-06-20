@@ -33,8 +33,6 @@ const initialState = {
   },
   postItFontSize: 10,
   madePostIts: {},
-  fontUrl: "",
-  fontName: "",
   drawingData: {
     1: [],
   },
@@ -106,15 +104,6 @@ export const editorSlice = createSlice({
       state.selectedPdfId = action.payload;
       state.postIts = {};
     },
-    setSelectedFontUrl: (state, action) => {
-      const { currentPage, currentPostIt, fontUrl, selectedFont } =
-        action.payload;
-      state.postIts[currentPage][currentPostIt].fontUrl = fontUrl;
-      state.postIts[currentPage][currentPostIt].fontName = selectedFont;
-    },
-    setSelectedFontName: (state, action) => {
-      state.fontName = action.payload;
-    },
     setPostIts: (state, action) => {
       const { currentPage, postItObject } = action.payload;
       const [postItId] = Object.keys(postItObject);
@@ -169,9 +158,9 @@ export const editorSlice = createSlice({
       const { currentPage, currentPostIt, position } = action.payload;
       state.postIts[currentPage][currentPostIt].position = position;
     },
-    setPostItFont: (state, action) => {
-      const { currentPage, currentPostIt, fontName } = action.payload;
-      state.postIts[currentPage][currentPostIt].fontName = fontName;
+    setSelectedFontName: (state, action) => {
+      const { currentPage, currentPostIt, selectedFont } = action.payload;
+      state.postIts[currentPage][currentPostIt].fontName = selectedFont;
     },
     setCurrentPostIt: (state, action) => {
       state.currentPostIt = action.payload;
@@ -200,7 +189,6 @@ export const {
   setDataRedo,
   makeNewPostIt,
   setSelectedDocument,
-  setSelectedFontUrl,
   setSelectedFontName,
   setBold,
   setPdfUnit8Array,
@@ -210,7 +198,6 @@ export const {
   setPostItPosition,
   changeContents,
   setCurrentPostIt,
-  setPostItFont,
   resetCurrentPage,
 } = editorSlice.actions;
 
@@ -224,8 +211,6 @@ export const selectGlobalColor = (state) => state.editor.globalColor;
 export const selectGlobalWidth = (state) => state.editor.globalWidth;
 export const selectGlobalOpacity = (state) => state.editor.globalOpacity;
 export const selectDocument = (state) => state.editor.selectedPdfId;
-export const selectFontUrl = (state) => state.editor.postIt.text.fontUrl;
-export const selectFontName = (state) => state.editor.fontName;
 export const selectPostIts = (state) => state.editor.postIts;
 export const selectPostItPosition = (state) => state.editor.postItPosition;
 export const selectIsBold = (state) => state.editor.postIt.text.isBold;

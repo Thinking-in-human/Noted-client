@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { useErrorBoundary } from "react-error-boundary";
 import { useDispatch, useSelector } from "react-redux";
 
 import CONSTANT from "../constants/constant";
 import {
-  selectFontUrl,
-  selectFontName,
   setDeletePostIt,
   setPostItPosition,
   changeContents,
@@ -14,12 +11,9 @@ import {
   selectCurrentPostIt,
   setCurrentPostIt,
   selectPostIts,
-  setPostItFont,
 } from "../feature/editorSlice";
 
 export default function PostIt({ postItId, onMouseUp }) {
-  const fontUrl = useSelector(selectFontUrl);
-  const fontName = useSelector(selectFontName);
   const currentPage = useSelector(selectCurrentPage);
   const [isDragging, setIsDragging] = useState(false);
   const [initialPosition, setInitialPosition] = useState({ x: 0, y: 0 });
@@ -92,9 +86,6 @@ export default function PostIt({ postItId, onMouseUp }) {
       ref={divRef}
       left={position.x}
       top={position.y}
-      fontSize={postItInfo.fontSize}
-      fontName={postItInfo.fontName}
-      fontUrl={postItInfo.fontUrl}
       onMouseDown={handleCurrentPostIt}
     >
       <Header
@@ -108,6 +99,8 @@ export default function PostIt({ postItId, onMouseUp }) {
       </Header>
       <TextBox
         contentEditable
+        fontSize={postItInfo.fontSize}
+        fontName={postItInfo.fontName}
         onInput={(event) => {
           setInputContents(event);
         }}
@@ -125,6 +118,8 @@ const TextBox = styled.div`
   height: auto;
   width: ${CONSTANT.POST_IT_SIZE};
   flex-grow: 1;
+  font-size: ${(props) => props.fontSize};
+  font-family: ${(props) => `${props.fontName}`};
   background-color: #fff000;
 
   &:focus {
@@ -141,16 +136,6 @@ const Group = styled.div`
   padding: 5px;
   border: 1px solid black;
   position: absolute;
-  font-size: ${(props) => props.fontSize};
-  @font-face {
-    font-family: ${(props) => `${props.fontName}`};
-    src: url(${(props) => props.fontUrl}) format("truetype");
-  }
-  body {
-    font-family: ${(props) => `${props.fontName}`};
-    margin: 0;
-  }
-  font-family: ${(props) => `${props.fontName}`};
   background-color: #fff000;
   z-index: 3;
   opacity: 0.9;
