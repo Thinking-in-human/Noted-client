@@ -1,12 +1,10 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
-import axios from "axios";
-import { useErrorBoundary } from "react-error-boundary";
 
 import { boldIcon } from "../assets/editorIcon";
 import {
-  setSelectedFontUrl,
+  setSelectedFontName,
   setPostItFontSize,
   selectIsBold,
   selectPostItFontSize,
@@ -17,7 +15,6 @@ import {
 export default function PostItStatusTool({ isBoldSelected }) {
   const dispatch = useDispatch();
   const fontSize = useSelector(selectPostItFontSize);
-  const { showBoundary } = useErrorBoundary();
   const isBold = useSelector(selectIsBold);
   const currentPage = useSelector(selectCurrentPage);
   const currentPostIt = useSelector(selectCurrentPostIt);
@@ -60,33 +57,15 @@ export default function PostItStatusTool({ isBoldSelected }) {
     selection.removeAllRanges();
   };
 
-  const handleChangeFont = async (event) => {
-    try {
-      const selectedFont = event.target.value;
-      const response = await axios.get(
-        `${process.env.REACT_APP_NOTED_API_SERVER}/fonts/${selectedFont}`,
-        {
-          withCredentials: true,
-          responseType: "arraybuffer",
-        },
-      );
-      const fontBuffer = response.data;
-      const fontBlob = new Blob([fontBuffer], {
-        type: "font/woff2",
-      });
-      const fontUrl = URL.createObjectURL(fontBlob);
-
-      dispatch(
-        setSelectedFontUrl({
-          currentPage,
-          currentPostIt,
-          fontUrl,
-          selectedFont,
-        }),
-      );
-    } catch (error) {
-      showBoundary(error);
-    }
+  const handleChangeFont = (event) => {
+    const selectedFont = event.target.value;
+    dispatch(
+      setSelectedFontName({
+        currentPage,
+        currentPostIt,
+        selectedFont,
+      }),
+    );
   };
 
   const handleChangeSize = (event) => {
