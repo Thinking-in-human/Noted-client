@@ -1,9 +1,9 @@
 <div align=center>
  <img width="400px" src="https://user-images.githubusercontent.com/110869913/229155539-6ab87d36-3d0b-4ac6-97dc-6acc25412230.jpg"/>
- 
-[Noted 링크](https://teamnoted.netlify.app/)
 
-Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 기능만을 제공하여 누구나 쉽게 PDF를 편집하고 메모를 남길 수 있는 PDF Editor 서비스 입니다. AWS S3 cloud 서비스를 이용하기 때문에,언제 어디서든 사용자가 작업한 PDF를 열어서 수정할 수 있습니다.
+[Noted](https://teamnoted.netlify.app/)는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지<br>
+핵심 기능만을 제공하여 누구나 쉽게 PDF를 편집하고 메모를 남길 수 있는 PDF Editor 서비스 입니다.<br>
+AWS S3 cloud 서비스를 이용하기 때문에,언제 어디서든 사용자가 작업한 PDF를 열어서 수정할 수 있습니다.
 </div>
 
 <br/>
@@ -33,8 +33,8 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
 <br/>
 
 # 🎬 Preview
+[Noted 배포 링크](https://teamnoted.netlify.app/)
 
-(시연 동영상)
 
 <br/>
 
