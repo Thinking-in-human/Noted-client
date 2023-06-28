@@ -537,7 +537,7 @@ WOFF2는 기존 WOFF에 비해 30% ~ 50% 정도 더 압축되어 훨씬 가볍�
 
 <br>
 
-### 2-2 시도: HTML link 요소와 @font-face
+### 2-2 시도: HTML `link` 요소와 @font-face
 ---
 1. HTML에서 `link` 요소 사용
 2. @font-face 및 styled-components
