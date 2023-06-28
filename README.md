@@ -1,5 +1,10 @@
-<img width="400px" src="https://user-images.githubusercontent.com/110869913/229155539-6ab87d36-3d0b-4ac6-97dc-6acc25412230.jpg"/>
-Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 기능만을 제공하여 누구나 쉽게 PDF를 편집하고 메모를 남길 수 있는 PDF Editor 서비스 입니다. AWS S3 cloud 서비스를 이용하기 때문에,언제 어디서든 사용자가 작업한 PDF를 열어서 수정할 수 있습니다.
+<div align=center>
+ <img width="400px" src="https://user-images.githubusercontent.com/110869913/229155539-6ab87d36-3d0b-4ac6-97dc-6acc25412230.jpg"/>
+
+[Noted](https://teamnoted.netlify.app/)는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지<br>
+핵심 기능만을 제공하여 누구나 쉽게 PDF를 편집하고 메모를 남길 수 있는 PDF Editor 서비스 입니다.<br>
+AWS S3 cloud 서비스를 이용하기 때문에,언제 어디서든 사용자가 작업한 PDF를 열어서 수정할 수 있습니다.
+</div>
 
 <br/>
 
@@ -17,7 +22,7 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
     * [Editor](editor)
       * [1) Canvas API를 통해서 undo/redo를 어떻게 구현할까?](Canvas-API를-통해서-undo/redo를-어떻게-구현할까?)
       * [2) 캔버스에 원하는 크기대로 지울 수 있는가?](캔버스에-원하는-크기대로-지울-수-있는가?)
-      * [3) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?](S3에-저장된-글꼴-파일을-텍스트에-어떻게-적용할-수-있을까?)
+      * [3) 웹 폰트를 로드하는 시간을 줄이자](웹-폰트를-로드하는-시간을-줄이자)
       * [4) bold 적용하기](bold-적용하기)
   * [🌐 Tech Stacks](#-tech-stacks)
   * [📔 Feature](#-feature)
@@ -28,8 +33,8 @@ Noted는 PDF 불러오기부터 수정된 PDF를 저장하는 것까지 핵심 �
 <br/>
 
 # 🎬 Preview
+[Noted 배포 링크](https://teamnoted.netlify.app/)
 
-(시연 동영상)
 
 <br/>
 
@@ -509,17 +514,66 @@ export const moveDataUndoArray = () => (dispatch, getState) => {
 
 <br>
 
-### 2) S3에 저장된 글꼴 파일을 텍스트에 어떻게 적용할 수 있을까?
+### 2) 웹 폰트를 로드하는 시간을 줄이자
 ---
 
-저희는 S3에서 저장된 글꼴 파일을 받아와 텍스트에 적용하면 바로 적용이 되는 줄 알았습니다. 하지만 S3가 건네준 데이터는 스트림(데이터)을 읽을 수 있는 객체인 readableStream이였고 텍스트에 글꼴을 적용하기 위해서는 readableStream을 url로 변환해야했습니다.
+웹 폰트란?<br>
+유저의 로컬 컴퓨터에 폰트 설치 여부와 상관없이 온라인 특정 서버에 위치한 폰트 파일을 다운로드하여 화면에 표시하는 웹 전용 폰트입니다.
 
-찾아본 결과 Blob이라는 객체를 통해서  source(src)를 속성으로 가지는 모든 HTML 태그와 CSS 속성에서 사용 가능한 url로 변환할 수 있는 것을 확인하였습니다. Blob은 주로 텍스트, 이미지, 사운드, 비디오와 같은 대다수 용량이 큰 데이터를 객체 형태로 저장할 수 있는 객체입니다.
+웹 폰트로 사용되는 파일 확장자로는 EOT, TTF/OFT, WOFF, WOFF2 등이 있습니다.
 
-readableStream을 Blob 객체로 변환할 수 없어 arrayBuffer로 변환한 후에 Blob객체를 만들고 그 Blob객체를 url로 변환하였습니다. 이 url을 font-face에 src로 넣어주어 저희가 지정한 폰트명으로 해당 경로의 파일을 로드하여 글꼴을 적용하였습니다.
+로딩 속도 : woff2 > woff > ttf > eot > svg
 
+WOFF2는 기존 WOFF에 비해 30% ~ 50% 정도 더 압축되어 훨씬 가볍고 네트워크를 통해 전송해야 하는 데이터가 적습니다. 그로인해 로드 시간이 빨라 효율적으로 다운로드할 수 있습니다. 또, 2018년 기준으로 IE를 제외한 거의 모든 브라우저의 최신 버전에서 지원하고 있습니다.
 
-<br/>
+이 점들을 고려하여 WOFF2 확장자를 선택하게 되었습니다.
+
+<br>
+
+### 2-1 문제: Client -> Server -> S3로 글꼴 요청
+---
+처음에는 서버에서 사용자가 지정한 글꼴에 대한 URL을 통해 AWS S3에 저장된 글꼴 파일(.woff2)을 받아와 포스트잇 글꼴에 적용하도록 하였습니다.<br>
+하지만 이런 방식에는 문제가 있었습니다. 사용자가 글꼴을 변경할 때 마다 계속 S3에서 글꼴을 불러왔고, 이로인해 글꼴의 로드가 지연되며 깜빡임이 발생한 것입니다.
+
+<br>
+
+### 2-2 시도: HTML `link` 요소와 @font-face
+---
+1. HTML에서 `link` 요소 사용
+2. @font-face 및 styled-components
+
+| HTML에서 link 요소 사용 | @font-face |
+| --- | --- |
+| preload 속성이 있는 link 요소를 사용하여 미리 글꼴이 로드되도록 할 수 있습니다. | CSS 또는 Styled-component와 같은 스타일 라이브러리를 같이 사용할 경우, 더 많은 유연성과 글꼴 관리를 할 수 있습니다. |
+| HTML에서 link 요소를 사용하여 브라우저의 내장된 글꼴 로딩 메커니즘을 활용합니다. | 직접 사용자 지정 글꼴 및 해당 속성에 대한 더 많은 제어를 할 수 있습니다. |
+
+⇒ 사용자가 선택한 글꼴 파일을 스타일에 지정하기 위해 @font-face를 사용하기로 결정하였습니다.
+
+<br>
+
+### 2-3 결과: @font-face + styled-component 사용
+---
+styled-component의 `createGlobalStyle`을 사용하여 지정된 모든 글꼴 관련 스타일이 전체적으로 적용되도록 하였습니다. 이를 통해 구성 요소 전체에서 사용자 지정 글꼴을 정의하고 사용할 수 있습니다.
+
+```jsx
+// 예시 코드
+import { createGlobalStyle } from 'styled-components';
+
+const GlobalStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'YourFontFamilyName';
+    src: url('/your-font.woff2') format('woff2'),
+         url('/your-font.woff') format('woff');
+  }
+`;
+```
+
+글꼴을 미리 로드한 경우
+- 유저가 선택한 글꼴로 인해 발생하는 지연이나 깜박임이 줄어들었습니다.
+- 글꼴 리소스를 가져와서 브라우저의 캐시에서 사용할 수 있으므로 리렌더링 및 스타일링에서 추가 네트워크 요청이나 지연없이 원하는 글꼴을 사용할 수 있습니다.
+- 글꼴이 필요할 때 즉시 적용할 수 있도록하여 일관된 사용자 경험을 제공합니다.
+
+<br>
 
 
 ## 📔 Feature
