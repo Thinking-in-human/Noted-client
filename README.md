@@ -553,7 +553,7 @@ WOFF2는 기존 WOFF에 비해 30% ~ 50% 정도 더 압축되어 훨씬 가볍�
 
 ### 2-3 결과: @font-face + styled-component 사용
 ---
-styled-component의 `createGlobalStyle`을 사용하여 지정된 모든 글꼴 관련 스타일이 전체적으로 적용되도록 하였습니다. 이를 통해 구성 요소 전체에서 일관되게 사용자 지정 글꼴을 정의하고 사용할 수 있습니다.
+styled-component의 `createGlobalStyle`을 사용하여 지정된 모든 글꼴 관련 스타일이 전체적으로 적용되도록 하였습니다. 이를 통해 구성 요소 전체에서 사용자 지정 글꼴을 정의하고 사용할 수 있습니다.
 
 ```jsx
 // 예시 코드
